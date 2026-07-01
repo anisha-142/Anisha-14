@@ -22,7 +22,7 @@ services:
       - key: DJANGO_DEBUG
         value: "False"
       - key: DJANGO_SECURE_SSL_REDIRECT
-        value: "False"
+        value: "True"
       - key: WEB_CONCURRENCY
         value: "4"
       - key: EMAIL_HOST_USER
