@@ -1,0 +1,1134 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practice Arena | JSS Portal</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary2: #3b82f6;
+            --accent: #60a5fa;
+            --rose: #e11d48;
+            --amber: #d97706;
+            --green: #059669;
+            --dark: #0b1a33; /* Kept for sidebar consistency */
+            --dark2: #1e293b;
+            --text: #334155;
+            --text-dark: #0f172a;
+            --muted: #64748b;
+            --border: #e2e8f0;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --sidebar-w: 270px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .campus-bg { display: none; } /* Hide background image for clean light mode */
+
+        /* ── SIDEBAR (Keep Dark for Contrast & Consistency) ── */
+        .sidebar {
+            position: fixed; left: 0; top: 0; height: 100%;
+            width: var(--sidebar-w); z-index: 1000;
+            background: var(--dark);
+            border-right: 1px solid rgba(0,0,0,0.1);
+            box-shadow: 4px 0 30px rgba(0,0,0,.1);
+            display: flex; flex-direction: column;
+            transition: transform .35s cubic-bezier(.4,0,.2,1);
+        }
+
+        .sidebar-logo {
+            padding: 28px 22px 22px; display: flex; align-items: center; gap: 14px;
+            border-bottom: 1px solid rgba(255,255,255,.05); position: relative;
+        }
+        .sidebar-logo::after {
+            content: ''; position: absolute; bottom: 0; left: 10%; right: 10%;
+            height: 1px; background: linear-gradient(90deg, transparent, var(--primary), transparent);
+        }
+
+        .logo-gem {
+            width: 44px; height: 44px; border-radius: 13px; flex-shrink: 0;
+            background: white; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 6px 20px rgba(59,130,246,.5); padding: 2px;
+        }
+        .logo-gem img { width: 100%; height: 100%; object-fit: contain; border-radius: 10px; }
+
+        .logo-name { font-size: 16px; font-weight: 800; color: white; line-height: 1.1; }
+        .logo-name span { font-size: 11px; font-weight: 400; color: #cbd5e1; display: block; }
+
+        .sidebar-nav { flex: 1; padding: 16px 12px; overflow-y: auto; }
+        .sidebar-nav::-webkit-scrollbar { width: 3px; }
+        .sidebar-nav::-webkit-scrollbar-thumb { background: rgba(59,130,246,.25); }
+
+        .nav-section {
+            font-size: 9px; font-weight: 700; color: #94a3b8;
+            text-transform: uppercase; letter-spacing: 2px; padding: 14px 12px 6px;
+        }
+
+        .nav-link {
+            display: flex; align-items: center; gap: 13px; padding: 11px 14px;
+            border-radius: 12px; text-decoration: none; color: #cbd5e1;
+            font-weight: 500; font-size: 13px; transition: all .22s ease;
+            margin-bottom: 3px; position: relative;
+        }
+        .nav-link .nav-icon {
+            width: 34px; height: 34px; border-radius: 9px; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center; font-size: 14px;
+            background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.06);
+            transition: all .22s;
+        }
+        .nav-link:hover { color: white; transform: translateX(4px); background: rgba(255,255,255,0.05); }
+        .nav-link:hover .nav-icon {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-color: transparent; box-shadow: 0 4px 14px rgba(59,130,246,.45); color: white;
+        }
+        .nav-link.active { color: white; background: rgba(255,255,255,0.1); box-shadow: 0 4px 20px rgba(0,0,0,.2); }
+        .nav-link.active::before {
+            content: ''; position: absolute; left: 0; top: 20%; bottom: 20%;
+            width: 3px; background: linear-gradient(180deg, var(--primary), var(--accent));
+            border-radius: 0 2px 2px 0;
+        }
+        .nav-link.active .nav-icon {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-color: transparent; box-shadow: 0 4px 14px rgba(59,130,246,.45); color: white;
+        }
+
+        .sidebar-user {
+            margin: 12px; padding: 16px 14px; border-radius: 14px;
+            background: rgba(59,130,246,.08); border: 1px solid rgba(59,130,246,.18);
+            display: flex; align-items: center; gap: 12px;
+        }
+        .user-ava {
+            width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 15px; color: white;
+            box-shadow: 0 0 0 2px rgba(59,130,246,.4);
+        }
+        .user-info-s .name { font-size: 13px; font-weight: 700; color: white; }
+        .user-info-s .role { font-size: 10px; font-weight: 500; color: #94a3b8; }
+
+        .logout-btn {
+            margin: 0 12px 18px; padding: 12px 14px; border-radius: 12px;
+            text-decoration: none; display: flex; align-items: center; gap: 12px;
+            color: #ef4444; font-size: 13px; font-weight: 600;
+            border: 1px solid rgba(239,68,68,.15); background: rgba(239,68,68,.06);
+            transition: all .2s;
+        }
+        .logout-btn:hover { background: rgba(239,68,68,.15); transform: translateX(3px); color: #f87171; }
+
+        /* ── TOPBAR (Light) ── */
+        .topbar {
+            position: sticky; top: 0; z-index: 900; height: 62px;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 30px; background: rgba(255,255,255,.9);
+            backdrop-filter: blur(10px); border-bottom: 1px solid var(--border);
+            box-shadow: 0 1px 3px rgba(0,0,0,.03);
+        }
+        .topbar-left { display: flex; align-items: center; gap: 14px; }
+        .mob-tog {
+            display: none; width: 36px; height: 36px; border-radius: 9px;
+            border: 1px solid var(--border); background: var(--bg);
+            color: var(--text-dark); font-size: 15px; cursor: pointer;
+            align-items: center; justify-content: center;
+        }
+        .breadcrumb { font-size: 13px; color: var(--muted); }
+        .breadcrumb span { color: var(--text-dark); font-weight: 600; }
+        .topbar-right { display: flex; align-items: center; gap: 12px; }
+        .tb-live {
+            display: flex; align-items: center; gap: 7px; padding: 6px 14px;
+            border-radius: 50px; background: rgba(34,197,94,.1);
+            border: 1px solid rgba(34,197,94,.25); font-size: 11px; font-weight: 700; color: #16a34a;
+        }
+        .tb-live i { font-size: 6px; animation: pulse-dot 1.2s infinite; }
+        @keyframes pulse-dot { 0%,100%{transform:scale(1)} 50%{transform:scale(1.3)} }
+
+        /* ── MAIN LAYOUT ── */
+        .main { margin-left: var(--sidebar-w); min-height: 100vh; position: relative; z-index: 1; }
+        .content { padding: 28px 32px; }
+
+        /* ── PRACTICE ARENA STYLES ── */
+        .page-hero {
+            border-radius: 22px; padding: 36px 44px; margin-bottom: 28px;
+            background: var(--card);
+            border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
+            display: flex; align-items: center; gap: 24px; position: relative; overflow: hidden;
+        }
+        .page-hero::before {
+            content: ''; position: absolute; top: -60%; right: -20%;
+            width: 500px; height: 500px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(59,130,246,0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .hero-icon-wrap {
+            width: 72px; height: 72px; border-radius: 20px; flex-shrink: 0;
+            background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(99,102,241,0.1));
+            border: 1px solid rgba(59,130,246,0.2);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 32px; color: var(--primary);
+        }
+        .hero-text h1 { font-size: 28px; font-weight: 900; color: var(--text-dark); margin-bottom: 6px; }
+        .hero-text p { font-size: 13px; color: var(--muted); }
+
+        .arena-layout {
+            display: grid; grid-template-columns: 260px 1fr; gap: 22px; align-items: start;
+        }
+
+        /* ── CATEGORY SIDEBAR ── */
+        .category-panel {
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: 18px; padding: 20px 14px;
+            position: sticky; top: 84px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+        .cat-label {
+            font-size: 9px; font-weight: 800; color: var(--muted);
+            text-transform: uppercase; letter-spacing: 2px; padding: 0 8px 10px;
+        }
+        .cat-btn {
+            width: 100%; text-align: left; padding: 13px 14px; background: transparent;
+            border: none; border-radius: 12px; font-size: 13px; font-weight: 600;
+            color: var(--text); cursor: pointer; transition: all 0.22s ease;
+            display: flex; align-items: center; gap: 12px; margin-bottom: 5px;
+        }
+        .cat-btn .cat-icon {
+            width: 32px; height: 32px; border-radius: 8px; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center; font-size: 13px;
+            background: var(--bg); border: 1px solid var(--border); color: var(--muted);
+            transition: all .22s;
+        }
+        .cat-btn:hover { background: var(--bg); color: var(--text-dark); transform: translateX(3px); }
+        .cat-btn:hover .cat-icon {
+            background: var(--primary); border-color: var(--primary); color: white;
+        }
+        .cat-btn.active { background: rgba(59,130,246,0.1); color: var(--primary); }
+        .cat-btn.active .cat-icon {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-color: transparent; color: white;
+            box-shadow: 0 4px 10px rgba(59,130,246,.3);
+        }
+        .cat-btn .cat-badge {
+            margin-left: auto; font-size: 10px; font-weight: 700; padding: 2px 8px;
+            border-radius: 50px; background: var(--bg); color: var(--muted); border: 1px solid var(--border);
+        }
+        .cat-btn.active .cat-badge { background: rgba(59,130,246,.15); color: var(--primary); border-color: transparent; }
+
+        .cat-btn.done .cat-icon { background: linear-gradient(135deg, var(--green), #059669) !important; border-color: transparent !important; color: white !important; }
+        .cat-btn.done { color: var(--green); }
+
+        /* ── QUIZ PANEL ── */
+        .quiz-panel {
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: 18px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+        .quiz-header {
+            padding: 24px 30px 20px; border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .quiz-header-left { display: flex; align-items: center; gap: 14px; }
+        .quiz-header-icon {
+            width: 42px; height: 42px; border-radius: 11px; flex-shrink: 0;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px; color: white; box-shadow: 0 4px 10px rgba(59,130,246,.3);
+        }
+        .quiz-header h2 { font-size: 17px; font-weight: 800; color: var(--text-dark); margin-bottom: 2px; }
+        .quiz-header p { font-size: 11px; color: var(--muted); }
+        .quiz-score-badge {
+            display: none; padding: 8px 18px; border-radius: 50px; font-size: 13px; font-weight: 700;
+            background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.2); color: #059669;
+        }
+
+        .quiz-body { padding: 24px 30px; }
+
+        .tab-content { display: none; animation: fadeUp 0.35s ease; }
+        .tab-content.active { display: block; }
+        @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+
+        /* ── STUDY NOTES BOX ── */
+        .notes-box {
+            background: rgba(99,102,241,0.05); border: 1px solid rgba(99,102,241,0.2);
+            border-left: 4px solid #6366f1; border-radius: 12px; padding: 18px 20px; margin-bottom: 24px;
+        }
+        .notes-box h3 { font-size: 13px; font-weight: 700; color: #4f46e5; margin-bottom: 10px; }
+        .notes-box p, .notes-box li { font-size: 12px; color: #4338ca; line-height: 1.7; }
+        .notes-box ul { padding-left: 18px; }
+
+        /* ── QUESTION CARD ── */
+        .question-card {
+            background: #ffffff; border: 1px solid var(--border);
+            border-radius: 14px; padding: 22px 24px; margin-bottom: 18px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+        }
+        .question-card:hover { border-color: #cbd5e1; box-shadow: 0 4px 6px rgba(0,0,0,0.04); }
+        .question-num {
+            font-size: 10px; font-weight: 800; color: var(--primary);
+            text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .question-text { font-size: 14px; font-weight: 600; color: var(--text-dark); margin-bottom: 16px; line-height: 1.6; }
+        .options-grid { display: flex; flex-direction: column; gap: 9px; }
+
+        .option-btn {
+            background: #ffffff; border: 1px solid var(--border);
+            padding: 12px 16px; border-radius: 10px; font-size: 13px; color: var(--text);
+            cursor: pointer; text-align: left; transition: all 0.2s ease;
+            display: flex; align-items: center; gap: 10px; font-family: 'Inter', sans-serif;
+        }
+        .option-btn .opt-label {
+            width: 22px; height: 22px; border-radius: 6px; flex-shrink: 0;
+            background: var(--bg); border: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 10px; font-weight: 800; color: var(--muted); transition: all 0.2s;
+        }
+        .option-btn:hover:not(:disabled) {
+            background: #f8fafc; border-color: #cbd5e1; color: var(--text-dark);
+        }
+        .option-btn:hover:not(:disabled) .opt-label {
+            background: var(--primary); border-color: var(--primary); color: white;
+        }
+        .option-btn.selected {
+            background: rgba(59,130,246,0.05); border-color: var(--primary);
+            color: var(--primary); font-weight: 600;
+        }
+        .option-btn.selected .opt-label { background: var(--primary); border-color: var(--primary); color: white; }
+        .option-btn.correct {
+            background: rgba(16,185,129,0.1); border-color: #10b981; color: #059669;
+        }
+        .option-btn.correct .opt-label { background: #10b981; border-color: #10b981; color: white; }
+        .option-btn.wrong {
+            background: rgba(239,68,68,0.08); border-color: #ef4444; color: #dc2626;
+        }
+        .option-btn.wrong .opt-label { background: #ef4444; border-color: #ef4444; color: white; }
+        .option-btn:disabled { cursor: not-allowed; opacity: 0.9; }
+
+        /* ── RESULT BANNER ── */
+        .result-banner {
+            display: none; margin-top: 22px; padding: 20px 24px; border-radius: 14px;
+            background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.2);
+            text-align: center; animation: fadeUp 0.4s ease;
+        }
+        .result-banner.shown { display: block; }
+        .result-banner.poor { background: rgba(239,68,68,0.08); border-color: rgba(239,68,68,0.2); }
+        .result-banner.mid { background: rgba(245,158,11,0.1); border-color: rgba(245,158,11,0.2); }
+        .result-score { font-size: 36px; font-weight: 900; color: var(--text-dark); margin-bottom: 4px; }
+        .result-score span { font-size: 16px; font-weight: 500; color: var(--muted); }
+        .result-msg { font-size: 13px; color: var(--text); margin-top: 6px; }
+
+        /* ── SUBMIT / RETRY ROW ── */
+        .quiz-footer {
+            padding: 20px 30px; border-top: 1px solid var(--border);
+            display: flex; justify-content: space-between; align-items: center;
+            background: #f8fafc;
+        }
+        .progress-wrap { display: flex; align-items: center; gap: 12px; }
+        .progress-text { font-size: 12px; color: var(--muted); font-weight: 500; }
+        .progress-bar-bg {
+            width: 140px; height: 6px; background: #e2e8f0;
+            border-radius: 10px; overflow: hidden;
+        }
+        .progress-bar-fill {
+            height: 100%; background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 10px; transition: width 0.4s ease; width: 0%;
+        }
+
+        .btn-submit {
+            padding: 11px 26px; border: none; border-radius: 12px; cursor: pointer;
+            font-size: 13px; font-weight: 700; font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--primary), #4f46e5);
+            color: white; display: flex; align-items: center; gap: 8px;
+            box-shadow: 0 4px 12px rgba(59,130,246,0.3); transition: all 0.2s;
+        }
+        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(59,130,246,0.4); }
+        .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+        .btn-retry {
+            padding: 11px 26px; border: 1px solid var(--border); border-radius: 12px;
+            cursor: pointer; font-size: 13px; font-weight: 600; font-family: 'Inter', sans-serif;
+            background: #ffffff; color: var(--text-dark);
+            display: none; align-items: center; gap: 8px; transition: all 0.2s;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        .btn-retry:hover { background: #f8fafc; border-color: #cbd5e1; }
+        .btn-retry.shown { display: flex; }
+
+        /* ── RESPONSIVE ── */
+        @media(max-width:768px) {
+            .sidebar { transform: translateX(calc(-1 * var(--sidebar-w))); }
+            .sidebar.show { transform: translateX(0); }
+            .main { margin-left: 0 !important; }
+            .mob-tog { display: flex !important; }
+            .content { padding: 20px 18px; }
+            .arena-layout { grid-template-columns: 1fr; }
+            .category-panel { position: static; }
+        }
+        @media(max-width:1100px) {
+            .arena-layout { grid-template-columns: 220px 1fr; }
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* ── ONE-BY-ONE QUIZ STYLES ── */
+        .q-nav-header {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 16px; flex-wrap: wrap; gap: 10px;
+        }
+        .q-nav-label {
+            font-size: 12px; font-weight: 700; color: var(--primary);
+            background: rgba(59,130,246,0.1); padding: 5px 14px;
+            border-radius: 50px; border: 1px solid rgba(59,130,246,0.2);
+        }
+        .q-dots { display: flex; gap: 6px; flex-wrap: wrap; }
+        .q-dot {
+            width: 10px; height: 10px; border-radius: 50%;
+            background: #e2e8f0; border: 2px solid #cbd5e1;
+            transition: all 0.25s ease; cursor: default;
+        }
+        .q-dot.current  { background: var(--primary); border-color: var(--primary); transform: scale(1.35); }
+        .q-dot.answered { background: #10b981; border-color: #10b981; }
+        .q-dot.skipped  { background: #f59e0b; border-color: #f59e0b; }
+
+        .skipped-overlay {
+            display: flex; align-items: center; gap: 8px; margin-top: 14px;
+            padding: 12px 16px; background: rgba(245,158,11,0.08);
+            border: 1px dashed #f59e0b; border-radius: 10px;
+            color: #92400e; font-size: 13px; font-weight: 600;
+        }
+
+        .btn-skip {
+            padding: 11px 22px; border: 1.5px solid #f59e0b; border-radius: 12px;
+            cursor: pointer; font-size: 13px; font-weight: 700; font-family: 'Inter', sans-serif;
+            background: rgba(245,158,11,0.08); color: #b45309;
+            display: flex; align-items: center; gap: 8px; transition: all 0.2s;
+        }
+        .btn-skip:hover { background: rgba(245,158,11,0.18); transform: translateY(-2px); }
+
+        .btn-next {
+            padding: 11px 26px; border: none; border-radius: 12px; cursor: pointer;
+            font-size: 13px; font-weight: 700; font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--primary), #4f46e5);
+            color: white; display: flex; align-items: center; gap: 8px;
+            box-shadow: 0 4px 12px rgba(59,130,246,0.3); transition: all 0.2s;
+        }
+        .btn-next:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(59,130,246,0.4); }
+
+        /* Final Results Page */
+        .final-page { animation: fadeUp 0.4s ease; }
+        .final-header {
+            text-align: center; padding: 28px 20px 22px;
+            border-bottom: 1px solid var(--border); margin-bottom: 22px;
+        }
+        .final-score-ring {
+            width: 120px; height: 120px; border-radius: 50%; margin: 0 auto 16px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            font-weight: 900; border: 6px solid;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+        }
+        .final-score-ring .big { font-size: 30px; line-height: 1; }
+        .final-score-ring .sm  { font-size: 11px; font-weight: 600; margin-top: 3px; opacity: 0.8; }
+        .final-header h2 { font-size: 20px; font-weight: 800; color: var(--text-dark); margin-bottom: 6px; }
+        .final-header p  { font-size: 13px; color: var(--muted); }
+        .final-stats {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 22px;
+        }
+        .stat-card { border-radius: 12px; padding: 16px; text-align: center; border: 1px solid var(--border); }
+        .stat-card .stat-val { font-size: 28px; font-weight: 900; }
+        .stat-card .stat-lbl { font-size: 11px; font-weight: 600; color: var(--muted); margin-top: 4px; }
+        .stat-card.correct-s { background: rgba(16,185,129,0.08); border-color: rgba(16,185,129,0.22); }
+        .stat-card.correct-s .stat-val { color: #059669; }
+        .stat-card.wrong-s   { background: rgba(239,68,68,0.07); border-color: rgba(239,68,68,0.18); }
+        .stat-card.wrong-s   .stat-val { color: #dc2626; }
+        .stat-card.skip-s    { background: rgba(245,158,11,0.08); border-color: rgba(245,158,11,0.22); }
+        .stat-card.skip-s    .stat-val { color: #b45309; }
+        .final-q-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px; }
+        .fq-item {
+            border-radius: 12px; border: 1px solid var(--border);
+            padding: 14px 18px; display: flex; align-items: flex-start; gap: 14px;
+            background: #fff; transition: box-shadow 0.2s;
+        }
+        .fq-item:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+        .fq-badge {
+            flex-shrink: 0; width: 28px; height: 28px; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 13px; font-weight: 800;
+        }
+        .fq-badge.correct { background: #10b981; color: white; }
+        .fq-badge.wrong   { background: #ef4444; color: white; }
+        .fq-badge.skipped { background: #f59e0b; color: white; }
+        .fq-body { flex: 1; min-width: 0; }
+        .fq-q { font-size: 13px; font-weight: 600; color: var(--text-dark); margin-bottom: 5px; line-height: 1.5; }
+        .fq-ans { font-size: 11px; color: var(--muted); line-height: 1.6; }
+        .fq-ans span { font-weight: 700; }
+        .fq-ans .ca { color: #059669; }
+        .fq-ans .wa { color: #dc2626; }
+        .fq-ans .sk { color: #b45309; }
+    </style>
+</head>
+
+<body>
+    <div class="campus-bg"></div>
+
+    <!-- ── SIDEBAR ── -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-gem">
+                <img src="{% static 'images/logos/jss logo.jpeg' %}" alt="JSS Logo">
+            </div>
+            <div class="logo-name">JSS PORTAL<span>Student Hub</span></div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section">Menu</div>
+            <a href="{% url 'home' %}" class="nav-link">
+                <div class="nav-icon"><i class="fas fa-gauge-high"></i></div>Dashboard
+            </a>
+            <a href="{% url 'companies' %}" class="nav-link">
+                <div class="nav-icon"><i class="fas fa-building"></i></div>Companies
+            </a>
+
+            <div class="nav-section">Resources</div>
+            <a href="{% url 'practice' %}" class="nav-link active">
+                <div class="nav-icon"><i class="fas fa-laptop-code"></i></div>Practice Lab
+            </a>
+            <a href="{% url 'resources' %}" class="nav-link">
+                <div class="nav-icon"><i class="fas fa-book-open"></i></div>Resources
+            </a>
+            <a href="{% url 'video_resource' %}" class="nav-link">
+                <div class="nav-icon"><i class="fab fa-youtube"></i></div>Videos
+            </a>
+        </nav>
+
+        <div class="sidebar-user">
+            <div class="user-ava">{{ request.user.username|first|upper }}</div>
+            <div class="user-info-s">
+                <div class="name">{{ request.user.get_full_name|default:request.user.username|title }}</div>
+                <div class="role">Student</div>
+            </div>
+        </div>
+        <a href="{% url 'logout' %}" class="logout-btn">
+            <i class="fas fa-right-from-bracket"></i> Sign Out
+        </a>
+    </aside>
+
+    <!-- ── MAIN ── -->
+    <div class="main" id="main">
+        <div class="topbar">
+            <div class="topbar-left">
+                <button class="mob-tog" id="mobTog"
+                    onclick="document.getElementById('sidebar').classList.toggle('show')">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="breadcrumb">🏠 › Resources › <span>Practice Arena</span></div>
+            </div>
+            <div class="topbar-right">
+                <div class="tb-live"><i class="fas fa-circle"></i> Live</div>
+            </div>
+        </div>
+
+        <div class="content">
+
+            <!-- Page Hero -->
+            <div class="page-hero">
+                <div class="hero-icon-wrap"><i class="fas fa-laptop-code"></i></div>
+                <div class="hero-text">
+                    <h1>Interactive Practice Arena</h1>
+                    <p>Category-wise mock tests with instant feedback and score tracking. Questions are randomly generated on every attempt!</p>
+                </div>
+            </div>
+
+            <!-- Arena Layout -->
+            <div class="arena-layout">
+
+                <!-- Category Sidebar -->
+                <div class="category-panel">
+                    <div class="cat-label">Categories</div>
+
+                    <button class="cat-btn active" id="cat-quant" onclick="openTab('quant', this)">
+                        <div class="cat-icon"><i class="fas fa-calculator"></i></div>
+                        Quantitative Aptitude
+                        <span class="cat-badge">10 Q</span>
+                    </button>
+                    <button class="cat-btn" id="cat-logic" onclick="openTab('logic', this)">
+                        <div class="cat-icon"><i class="fas fa-puzzle-piece"></i></div>
+                        Logical Reasoning
+                        <span class="cat-badge">10 Q</span>
+                    </button>
+                    <button class="cat-btn" id="cat-dsa" onclick="openTab('dsa', this)">
+                        <div class="cat-icon"><i class="fas fa-code"></i></div>
+                        DSA
+                        <span class="cat-badge">10 Q</span>
+                    </button>
+                    <button class="cat-btn" id="cat-cs_core" onclick="openTab('cs_core', this)">
+                        <div class="cat-icon"><i class="fas fa-server"></i></div>
+                        CS Core
+                        <span class="cat-badge">10 Q</span>
+                    </button>
+                    <button class="cat-btn" id="cat-hr" onclick="openTab('hr', this)">
+                        <div class="cat-icon"><i class="fas fa-users"></i></div>
+                        Scenario Based (HR)
+                        <span class="cat-badge">10 Q</span>
+                    </button>
+                </div>
+
+                <!-- Quiz Panel -->
+                <div class="quiz-panel">
+                    <div class="quiz-header" id="quiz-header">
+                        <div class="quiz-header-left">
+                            <div class="quiz-header-icon" id="quiz-icon"><i class="fas fa-calculator"></i></div>
+                            <div>
+                                <h2 id="quiz-title">Quantitative Aptitude</h2>
+                                <p id="quiz-sub">Answer all 10 questions then click Submit Test</p>
+                            </div>
+                        </div>
+                        <div class="quiz-score-badge" id="quiz-score-badge"></div>
+                    </div>
+
+                    <div class="quiz-body">
+
+                        <!-- ═══ QUANT ═══ -->
+                        <div id="quant" class="tab-content active">
+                            <div class="notes-box">
+                                <h3><i class="fas fa-calculator"></i> &nbsp;Quantitative Aptitude — Quick Tips</h3>
+                                <p><strong>Time Management:</strong> Don't spend too long on one question. Use approximations to eliminate obvious wrong options.</p>
+                            </div>
+                            <div id="qstep-quant"></div>
+                            <div id="final-quant" class="final-page" style="display:none"></div>
+                        </div>
+
+                        <!-- ═══ LOGIC ═══ -->
+                        <div id="logic" class="tab-content">
+                            <div class="notes-box">
+                                <h3><i class="fas fa-book-open"></i> &nbsp;Logical Reasoning — Quick Tips</h3>
+                                <p><strong>Number Series:</strong> Check differences, alternate sequences, squares &amp; cubes.</p>
+                                <ul>
+                                    <li><strong>Blood Relations:</strong> Use squares for males, circles for females, horizontal lines for siblings.</li>
+                                    <li><strong>Coding-Decoding:</strong> Write A–Z with 1–26 and reverse 26–1 to spot shifts quickly.</li>
+                                    <li><strong>Direction Sense:</strong> Always draw a quick compass before solving.</li>
+                                </ul>
+                            </div>
+                            <div id="qstep-logic"></div>
+                            <div id="final-logic" class="final-page" style="display:none"></div>
+                        </div>
+
+                        <!-- ═══ DSA ═══ -->
+                        <div id="dsa" class="tab-content">
+                            <div class="notes-box">
+                                <h3><i class="fas fa-code"></i> &nbsp;DSA — Quick Tips</h3>
+                                <p><strong>Complexity:</strong> Always consider time and space tradeoffs for algorithms.</p>
+                            </div>
+                            <div id="qstep-dsa"></div>
+                            <div id="final-dsa" class="final-page" style="display:none"></div>
+                        </div>
+
+                        <!-- ═══ CS CORE ═══ -->
+                        <div id="cs_core" class="tab-content">
+                            <div class="notes-box">
+                                <h3><i class="fas fa-server"></i> &nbsp;CS Core — Quick Tips</h3>
+                                <p><strong>OS/DBMS/CN:</strong> Focus on core concepts like ACID properties, OSI model, and scheduling algorithms.</p>
+                            </div>
+                            <div id="qstep-cs_core"></div>
+                            <div id="final-cs_core" class="final-page" style="display:none"></div>
+                        </div>
+
+                        <!-- ═══ HR ═══ -->
+                        <div id="hr" class="tab-content">
+                            <div class="notes-box">
+                                <h3><i class="fas fa-lightbulb"></i> &nbsp;HR Interview — STAR Technique</h3>
+                                <p>Use <strong>Situation → Task → Action → Result</strong> for every behavioral question. Be honest, specific, and always end on a positive learning note.</p>
+                            </div>
+                            <div id="qstep-hr"></div>
+                            <div id="final-hr" class="final-page" style="display:none"></div>
+                        </div>
+
+                    </div><!-- /.quiz-body -->
+
+                    <div class="quiz-footer">
+                        <div class="progress-wrap">
+                            <span class="progress-text" id="progress-text">Question 1 of 10</span>
+                            <div class="progress-bar-bg">
+                                <div class="progress-bar-fill" id="progress-bar"></div>
+                            </div>
+                        </div>
+                        <div style="display:flex;gap:10px;align-items:center;">
+                            <button class="btn-skip" id="btn-skip" onclick="skipQuestion()">
+                                <i class="fas fa-forward-step"></i> Skip
+                            </button>
+                            <button class="btn-next" id="btn-next" onclick="nextQuestion()">
+                                Next <i class="fas fa-arrow-right"></i>
+                            </button>
+                            <button class="btn-submit" id="btn-submit" onclick="submitTest()" style="display:none">
+                                <i class="fas fa-check-double"></i> Submit Test
+                            </button>
+                            <button class="btn-retry" id="btn-retry" onclick="retryTest()" style="display:none">
+                                <i class="fas fa-rotate-right"></i> Try Again
+                            </button>
+                        </div>
+                    </div>
+                </div><!-- /.quiz-panel -->
+
+            </div><!-- /.arena-layout -->
+        </div><!-- /.content -->
+    </div><!-- /.main -->
+
+    <script>
+        // ── QUESTION POOL ──
+        const questionPool = {
+            quant: [
+                { q: "Two pipes A and B can fill a tank in 20 minutes and 30 minutes respectively. If both pipes are opened together, the time taken to fill the tank is:", opts: ["10 minutes", "12 minutes", "15 minutes", "25 minutes"], ans: 1 },
+                { q: "A train 150 m long is running at 68 km/hr. In what time will it pass a man running at 8 km/hr in the same direction?", opts: ["8 seconds", "9 seconds", "10 seconds", "12 seconds"], ans: 1 },
+                { q: "A shopkeeper sells an article for Rs. 360 at a loss of 10%. To gain 10%, what should be the selling price?", opts: ["Rs. 400", "Rs. 420", "Rs. 440", "Rs. 460"], ans: 2 },
+                { q: "Find the simple interest on Rs. 68,000 at 16⅔% per annum for 9 months.", opts: ["Rs. 8,500", "Rs. 9,200", "Rs. 9,600", "Rs. 7,200"], ans: 0 },
+                { q: "The average of 5 numbers is 27. If one number is excluded, the average becomes 25. The excluded number is:", opts: ["25", "35", "45", "50"], ans: 1 },
+                { q: "12 men complete a work in 8 days. 16 women complete the same work in 12 days. In how many days can 8 men and 8 women complete the work?", opts: ["8 days", "9 days", "72/7 days", "10 days"], ans: 2 },
+                { q: "A boat travels at 13 km/hr in still water. If the stream speed is 4 km/hr, find the time to go 68 km downstream.", opts: ["2 hrs", "3 hrs", "4 hrs", "5 hrs"], ans: 2 },
+                { q: "The ratio of two numbers is 3:4 and their LCM is 84. The larger number is:", opts: ["21", "24", "28", "32"], ans: 2 },
+                { q: "By selling 45 lemons for Rs 40, a man loses 20%. How many should he sell for Rs 24 to gain 20%?", opts: ["16", "18", "20", "22"], ans: 1 },
+                { q: "The sum of ages of 5 children born at 3-year intervals is 50. What is the age of the youngest child?", opts: ["4", "8", "10", "12"], ans: 0 },
+                { q: "If A:B = 2:3 and B:C = 4:5, then A:C is:", opts: ["8:15", "2:5", "3:5", "10:15"], ans: 0 },
+                { q: "A sum of money at simple interest amounts to Rs. 815 in 3 years and to Rs. 854 in 4 years. The sum is:", opts: ["Rs. 650", "Rs. 690", "Rs. 698", "Rs. 700"], ans: 2 },
+                { q: "The cost price of 20 articles is the same as the selling price of x articles. If the profit is 25%, then the value of x is:", opts: ["15", "16", "18", "25"], ans: 1 },
+                { q: "A can do a work in 15 days and B in 20 days. If they work on it together for 4 days, then the fraction of the work that is left is:", opts: ["1/4", "1/10", "7/15", "8/15"], ans: 3 },
+                { q: "The speed of a car increases by 2 km/u after every one hour. If the distance travelled in the first one hour was 35 km, what was the total distance travelled in 12 hours?", opts: ["456 km", "482 km", "552 km", "556 km"], ans: 2 },
+                { q: "A rectangular park 60 m long and 40 m wide has two concrete crossroads running in the middle. What is the area of the roads if their width is 5 m?", opts: ["475 sqm", "500 sqm", "525 sqm", "550 sqm"], ans: 0 },
+                { q: "A man can row 18 kmph in still water. It takes him thrice as long to row up as to row down the river. Find the rate of stream.", opts: ["9 kmph", "12 kmph", "6 kmph", "3 kmph"], ans: 0 },
+                { q: "If the radius of a circle is increased by 50%, its area is increased by:", opts: ["125%", "100%", "75%", "50%"], ans: 0 },
+                { q: "What is the probability of getting a sum 9 from two throws of a dice?", opts: ["1/6", "1/8", "1/9", "1/12"], ans: 2 },
+                { q: "A train running at the speed of 60 km/hr crosses a pole in 9 seconds. What is the length of the train?", opts: ["120 metres", "150 metres", "180 metres", "210 metres"], ans: 1 }
+            ],
+            logic: [
+                { q: "Look at this series: 2, 1, (1/2), (1/4), ... What number should come next?", opts: ["1/3", "1/8", "2/8", "1/16"], ans: 1 },
+                { q: "Pointing to a boy, Suresh said 'He is the son of the only son of my mother.' How is Suresh related to that boy?", opts: ["Brother", "Uncle", "Cousin", "Father"], ans: 3 },
+                { q: "Look at this series: 7, 10, 8, 11, 9, 12, ... What number should come next?", opts: ["7", "10", "12", "13"], ans: 1 },
+                { q: "SCD, TEF, UGH, ____, WKL", opts: ["CMN", "UJI", "VIJ", "IJT"], ans: 2 },
+                { q: "A is the sister of B. C is the mother of B. D is the father of C. E is the mother of D. How is A related to D?", opts: ["Grandfather", "Granddaughter", "Daughter", "Grandmother"], ans: 1 },
+                { q: "Statement: All pens are books. Some books are pencils. Conclusion: 1. Some pens are pencils. 2. Some books are pens.", opts: ["Only 1 follows", "Only 2 follows", "Both follow", "Neither follows"], ans: 1 },
+                { q: "Choose the word which is DIFFERENT from the rest: Kiwi, Eagle, Emu, Penguin", opts: ["Kiwi", "Eagle", "Emu", "Penguin"], ans: 1 },
+                { q: "If Z = 52 and ACT = 48, then BAT will be equal to?", opts: ["39", "41", "44", "46"], ans: 3 },
+                { q: "A man walks 5 km south, then turns right and walks 3 km, then turns left and walks 4 km. In which direction is he from the starting place?", opts: ["West", "South", "South-West", "North-West"], ans: 2 },
+                { q: "Find the odd one out: 3, 5, 11, 14, 17, 21", opts: ["21", "17", "14", "11"], ans: 2 },
+                { q: "CUP : LIP :: BIRD : ?", opts: ["BUSH", "GRASS", "FOREST", "BEAK"], ans: 3 },
+                { q: "Odometer is to mileage as compass is to:", opts: ["Speed", "Hiking", "Needle", "Direction"], ans: 3 },
+                { q: "Which number replaces the question mark? 4, 9, 16, 25, 36, ?", opts: ["49", "52", "64", "47"], ans: 0 },
+                { q: "In a certain code language, '134' means 'good and tasty'; '478' means 'see good pictures'. What digit stands for 'good'?", opts: ["4", "7", "8", "1"], ans: 0 },
+                { q: "If South-East becomes North, North-East becomes West and so on. What will West become?", opts: ["North-East", "North-West", "South-East", "South-West"], ans: 2 },
+                { q: "P is the brother of Q and R. S is R's mother. T is P's father. Which of the following statements cannot be definitely true?", opts: ["T is Q's father", "S is P's mother", "P is S's son", "Q is T's son"], ans: 3 },
+                { q: "If 'white' is called 'blue', 'blue' is called 'red', 'red' is called 'yellow'. What would be the colour of human blood?", opts: ["Red", "Yellow", "Blue", "White"], ans: 1 },
+                { q: "If day before yesterday was Thursday, when will Sunday be?", opts: ["Today", "Tomorrow", "Day after tomorrow", "Two days after tomorrow"], ans: 1 },
+                { q: "A clock shows 4:20. What is the angle between the hands of the clock?", opts: ["10 degrees", "20 degrees", "30 degrees", "0 degrees"], ans: 0 },
+                { q: "Arrange the words given below in a meaningful sequence: 1. Key 2. Door 3. Lock 4. Room 5. Switch on", opts: ["1, 3, 2, 4, 5", "1, 2, 3, 5, 4", "4, 2, 1, 5, 3", "1, 4, 2, 3, 5"], ans: 0 }
+            ],
+            dsa: [
+                { q: "Which sorting algorithm offers the best average-case time complexity?", opts: ["Bubble Sort", "Insertion Sort", "Merge Sort", "Selection Sort"], ans: 2 },
+                { q: "What data structure is best suited for implementing BFS on a graph?", opts: ["Stack", "Queue", "Hash Table", "Binary Tree"], ans: 1 },
+                { q: "A balanced binary tree is one where the height of two subtrees of every node never differs by more than:", opts: ["0", "1", "2", "3"], ans: 1 },
+                { q: "Which of the following is an application of a Stack?", opts: ["Balancing of symbols", "Finding shortest path", "OS job scheduling", "Managing printer spools"], ans: 0 },
+                { q: "What is the worst-case time complexity of Quick Sort?", opts: ["O(N)", "O(N log N)", "O(N²)", "O(1)"], ans: 2 },
+                { q: "A Linked List is considered a:", opts: ["Static data structure", "Dynamic data structure", "Primitive data structure", "Non-linear data structure"], ans: 1 },
+                { q: "In a max-heap, the element with the highest value is found at:", opts: ["A leaf node", "The root node", "Any random position", "The rightmost child"], ans: 1 },
+                { q: "Which data structure is primarily used for implementing LRU Cache?", opts: ["Stack", "Hash Map + Doubly Linked List", "Queue", "Simple Array"], ans: 1 },
+                { q: "Finding shortest path from a source to all nodes in a weighted graph is solved using:", opts: ["DFS", "Dijkstra Algorithm", "Floyd Warshall Algorithm", "Kruskal Algorithm"], ans: 1 },
+                { q: "Space complexity of adjacency list representation of a graph with V vertices and E edges is:", opts: ["O(V²)", "O(V+E)", "O(V)", "O(E²)"], ans: 1 },
+                { q: "What is the time complexity of searching an element in a balanced Binary Search Tree?", opts: ["O(1)", "O(N)", "O(log N)", "O(N log N)"], ans: 2 },
+                { q: "Which traversal of BST visits nodes in ascending order?", opts: ["In-order", "Pre-order", "Post-order", "Level-order"], ans: 0 },
+                { q: "The number of edges in a spanning tree of a graph with N vertices is:", opts: ["N", "N-1", "N+1", "N(N-1)/2"], ans: 1 },
+                { q: "A queue follows which principle?", opts: ["LIFO", "FIFO", "FILO", "Random"], ans: 1 },
+                { q: "Which hashing technique resolves collisions by probing the next available slot?", opts: ["Chaining", "Linear Probing", "Quadratic Probing", "Double Hashing"], ans: 1 },
+                { q: "What is the time complexity of pushing an element to the front of a linked list?", opts: ["O(1)", "O(N)", "O(log N)", "O(N²)"], ans: 0 },
+                { q: "What data structure does a Trie primarily represent?", opts: ["A sorted array", "A type of Hash Map", "A tree for strings/prefixes", "A binary search tree"], ans: 2 },
+                { q: "A graph with all vertices having a direct edge to all other vertices is called:", opts: ["Bipartite Graph", "Complete Graph", "Directed Graph", "Acyclic Graph"], ans: 1 },
+                { q: "What algorithm is used to find the Minimum Spanning Tree of a graph?", opts: ["Kruskal's Algorithm", "Dijkstra's Algorithm", "Bellman-Ford Algorithm", "Floyd-Warshall Algorithm"], ans: 0 },
+                { q: "Which of these sorting algorithms is NOT stable by default?", opts: ["Merge Sort", "Insertion Sort", "Bubble Sort", "Quick Sort"], ans: 3 }
+            ],
+            cs_core: [
+                { q: "In a relational database, what does ACID stand for?", opts: ["Atomicity, Consistency, Isolation, Durability", "Accuracy, Completeness, Isolation, Durability", "Atomicity, Concurrency, Isolation, Dependencies", "Array, Consistency, Integration, Database"], ans: 0 },
+                { q: "Which OSI layer is responsible for routing packets from source to destination?", opts: ["Physical Layer", "Data Link Layer", "Network Layer", "Transport Layer"], ans: 2 },
+                { q: "Loading a process into memory, running it briefly, then removing it temporarily is called:", opts: ["Paging", "Swapping", "Segmentation", "Thrashing"], ans: 1 },
+                { q: "Which normal form deals with removing partial dependencies?", opts: ["1NF", "2NF", "3NF", "BCNF"], ans: 1 },
+                { q: "What port does HTTP use by default?", opts: ["21", "22", "80", "443"], ans: 2 },
+                { q: "Which of the following is NOT a DML command in SQL?", opts: ["SELECT", "UPDATE", "DELETE", "CREATE"], ans: 3 },
+                { q: "What is context switching in Operating Systems?", opts: ["Turning off the CPU", "Changing process state by saving/loading registers", "Changing the OS interface", "Ending a process execution"], ans: 1 },
+                { q: "Which protocol translates domain names into IP addresses?", opts: ["DHCP", "TCP", "DNS", "ARP"], ans: 2 },
+                { q: "A deadlock occurs when:", opts: ["Two processes wait for each other indefinitely", "Two processes run simultaneously", "Hardware failure occurs", "Network connection drops"], ans: 0 },
+                { q: "In a relational database, what is a foreign key?", opts: ["A key that uniquely identifies a record", "A key that links data between two tables", "An encrypted key", "A key from an external database"], ans: 1 },
+                { q: "Which scheduling algorithm may suffer from convoy effect?", opts: ["Round Robin", "Shortest Job First", "First Come First Serve", "Priority Scheduling"], ans: 2 },
+                { q: "What does SQL stand for?", opts: ["Structured Query Language", "Sequential Query Language", "Simple Query Language", "System Query Language"], ans: 0 },
+                { q: "Which TCP/IP protocol is used for email transmission?", opts: ["FTP", "SMTP", "HTTP", "SNMP"], ans: 1 },
+                { q: "What is virtual memory?", opts: ["Cache memory", "Extension of main memory on disk", "Registers", "ROM"], ans: 1 },
+                { q: "Which command is used to remove all records from a table without deleting its structure?", opts: ["DROP", "DELETE", "TRUNCATE", "REMOVE"], ans: 2 },
+                { q: "What is a 'Thread' in Operating Systems?", opts: ["A heavy-weight process", "A sequence of instructions managed by the OS scheduler", "A piece of hardware", "A database index"], ans: 1 },
+                { q: "In SQL, what is a View?", opts: ["A physical table", "A virtual table based on a query result", "An index", "A stored procedure"], ans: 1 },
+                { q: "Which layer of the OSI model deals with encryption and decryption?", opts: ["Application Layer", "Presentation Layer", "Session Layer", "Transport Layer"], ans: 1 },
+                { q: "What is the main function of an OS Kernel?", opts: ["Running user interface", "Compiling code", "Managing hardware and system resources", "Database management"], ans: 2 },
+                { q: "What does a Router do?", opts: ["Connects devices within a single network", "Connects different networks and forwards data packets", "Assigns IP addresses", "Translates domain names"], ans: 1 }
+            ],
+            hr: [
+                { q: "The BEST way to answer 'Tell me about a time you failed' is to:", opts: ["Claim you have never truly failed", "Blame your team members to show high standards", "Share a genuine failure, take responsibility, and explain what you learned", "Talk about a failure that makes you look completely incompetent"], ans: 2 },
+                { q: "The 'STAR' framework in behavioral questions stands for:", opts: ["System, Target, Action, Response", "Situation, Task, Action, Result", "Skills, Tactics, Ambition, Reality", "Sequence, Time, Assessment, Reaction"], ans: 1 },
+                { q: "When asked 'What is your greatest weakness?', you should:", opts: ["Say you work too hard", "Say you have no weakness", "Mention a real, fixable weakness and how you are actively improving it", "Talk about a major character flaw"], ans: 2 },
+                { q: "'Where do you see yourself in 5 years?' A good answer is:", opts: ["'In your job.'", "'I don't know, let's see.'", "'Taking on more responsibility and growing within the company.'", "'Starting my own company and leaving this one.'"], ans: 2 },
+                { q: "How would you handle a disagreement with a team member?", opts: ["Argue until they agree", "Ignore them and do it my way", "Discuss privately, find common ground, and focus on the project goal", "Complain to the manager immediately"], ans: 2 },
+                { q: "'Why do you want to work here?' — Best answer:", opts: ["'Because I need a job and money.'", "'It seems like a relaxed place to work.'", "'I admire your recent projects and align with your company values.'", "'Because my friend works here.'"], ans: 2 },
+                { q: "'Tell me about working under a tight deadline.' Emphasise:", opts: ["How much you hated the stress", "How you managed time, prioritised tasks, and stayed calm to deliver results", "How you missed the deadline", "How you made others do the work"], ans: 1 },
+                { q: "'Are you willing to relocate?' — Best response:", opts: ["'No, never.'", "'Maybe if you pay me a lot.'", "'I am open to the opportunity for the right role.'", "'Only to Paris.'"], ans: 2 },
+                { q: "'How do you handle pressure?' — Best answer:", opts: ["'I panic easily.'", "'I break tasks into priorities and stay calm and focused.'", "'I yell at my coworkers.'", "'I ignore it.'"], ans: 1 },
+                { q: "'Do you have any questions for us?' — Ideal response:", opts: ["'No, I'm good.'", "'How much vacation time do I get?'", "'What does a typical day look like in this role and how is success measured?'", "'Can I leave early on Fridays?'"], ans: 2 },
+                { q: "If your manager gives you negative feedback, you should:", opts: ["Argue and defend yourself", "Take it personally and get upset", "Listen actively, ask clarifying questions, and use it to improve", "Ignore it completely"], ans: 2 },
+                { q: "When asked 'Why are you leaving your current job?', the best approach is:", opts: ["Complain about your current boss", "Say you want more money", "Speak positively about what you learned, but express a desire for new challenges", "Say you were fired"], ans: 2 },
+                { q: "What should you bring to an in-person job interview?", opts: ["Only your phone", "Extra copies of your resume, a notepad, and a pen", "Your lunch", "Nothing, they already have your resume"], ans: 1 },
+                { q: "If you don't know the answer to a technical question during an interview, what is the best response?", opts: ["Make something up", "Say 'I don't know' and stay silent", "Admit you don't know the exact answer, but explain how you would find it or relate it to something you do know", "Try to change the subject"], ans: 2 },
+                { q: "How should you follow up after an interview?", opts: ["Call them every day until they answer", "Send a polite 'thank you' email within 24 hours expressing your continued interest", "Wait for them to contact you, never reach out first", "Connect with all the interviewers on Facebook"], ans: 1 },
+                { q: "If asked 'How do you handle conflict with a difficult coworker?', you should:", opts: ["Say you avoid them entirely", "Explain how you complain to your manager", "Give an example of finding a professional compromise", "Say you never have conflicts"], ans: 2 },
+                { q: "When asked about your salary expectations, it is best to:", opts: ["Demand a specific high number", "Say you will work for minimum wage", "Provide a realistic range based on market research", "Refuse to answer the question"], ans: 2 },
+                { q: "What is the purpose of a 'cover letter'?", opts: ["To repeat your resume exactly", "To provide personal references", "To introduce yourself and highlight how your experience matches the role", "To list your hobbies"], ans: 2 },
+                { q: "If asked 'What motivates you?', a strong answer focuses on:", opts: ["Money and benefits", "Leaving work early", "Learning, achieving goals, and making a positive impact", "Not getting fired"], ans: 2 },
+                { q: "When discussing a previous project, what is most important to highlight?", opts: ["Your specific role, the challenges faced, and the measurable results", "How much you disliked the project", "Only the parts where others made mistakes", "The names of everyone on the team"], ans: 0 }
+            ]
+        };
+
+        // ── TAB METADATA ──
+        const tabs = {
+            quant:   { title: 'Quantitative Aptitude', icon: 'fa-calculator',   sub: 'Answer one question at a time — Skip or Next to proceed' },
+            logic:   { title: 'Logical Reasoning',     icon: 'fa-puzzle-piece', sub: 'Answer one question at a time — Skip or Next to proceed' },
+            dsa:     { title: 'DSA',                   icon: 'fa-code',         sub: 'Answer one question at a time — Skip or Next to proceed' },
+            cs_core: { title: 'CS Core',               icon: 'fa-server',       sub: 'Answer one question at a time — Skip or Next to proceed' },
+            hr:      { title: 'Scenario Based (HR)',    icon: 'fa-users',        sub: 'Answer one question at a time — Skip or Next to proceed' }
+        };
+
+        let activeTab = 'quant';
+        let usedQuestions = { quant: new Set(), logic: new Set(), dsa: new Set(), cs_core: new Set(), hr: new Set() };
+
+        // Per-tab quiz state
+        const tabState = {};
+        ['quant', 'logic', 'dsa', 'cs_core', 'hr'].forEach(id => {
+            tabState[id] = { questions: [], currentIdx: 0, answers: [], submitted: false };
+        });
+
+        // ── INIT A TAB ──
+        function initTab(tabId) {
+            const pool = questionPool[tabId];
+            if (pool.length - usedQuestions[tabId].size < 10) usedQuestions[tabId].clear();
+            const available = pool.map((q, idx) => ({ q, idx })).filter(item => !usedQuestions[tabId].has(item.idx));
+            const selected = available.sort(() => 0.5 - Math.random()).slice(0, 10);
+            selected.forEach(item => usedQuestions[tabId].add(item.idx));
+            const state = tabState[tabId];
+            state.questions = selected.map(item => item.q);
+            state.currentIdx = 0;
+            state.answers = state.questions.map(() => ({ status: 'unanswered', selectedOpt: null }));
+            state.submitted = false;
+        }
+
+        // ── RENDER CURRENT QUESTION ──
+        function renderCurrentQuestion(tabId) {
+            const state = tabState[tabId];
+            const q = state.questions[state.currentIdx];
+            const total = state.questions.length;
+            const idx = state.currentIdx;
+            const labels = ['A', 'B', 'C', 'D'];
+
+            // Progress dots
+            const dotsHtml = state.answers.map((ans, i) => {
+                let cls = '';
+                if (i === idx) cls = 'current';
+                else if (ans.status === 'answered') cls = 'answered';
+                else if (ans.status === 'skipped')  cls = 'skipped';
+                return `<div class="q-dot ${cls}" title="Q${i + 1}"></div>`;
+            }).join('');
+
+            // Option buttons
+            const optHtml = q.opts.map((opt, oIdx) => {
+                const isCorrect = oIdx === q.ans ? 'data-correct="true"' : '';
+                const selCls = state.answers[idx].selectedOpt === oIdx ? 'selected' : '';
+                return `<button class="option-btn ${selCls}" onclick="selectOption(this,${oIdx},'${tabId}')" ${isCorrect}><span class="opt-label">${labels[oIdx]}</span>${opt}</button>`;
+            }).join('');
+
+            const isSkipped = state.answers[idx].status === 'skipped';
+            const skippedHtml = isSkipped
+                ? `<div class="skipped-overlay"><i class="fas fa-forward-step"></i> You skipped this question — select an answer to change it</div>`
+                : '';
+
+            document.getElementById('qstep-' + tabId).innerHTML = `
+                <div class="q-nav-header">
+                    <span class="q-nav-label">Question ${idx + 1} of ${total}</span>
+                    <div class="q-dots">${dotsHtml}</div>
+                </div>
+                <div class="question-card" style="animation:fadeUp .35s ease">
+                    <div class="question-num"><i class="fas fa-circle" style="font-size:6px"></i> Question ${idx + 1}</div>
+                    <div class="question-text">${q.q}</div>
+                    <div class="options-grid">${optHtml}</div>
+                    ${skippedHtml}
+                </div>`;
+
+            document.getElementById('final-' + tabId).style.display = 'none';
+            document.getElementById('qstep-' + tabId).style.display = 'block';
+
+            // Footer buttons
+            const isLast = idx === total - 1;
+            document.getElementById('btn-skip').style.display   = 'flex';
+            document.getElementById('btn-next').style.display   = isLast ? 'none' : 'flex';
+            document.getElementById('btn-submit').style.display = isLast ? 'flex' : 'none';
+            document.getElementById('btn-submit').disabled      = false;
+            document.getElementById('btn-retry').style.display  = 'none';
+
+            // Progress bar
+            document.getElementById('progress-text').textContent = `Question ${idx + 1} of ${total}`;
+            document.getElementById('progress-bar').style.width  = `${(idx / total) * 100}%`;
+        }
+
+        // ── SELECT OPTION ──
+        function selectOption(btn, optIdx, tabId) {
+            const state = tabState[tabId];
+            if (state.submitted) return;
+            const idx = state.currentIdx;
+
+            btn.parentElement.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            state.answers[idx].status = 'answered';
+            state.answers[idx].selectedOpt = optIdx;
+
+            // Remove skipped overlay if present
+            const overlay = btn.closest('.question-card').querySelector('.skipped-overlay');
+            if (overlay) overlay.remove();
+
+            // Refresh progress dots live
+            const dots = document.querySelectorAll(`#qstep-${tabId} .q-dot`);
+            dots.forEach((dot, i) => {
+                dot.className = 'q-dot';
+                if (i === idx) dot.classList.add('current');
+                else if (state.answers[i].status === 'answered') dot.classList.add('answered');
+                else if (state.answers[i].status === 'skipped')  dot.classList.add('skipped');
+            });
+        }
+
+        // ── NEXT QUESTION ──
+        function nextQuestion() {
+            const state = tabState[activeTab];
+            if (state.currentIdx < state.questions.length - 1) {
+                state.currentIdx++;
+                renderCurrentQuestion(activeTab);
+                document.getElementById('quiz-header').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        // ── SKIP QUESTION ──
+        function skipQuestion() {
+            const state = tabState[activeTab];
+            const idx = state.currentIdx;
+            // Mark skipped only if not already answered
+            if (state.answers[idx].status !== 'answered') {
+                state.answers[idx].status = 'skipped';
+                state.answers[idx].selectedOpt = null;
+            }
+            if (idx < state.questions.length - 1) {
+                state.currentIdx++;
+                renderCurrentQuestion(activeTab);
+                document.getElementById('quiz-header').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } else {
+                // On last question — submit
+                submitTest();
+            }
+        }
+
+        // ── SUBMIT TEST ──
+        function submitTest() {
+            const state = tabState[activeTab];
+            if (state.submitted) return;
+            state.submitted = true;
+
+            let correct = 0, wrong = 0, skipped = 0;
+            state.questions.forEach((q, i) => {
+                const a = state.answers[i];
+                if (a.status === 'unanswered' || a.status === 'skipped') skipped++;
+                else if (a.selectedOpt === q.ans) correct++;
+                else wrong++;
+            });
+
+            const total = state.questions.length;
+            savePracticeAttempt(activeTab, correct, total);
+
+            // Header score badge
+            const scoreBadge = document.getElementById('quiz-score-badge');
+            scoreBadge.textContent = `Score: ${correct}/${total}`;
+            scoreBadge.style.display = 'flex';
+
+            // Category button done
+            document.getElementById('cat-' + activeTab).classList.add('done');
+
+            // Progress bar to 100 %
+            document.getElementById('progress-text').textContent = `Completed! ${correct}/${total} correct`;
+            document.getElementById('progress-bar').style.width = '100%';
+
+            // Footer — only Retry
+            document.getElementById('btn-skip').style.display   = 'none';
+            document.getElementById('btn-next').style.display   = 'none';
+            document.getElementById('btn-submit').style.display = 'none';
+            document.getElementById('btn-retry').style.display  = 'flex';
+
+            showFinalResults(activeTab, correct, wrong, skipped);
+        }
+
+        // ── SHOW FINAL RESULTS ──
+        function showFinalResults(tabId, correct, wrong, skipped) {
+            const state = tabState[tabId];
+            const total = state.questions.length;
+
+            // Recalculate if called without params (tab-switch)
+            if (correct === undefined) {
+                correct = 0; wrong = 0; skipped = 0;
+                state.questions.forEach((q, i) => {
+                    const a = state.answers[i];
+                    if (a.status === 'unanswered' || a.status === 'skipped') skipped++;
+                    else if (a.selectedOpt === q.ans) correct++;
+                    else wrong++;
+                });
+            }
+
+            const pct = Math.round((correct / total) * 100);
+            let ringColor, ringBg, emoji, msg;
+            if (pct === 100)    { ringColor='#059669'; ringBg='rgba(16,185,129,0.12)'; emoji='🎉'; msg='Perfect score! Outstanding!'; }
+            else if (pct >= 70) { ringColor='#2563eb'; ringBg='rgba(59,130,246,0.10)'; emoji='👍'; msg='Great job! Solid understanding.'; }
+            else if (pct >= 40) { ringColor='#d97706'; ringBg='rgba(245,158,11,0.10)'; emoji='📘'; msg='Good attempt. Review weak areas.'; }
+            else                { ringColor='#dc2626'; ringBg='rgba(239,68,68,0.08)';  emoji='📚'; msg='Keep studying! Check the Resources section.'; }
+
+            const qListHtml = state.questions.map((q, i) => {
+                const a = state.answers[i];
+                let badgeCls, badgeIcon, detailHtml;
+                if (a.status === 'unanswered' || a.status === 'skipped') {
+                    badgeCls = 'skipped'; badgeIcon = '→';
+                    detailHtml = `<span class="sk">Skipped</span> · <span class="ca">Correct: <strong>${q.opts[q.ans]}</strong></span>`;
+                } else if (a.selectedOpt === q.ans) {
+                    badgeCls = 'correct'; badgeIcon = '✓';
+                    detailHtml = `<span class="ca">Your answer: <strong>${q.opts[a.selectedOpt]}</strong> ✓</span>`;
+                } else {
+                    badgeCls = 'wrong'; badgeIcon = '✗';
+                    detailHtml = `<span class="wa">Your answer: <strong>${q.opts[a.selectedOpt]}</strong></span> · <span class="ca">Correct: <strong>${q.opts[q.ans]}</strong></span>`;
+                }
+                return `<div class="fq-item">
+                    <div class="fq-badge ${badgeCls}">${badgeIcon}</div>
+                    <div class="fq-body">
+                        <div class="fq-q">Q${i + 1}. ${q.q}</div>
+                        <div class="fq-ans">${detailHtml}</div>
+                    </div>
+                </div>`;
+            }).join('');
+
+            const finalEl = document.getElementById('final-' + tabId);
+            finalEl.innerHTML = `
+                <div class="final-header">
+                    <div class="final-score-ring" style="border-color:${ringColor};color:${ringColor};background:${ringBg};">
+                        <div class="big">${pct}%</div>
+                        <div class="sm">${correct}/${total}</div>
+                    </div>
+                    <h2>${emoji} ${msg}</h2>
+                    <p>${tabs[tabId].title} &nbsp;·&nbsp; Quiz Complete</p>
+                </div>
+                <div class="final-stats">
+                    <div class="stat-card correct-s"><div class="stat-val">${correct}</div><div class="stat-lbl">✓ Correct</div></div>
+                    <div class="stat-card wrong-s"><div class="stat-val">${wrong}</div><div class="stat-lbl">✗ Wrong</div></div>
+                    <div class="stat-card skip-s"><div class="stat-val">${skipped}</div><div class="stat-lbl">→ Skipped</div></div>
+                </div>
+                <div class="final-q-list">${qListHtml}</div>`;
+
+            finalEl.style.display = 'block';
+            document.getElementById('qstep-' + tabId).style.display = 'none';
+            finalEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // ── OPEN TAB ──
+        function openTab(tabId, btn) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            btn.classList.add('active');
+            activeTab = tabId;
+
+            const info = tabs[tabId];
+            document.getElementById('quiz-title').textContent = info.title;
+            document.getElementById('quiz-sub').textContent   = info.sub;
+            document.getElementById('quiz-icon').innerHTML    = `<i class="fas ${info.icon}"></i>`;
+
+            const state = tabState[tabId];
+            if (state.questions.length === 0) initTab(tabId);
+
+            const scoreBadge = document.getElementById('quiz-score-badge');
+            if (state.submitted) {
+                const c = state.answers.filter((a, i) => a.status === 'answered' && a.selectedOpt === state.questions[i].ans).length;
+                scoreBadge.textContent = `Score: ${c}/${state.questions.length}`;
+                scoreBadge.style.display = 'flex';
+                // Show final results view
+                showFinalResults(tabId);
+                document.getElementById('btn-skip').style.display   = 'none';
+                document.getElementById('btn-next').style.display   = 'none';
+                document.getElementById('btn-submit').style.display = 'none';
+                document.getElementById('btn-retry').style.display  = 'flex';
+                document.getElementById('progress-text').textContent = `Completed`;
+                document.getElementById('progress-bar').style.width  = '100%';
+            } else {
+                scoreBadge.style.display = 'none';
+                renderCurrentQuestion(tabId);
+            }
+        }
+
+        // ── RETRY TEST ──
+        function retryTest() {
+            initTab(activeTab);
+            document.getElementById('cat-' + activeTab).classList.remove('done');
+            document.getElementById('quiz-score-badge').style.display = 'none';
+            renderCurrentQuestion(activeTab);
+            document.getElementById('quiz-header').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // ── SAVE ATTEMPT TO DB ──
+        function savePracticeAttempt(category, score, total) {
+            fetch('/student/practice/submit/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
+                body: JSON.stringify({ category, score, total_questions: total })
+            }).then(r => r.json())
+              .then(d => { if (d.success) console.log('Progress saved.'); else console.error('Save failed:', d.message); })
+              .catch(e => console.error('Error:', e));
+        }
+
+        function getCookie(name) {
+            let val = null;
+            if (document.cookie && document.cookie !== '') {
+                for (const c of document.cookie.split(';')) {
+                    const t = c.trim();
+                    if (t.startsWith(name + '=')) { val = decodeURIComponent(t.substring(name.length + 1)); break; }
+                }
+            }
+            return val;
+        }
+
+        // ── MOBILE SIDEBAR ──
+        document.addEventListener('click', e => {
+            const s = document.getElementById('sidebar');
+            if (window.innerWidth <= 768 && s.classList.contains('show') &&
+                !s.contains(e.target) && !e.target.closest('#mobTog')) {
+                s.classList.remove('show');
+            }
+        });
+
+        // ── INIT ──
+        openTab('quant', document.getElementById('cat-quant'));
+    </script>
+</body>
+</html>

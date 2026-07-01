@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Officer Registration | JSS Placement</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --glass: rgba(255, 255, 255, 0.95);
+      --text-main: #1f2937;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(rgba(15, 23, 42, 0.75), rgba(30, 27, 75, 0.75)),
+        url('http://www.jssinstitutionsdharwad.com/images/s2.jpg') no-repeat center center/cover;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .form-card {
+      background: var(--glass);
+      backdrop-filter: blur(15px);
+      padding: 50px;
+      border-radius: 32px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      width: 100%;
+      max-width: 550px;
+      animation: zoomIn 0.5s ease;
+    }
+
+    h1 {
+      text-align: center;
+      color: #111827;
+      margin-bottom: 10px;
+      font-size: 2.2rem;
+      font-weight: 800;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #6b7280;
+      margin-bottom: 40px;
+      font-size: 1rem;
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+      position: relative;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 700;
+      color: #374151;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .input-container {
+      position: relative;
+    }
+
+    .input-container i {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #9ca3af;
+      transition: 0.3s;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 14px 14px 14px 45px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      font-size: 1rem;
+      transition: all 0.3s;
+    }
+
+    input:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--primary);
+      background: white;
+      box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+    }
+
+    input:focus+i,
+    select:focus+i {
+      color: var(--primary);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 16px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.3s;
+      margin-top: 10px;
+      font-size: 1.1rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn:hover {
+      background: #4338ca;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.4);
+    }
+
+    .messages {
+      margin-bottom: 25px;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .messages p {
+      padding: 12px;
+      text-align: center;
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+
+    .success {
+      background: #ecfdf5;
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+    }
+
+    .error {
+      background: #fef2f2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 30px;
+      color: #6b7280;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: 0.3s;
+    }
+
+    .back-link:hover {
+      color: var(--primary);
+    }
+
+    @keyframes zoomIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="form-card">
+    <h1>Placement Officer</h1>
+    <p class="subtitle">Assign a new officer to manage college placements.</p>
+
+    {% if messages %}
+    <div class="messages">
+      {% for message in messages %}
+      <p class="{{ message.tags }} animate__animated animate__shakeX">
+        <i class="fas fa-info-circle"></i> {{ message }}
+      </p>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <form method="post">
+      {% csrf_token %}
+
+      <div class="form-group">
+        <label>Select User</label>
+        <div class="input-container">
+          <i class="fas fa-user-circle"></i>
+          <select name="user" required>
+            <option value="">Choose a user...</option>
+            {% for user in users %}
+            <option value="{{ user.id }}">{{ user.username }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Select College</label>
+        <div class="input-container">
+          <i class="fas fa-university"></i>
+          <select name="college" required>
+            <option value="">Choose a college...</option>
+            {% for college in colleges %}
+            <option value="{{ college.id }}">{{ college.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Phone Number</label>
+        <div class="input-container">
+          <i class="fas fa-phone"></i>
+          <input type="number" name="phone" placeholder="Mobile Number" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Designation</label>
+        <div class="input-container">
+          <i class="fas fa-briefcase"></i>
+          <input type="text" name="designation" placeholder="e.g. Head of Placements" required>
+        </div>
+      </div>
+
+      <button type="submit" class="btn">Register Officer <i class="fas fa-save" style="margin-left: 8px;"></i></button>
+    </form>
+
+    <a href="{% url 'placementhome' %}" class="back-link">
+      <i class="fas fa-arrow-left"></i> Return to Admin Dashboard
+    </a>
+  </div>
+</body>
+
+</html>

@@ -1,0 +1,74 @@
+================================================================================
+                    DIGITAL MARKETING & SEO ESSENTIALS
+================================================================================
+
+1. WHAT IS DIGITAL MARKETING?
+------------------------------
+Digital marketing is the promotion of brands to connect with potential customers 
+using the internet and other forms of digital communication. It spans multiple 
+channels:
+- Search Engine Optimization (SEO)
+- Pay-Per-Click Advertising (PPC)
+- Social Media Marketing (SMM)
+- Content Marketing
+- Email Marketing
+- Affiliate Marketing
+
+2. SEARCH ENGINE OPTIMIZATION (SEO)
+------------------------------------
+SEO is the process of optimizing a website to improve its visibility and ranking 
+organically (without paying) on search engine results pages (SERPs) like Google.
+
+The Three Pillars of SEO:
+1. On-Page SEO: Optimizing page elements:
+   - Target keywords in titles, headers (H1, H2), and content.
+   - High-quality, engaging content that answers search intent.
+   - Optimized image alt-text and structured internal linking.
+2. Off-Page SEO: Building site authority externally:
+   - Earning high-quality backlinks from authoritative, relevant websites.
+   - Brand mentions and positive reviews on local or social channels.
+3. Technical SEO: Backend website optimization:
+   - Accelerating page load speeds (Core Web Vitals).
+   - Establishing secure connection protocols (HTTPS).
+   - Mobile-friendliness and XML sitemaps for search engine crawlers.
+
+3. DIGITAL MARKETING KPIs (KEY PERFORMANCE INDICATORS)
+-------------------------------------------------------
+To evaluate campaign performance, digital marketers analyze essential metrics:
+- Click-Through Rate (CTR): (Clicks / Total Impressions) * 100
+- Conversion Rate: (Action Takers / Total Visitors) * 100
+- Cost Per Click (CPC): Total Ad Spend / Total Clicks
+- Return on Ad Spend (ROAS): Total Revenue / Total Ad Spend
+- Customer Acquisition Cost (CAC): Total Marketing Cost / New Customers Acquired
+
+================================================================================
+                    DIGITAL MARKETING INTERVIEW QUESTIONS
+================================================================================
+
+Q1. What is the difference between Organic and Paid Traffic?
+------------------------------------------------------------
+- Organic Traffic: Visitors who arrive on your site by clicking on search results 
+  that appear naturally (unpaid) due to successful SEO practices. 
+  It is free but takes time to build.
+- Paid Traffic: Visitors who click on sponsored listings or ads (such as Google Ads 
+  or Meta Ads) that you pay for (e.g., Pay-Per-Click). 
+  It is instantaneous but stops the moment you stop paying.
+
+Q2. What are "Keywords" and why are they important in SEO?
+----------------------------------------------------------
+Keywords are the specific words or phrases that users type into search engines 
+when looking for information. They are crucial because they bridge the gap 
+between what people are searching for and the content you provide. Proper 
+keyword research ensures you target search terms that have high search volume 
+but manageable competitive difficulty.
+
+Q3. What is the difference between Black Hat and White Hat SEO?
+---------------------------------------------------------------
+- White Hat SEO: Optimization techniques that comply with search engine guidelines, 
+  focusing on providing value, high-quality content, and an excellent user experience. 
+  It yields sustainable, long-term rankings.
+- Black Hat SEO: Manipulative practices designed to exploit search engine algorithm 
+  vulnerabilities to rank higher (e.g., keyword stuffing, link purchasing, cloaking). 
+  It is highly risky and can result in severe Google penalties or blacklisting.
+
+================================================================================

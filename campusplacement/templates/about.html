@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}About Us | JSS SMI UG & PG Studies{% endblock %}
+
+{% block body_class %}page-content{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="animate__animated animate__fadeInDown">
+        <h6>Legacy & Heritage</h6>
+        <h1>About Us</h1>
+        <div class="underline" style="background: white;"></div>
+    </div>
+</div>
+
+<div class="page-content-wrapper">
+    <div style="max-width: 1000px; margin: 0 auto;">
+        <!-- Janata Shikshana Samiti -->
+        <div class="heritage-card animate__animated animate__fadeInUp">
+            <h3 style="margin-bottom: 20px; color: var(--primary);">Janata Shikshana Samiti</h3>
+            <p>
+                Founded in 1944 by the legendary <strong>Sri. R. S. Hukkerikarji</strong>, Janata Shikshana Samiti
+                was born from a profound commitment to propagate value-centric and life-transforming education.
+                Today, it stands as the preeminent educational heartbeat of North Karnataka, orchestrating a network
+                of 22 world-class institutions and nurturing the aspirations of over 21,600 students.
+            </p>
+            <p style="margin-top: 15px;">
+                This extraordinary legacy of progress has flourished under the divine presidency of the Late His
+                Holiness <strong>Shri Shri Vishweshateertha Swamiji</strong> and the visionary chairmanship of
+                <strong>Dr. D. Veerendra Heggadeji</strong>. Since 1973, the administration has been guided by the
+                blessings of Poojya Heggadeji, ensuring a future-ready educational ecosystem.
+            </p>
+        </div>
+
+        <!-- College Origins -->
+        <div class="heritage-card animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
+            <h3 style="margin-bottom: 20px; color: var(--primary);">College Origins</h3>
+            <p>
+                Embarking on its prestigious journey in 1944, JSS SMI was founded under the brilliant leadership of
+                the renowned litterateur <strong>Dr. B. M. Sreekanthaiah</strong> (the 'Kannadad Kanv'). Over eight
+                decades, the institution has evolved into a powerhouse of knowledge, establishing its esteemed Arts
+                (1968), Science (1971), and Commerce (1976) wings to empower generations of professionals.
+            </p>
+            <div class="campus-quote">
+                "Perched majestically atop the <strong>Mailarlingana Gudda (Vidyagiri)</strong> at an altitude of
+                2,511 feet, our campus is a sanctuary where spiritual serenity meets academic rigor, offering an
+                unrivaled panoramic view of Lord Mailarlingeshwar and the historic city of Dharwad."
+            </div>
+        </div>
+
+        <div class="glass-card animate__animated animate__fadeInUp" style="animation-delay: 0.4s;">
+            <h3 style="margin-bottom: 20px; color: var(--primary);">Our Vision & Mission</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
+                <div>
+                    <h4 style="color: var(--secondary); margin-bottom: 10px;"><i class="fas fa-eye" style="color: var(--primary);"></i> Our Vision</h4>
+                    <p>To be a center of excellence in education, focusing on character building and holistic development of students to meet global challenges.</p>
+                </div>
+                <div>
+                    <h4 style="color: var(--secondary); margin-bottom: 10px;"><i class="fas fa-bullseye" style="color: var(--primary);"></i> Our Mission</h4>
+                    <p>To provide quality education, foster innovation, and cultivate ethical values among the youth to serve the nation and humanity.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- About the Portal -->
+        <div class="glass-card animate__animated animate__fadeInUp" style="animation-delay: 0.6s;">
+            <h3 style="margin-bottom: 20px; color: var(--primary);">About The Placement Portal</h3>
+            <p style="margin-bottom: 20px; font-size: 1.1rem; line-height: 1.6;">
+                This dedicated <strong>Campus Placement Portal</strong> serves as the central digital hub connecting our brilliant students with top-tier corporate recruiters. It is meticulously designed to streamline the entire recruitment lifecycle, providing powerful tools for students, placement officers, and participating companies.
+            </p>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 30px;">
+                <div style="padding: 25px; background: var(--bg-light); border-radius: 20px; border-left: 5px solid var(--primary);">
+                    <h4 style="color: var(--secondary); margin-bottom: 10px; font-size: 1.1rem;"><i class="fas fa-briefcase" style="color: var(--primary); margin-right: 8px;"></i> Opportunity Tracking</h4>
+                    <p style="font-size: 0.95rem; color: var(--text-muted);">Students can instantly discover, apply, and track applications for visiting companies directly through their personalized dashboard.</p>
+                </div>
+                <div style="padding: 25px; background: var(--bg-light); border-radius: 20px; border-left: 5px solid var(--primary);">
+                    <h4 style="color: var(--secondary); margin-bottom: 10px; font-size: 1.1rem;"><i class="fas fa-book-open" style="color: var(--primary); margin-right: 8px;"></i> Curated Study Resources</h4>
+                    <p style="font-size: 0.95rem; color: var(--text-muted);">Exclusive access to premium placement preparation materials, including DSA notes, aptitude cheat sheets, and technical guides.</p>
+                </div>
+                <div style="padding: 25px; background: var(--bg-light); border-radius: 20px; border-left: 5px solid var(--primary);">
+                    <h4 style="color: var(--secondary); margin-bottom: 10px; font-size: 1.1rem;"><i class="fas fa-building" style="color: var(--primary); margin-right: 8px;"></i> Company Integration</h4>
+                    <p style="font-size: 0.95rem; color: var(--text-muted);">Visiting recruiters have their own dedicated dashboard to manage job postings, shortlist candidates, and schedule interview rounds effortlessly.</p>
+                </div>
+                <div style="padding: 25px; background: var(--bg-light); border-radius: 20px; border-left: 5px solid var(--primary);">
+                    <h4 style="color: var(--secondary); margin-bottom: 10px; font-size: 1.1rem;"><i class="fas fa-chart-line" style="color: var(--primary); margin-right: 8px;"></i> Ongoing Training</h4>
+                    <p style="font-size: 0.95rem; color: var(--text-muted);">A built-in ecosystem for students to take mock assessments and view video tutorials to maximize their employability and interview success rates.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

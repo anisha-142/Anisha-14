@@ -1,0 +1,231 @@
+{% extends 'admin/base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h2 class="mb-1 fw-bold" style="color: #667eea;">
+                                <i class="fas fa-building me-2"></i>Company Management
+                            </h2>
+                            <p class="text-muted mb-0">Manage and view all registered companies</p>
+                        </div>
+                        <div>
+                            <a href="/placement_app/company/" class="btn btn-primary">
+                                <i class="fas fa-plus me-2"></i>Add New Company
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Company Table Card -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white py-3 border-0">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h5 class="mb-0 fw-bold">
+                                <i class="fas fa-list me-2"></i>Company List
+                            </h5>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <input type="text" id="searchInput" class="form-control" placeholder="Search companies...">
+                                <button class="btn btn-outline-secondary" type="button" onclick="searchCompany()">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead style="background-color: #667eea; color: white;">
+                                <tr>
+                                    <th class="px-4 py-3">ID</th>
+                                    <th class="px-4 py-3">Company Name</th>
+                                    <th class="px-4 py-3">User</th>
+                                    <th class="px-4 py-3">Website</th>
+                                    <th class="px-4 py-3">HR Details</th>
+                                    <th class="px-4 py-3">Created By</th>
+                                    <th class="px-4 py-3">Created At</th>
+                                    <th class="px-4 py-3 text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="companyTableBody">
+                                {% for companyinfo in companyd %}
+                                <tr class="company-row">
+                                    <td class="px-4 py-3 fw-bold">{{ companyinfo.id }}</td>
+                                    <td class="px-4 py-3">
+                                        <div class="d-flex align-items-center">
+                                            <div class="company-icon me-3">
+                                                <i class="fas fa-building fa-lg" style="color: #667eea;"></i>
+                                            </div>
+                                            <div>
+                                                <strong>{{ companyinfo.name }}</strong>
+                                                <br>
+                                                <small class="text-muted">{{ companyinfo.description|truncatechars:50 }}</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3">{{ companyinfo.user }}</td>
+                                    <td class="px-4 py-3">
+                                        {% if companyinfo.website %}
+                                        <a href="{{ companyinfo.website }}" target="_blank" class="text-decoration-none">
+                                            <i class="fas fa-globe me-1"></i>Visit
+                                        </a>
+                                        {% else %}
+                                        <span class="text-muted">N/A</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <div class="hr-info">
+                                            <div><i class="fas fa-user-tie me-2 text-primary"></i>{{ companyinfo.hr_name }}</div>
+                                            <div><i class="fas fa-envelope me-2 text-primary"></i>{{ companyinfo.hr_email }}</div>
+                                            <div><i class="fas fa-phone me-2 text-primary"></i>{{ companyinfo.hr_phone }}</div>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3">{{ companyinfo.created_by }}</td>
+                                    <td class="px-4 py-3">
+                                        {{ companyinfo.created_at|date:"d M Y" }}
+                                        <br>
+                                        <small class="text-muted">{{ companyinfo.created_at|time:"h:i A" }}</small>
+                                    </td>
+                                    <td class="px-4 py-3 text-center">
+                                        <div class="btn-group" role="group">
+                                            <a href="/placement_app/company/edit/{{ companyinfo.id }}/" 
+                                               class="btn btn-sm btn-outline-primary me-2"
+                                               data-bs-toggle="tooltip" 
+                                               title="Edit Company">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <button type="button" 
+                                                    class="btn btn-sm btn-outline-danger" 
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#deleteModal{{ companyinfo.id }}"
+                                                    title="Delete Company">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </div>
+
+                                        <!-- Delete Confirmation Modal -->
+                                        <div class="modal fade" id="deleteModal{{ companyinfo.id }}" tabindex="-1">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header bg-danger text-white">
+                                                        <h5 class="modal-title">
+                                                            <i class="fas fa-exclamation-triangle me-2"></i>Confirm Delete
+                                                        </h5>
+                                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p class="mb-0">Are you sure you want to delete <strong>{{ companyinfo.name }}</strong>?</p>
+                                                        <p class="text-muted small mt-2">This action cannot be undone.</p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                        <a href="/placement_app/company/delete/{{ companyinfo.id }}/" class="btn btn-danger">Delete</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="8" class="text-center py-5">
+                                        <i class="fas fa-building fa-3x text-muted mb-3 d-block"></i>
+                                        <h5 class="text-muted">No companies found</h5>
+                                        <p class="text-muted">Click the "Add New Company" button to add your first company.</p>
+                                        <a href="/placement_app/company/" class="btn btn-primary mt-2">
+                                            <i class="fas fa-plus me-2"></i>Add Company
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card-footer bg-white py-3">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <p class="text-muted mb-0">
+                                <i class="fas fa-chart-line me-1"></i>
+                                Showing <span id="rowCount">{{ companyd|length }}</span> companies
+                            </p>
+                        </div>
+                        <div class="col text-end">
+                            <div class="btn-group">
+                                <button class="btn btn-sm btn-outline-primary" onclick="exportToCSV()">
+                                    <i class="fas fa-download me-1"></i>Export CSV
+                                </button>
+                                <button class="btn btn-sm btn-outline-secondary" onclick="window.print()">
+                                    <i class="fas fa-print me-1"></i>Print
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Custom styles for company view */
+    .table-responsive {
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: #f8f9fa;
+        transition: all 0.3s ease;
+    }
+    
+    .company-icon {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 10px;
+        display: flex; align-items: center; justify-content: center; color: white;
+    }
+    
+    .hr-info div { margin-bottom: 3px; font-size: 0.9rem; }
+    .btn-group .btn { border-radius: 5px; }
+    .company-row { animation: fadeInUp 0.5s ease; }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .card:hover { box-shadow: 0 10px 40px rgba(0,0,0,0.1) !important; }
+</style>
+
+<script>
+    function searchCompany() {
+        const input = document.getElementById('searchInput');
+        const filter = input.value.toUpperCase();
+        const table = document.getElementById('companyTableBody');
+        const rows = table.getElementsByClassName('company-row');
+        let visibleCount = 0;
+        for (let i = 0; i < rows.length; i++) {
+            const text = rows[i].textContent || rows[i].innerText;
+            if (text.toUpperCase().indexOf(filter) > -1) {
+                rows[i].style.display = '';
+                visibleCount++;
+            } else {
+                rows[i].style.display = 'none';
+            }
+        }
+        document.getElementById('rowCount').innerText = visibleCount;
+    }
+    document.getElementById('searchInput')?.addEventListener('keyup', searchCompany);
+</script>
+{% endblock %}

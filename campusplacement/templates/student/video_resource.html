@@ -1,0 +1,825 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<title>JSS Learning Nexus</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+:root {
+    --primary: #6366f1;
+    --primary-dark: #4f46e5;
+    --secondary: #ec4899;
+    --accent: #0ea5e9;
+    --bg-light: #f8fafc;
+    --card-bg: rgba(255, 255, 255, 0.7);
+    --text-main: #0f172a;
+    --text-muted: #475569;
+    --glass-border: rgba(255, 255, 255, 0.6);
+    --glass-highlight: rgba(255, 255, 255, 0.9);
+}
+
+body {
+    margin: 0;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-color: var(--bg-light);
+    background-image: 
+        linear-gradient(rgba(248, 250, 252, 0.2), rgba(248, 250, 252, 0.2)),
+        url('{% static "images/bg1.jpg" %}');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: var(--text-main);
+    min-height: 100vh;
+}
+
+/* HEADER */
+header {
+    padding: 20px 50px;
+    background: rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--glass-border);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+header h2 {
+    font-weight: 800;
+    margin: 0;
+    background: linear-gradient(135deg, #6366f1, #ec4899, #0ea5e9);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 1px;
+}
+
+header a {
+    text-decoration: none;
+    padding: 10px 24px;
+    background: var(--card-bg);
+    border-radius: 12px;
+    font-weight: 600;
+    color: var(--text-main);
+    border: 1px solid var(--glass-border);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+}
+
+header a:hover {
+    background: #ffffff;
+    border-color: var(--glass-highlight);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* LAYOUT */
+.main-layout {
+    display: flex;
+    gap: 30px;
+    padding: 40px;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+/* SIDEBAR */
+.sidebar {
+    width: 260px;
+    background: var(--card-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    padding: 30px 25px;
+    border-radius: 24px;
+    border: 1px solid var(--glass-border);
+    height: fit-content;
+    position: sticky;
+    top: 100px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.04);
+}
+
+.sidebar h3 {
+    margin-top: 0;
+    margin-bottom: 25px;
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--text-main);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+}
+
+.sidebar ul {
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar li {
+    list-style: none;
+    padding: 14px 20px;
+    border-radius: 14px;
+    cursor: pointer;
+    font-weight: 600;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    color: var(--text-muted);
+    border: 1px solid transparent;
+}
+
+.sidebar li:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.8);
+    color: var(--primary);
+    border-color: var(--glass-highlight);
+    transform: translateX(6px);
+}
+
+.sidebar li.active {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    border: 1px solid rgba(99, 102, 241, 0.5);
+    color: #fff;
+    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+}
+
+.sidebar li.active i {
+    color: #ffffff;
+}
+
+/* CONTENT */
+.content {
+    flex: 1;
+}
+
+/* SEARCH */
+.search-box {
+    position: relative;
+    margin-bottom: 40px;
+    max-width: 600px;
+}
+
+.search-box i {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    font-size: 1.2rem;
+    transition: color 0.3s ease;
+}
+
+.search-bar {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 20px 20px 20px 55px;
+    border-radius: 20px;
+    border: 1px solid var(--glass-border);
+    font-size: 16px;
+    background: var(--card-bg);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+    transition: all 0.3s ease;
+    color: var(--text-main);
+    font-family: inherit;
+}
+
+.search-bar::placeholder {
+    color: var(--text-muted);
+}
+
+.search-bar:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1), 0 10px 40px rgba(99, 102, 241, 0.15);
+    background: #ffffff;
+}
+
+.search-bar:focus + i {
+    color: var(--primary);
+}
+
+/* GRID */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 30px;
+}
+
+/* CARD */
+.card {
+    background: var(--card-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    padding: 25px;
+    border-radius: 24px;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+    position: relative;
+    overflow: hidden;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 100%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+}
+
+.card:hover {
+    transform: translateY(-12px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.08), 0 0 20px rgba(99, 102, 241, 0.1);
+    border-color: rgba(99, 102, 241, 0.3);
+    background: #ffffff;
+}
+
+.card:hover::before {
+    opacity: 1;
+}
+
+.card h3 {
+    margin-top: 0;
+    margin-bottom: 8px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    line-height: 1.4;
+    color: var(--text-main);
+}
+
+.card p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 20px;
+    margin-top: 0;
+}
+
+/* VIDEO CONTAINER */
+.video-wrapper {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+    border-radius: 16px;
+    margin-top: auto;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    border: 1px solid var(--glass-border);
+}
+
+.video-wrapper iframe {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+}
+
+/* BUTTON */
+.btn-play {
+    margin-top: auto;
+    padding: 14px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    text-align: center;
+    border-radius: 14px;
+    text-decoration: none;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+    border: 1px solid rgba(255,255,255,0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-play::after {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: linear-gradient(to bottom right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%);
+    transform: rotate(45deg);
+    transition: all 0.5s ease;
+    opacity: 0;
+}
+
+.btn-play:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+}
+
+.btn-play:hover::after {
+    opacity: 1;
+    transform: rotate(45deg) translate(50%, 50%);
+}
+
+/* ANIMATION */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.card {
+    animation: fadeIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) backwards;
+}
+
+.card:nth-child(1) { animation-delay: 0.1s; }
+.card:nth-child(2) { animation-delay: 0.2s; }
+.card:nth-child(3) { animation-delay: 0.3s; }
+.card:nth-child(4) { animation-delay: 0.4s; }
+.card:nth-child(5) { animation-delay: 0.5s; }
+.card:nth-child(6) { animation-delay: 0.6s; }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: var(--bg-light); }
+::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 5px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.3); }
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+    .main-layout { flex-direction: column; padding: 20px; }
+    .sidebar { width: 100%; position: static; box-sizing: border-box; }
+    header { padding: 15px 20px; }
+    .grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h2>JSS LEARNING NEXUS</h2>
+    <a href="{% url 'home' %}"><i class="fas fa-arrow-left"></i> Back</a>
+</header>
+
+<div class="main-layout">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <h3>Categories</h3>
+        <ul>
+            <li onclick="setActive(this,'all')" class="active"><i class="fas fa-layer-group"></i> All</li>
+            <li onclick="setActive(this,'dbms')"><i class="fas fa-server"></i> DBMS</li>
+            <li onclick="setActive(this,'ds')"><i class="fas fa-database"></i> DS</li>
+            <li onclick="setActive(this,'os')"><i class="fas fa-desktop"></i> OS</li>
+            <li onclick="setActive(this,'cg')"><i class="fas fa-palette"></i> Computer Graphics</li>
+            <li onclick="setActive(this,'interview')"><i class="fas fa-user-tie"></i> Interview</li>
+        </ul>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" class="search-bar"
+                placeholder="Search videos..." onkeyup="filterAll()">
+        </div>
+
+        <div class="grid">
+
+            <div class="card" data-category="ds">
+                <h3>Ds video</h3>
+                <p>Introduction to Data structures (Part-1)</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/vqD1CxumtnA" title="Introduction to Data structures  (Part-1)" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <div class="card" data-category="ds">
+                <h3>Ds video 2</h3>
+                <p>Classification of Data structures (Part-2)</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/iZPqI7BDCr8" title="Classification of Data structures (Part-2)" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <div class="card" data-category="ds">
+                <h3>Ds video 3</h3>
+                <p>Classification of Data Structures (part-3)</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/JBhXPX7alu0" title="Classification of Data Structures (part-3)" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <div class="card" data-category="interview">
+                <h3>Interview Video</h3>
+                <p>Influence the Interviewer in 10 Minutes (MBA Perspective)</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/pxdOCP96nio?list=PLiwcsmJM6wJJ4AMJtmJKIWx7VFKsG9APS" title="Influence the Interviewer in 10 Minutes (MBA Perspective)" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+
+
+
+            <div class="card" data-category="os">
+                <h3>OS Video 1</h3>
+                <p>OS Definition, types, Batch OS (Unit 1)</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/ijXaqQP0t5E?list=PLwo1otpvX6b_6I6m4b58btDQMLS_KoLvP" title="OS Definition, types, Batch OS (Unit 1)" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <div class="card" data-category="os">
+                <h3>OS Video 2</h3>
+                <p>Multiprogramming OS (Unit 1)</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/rRjxtB001Qs?list=PLwo1otpvX6b_6I6m4b58btDQMLS_KoLvP" title="Multiprogramming OS (Unit 1)" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <div class="card" data-category="os">
+                <h3>OS Video 3</h3>
+                <p>Time Sharing OS (Unit 1)</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/1nxz3N1z8J8?list=PLwo1otpvX6b_6I6m4b58btDQMLS_KoLvP" title="Time Sharing OS (Unit 1)" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <div class="card" data-category="os">
+                <h3>OS Video 4</h3>
+                <p>Distributed OS (Unit 1)</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/xQN0twqv--k?list=PLwo1otpvX6b_6I6m4b58btDQMLS_KoLvP" title="Distributed OS (Unit 1)" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <div class="card" data-category="os">
+                <h3>OS Video 5</h3>
+                <p>Parallel Systems or Multiprocessor Systems (Unit 1)</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/EsfW2OuqZ1Q?list=PLwo1otpvX6b_6I6m4b58btDQMLS_KoLvP" title="Parallel Systems or Multiprocessor Systems (Unit 1)" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <div class="card" data-category="os">
+                <h3>OS Video 6</h3>
+                <p>RTOS, Structure of OS, MS-DOS Structure (Unit 1)</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/MnqLuvGmJ64?list=PLwo1otpvX6b_6I6m4b58btDQMLS_KoLvP" title="RTOS, Structure of OS, MS-DOS Structure (Unit 1)" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <div class="card" data-category="os">
+                <h3>OS Video 7</h3>
+                <p>Components of OS (Unit 1)</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/JLPQ4t9tazU?list=PLwo1otpvX6b_6I6m4b58btDQMLS_KoLvP" title="Components of OS (Unit 1)" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <div class="card" data-category="os">
+                <h3>OS Video 8</h3>
+                <p>Services of OS (Unit 1)</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/SpKf0bhmm9k?list=PLwo1otpvX6b_6I6m4b58btDQMLS_KoLvP" title="Services of OS (Unit 1)" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <div class="card" data-category="os">
+                <h3>OS Video 9</h3>
+                <p>System Calls in OS (Unit 1)</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/QwdbQbEvMk8?list=PLwo1otpvX6b_6I6m4b58btDQMLS_KoLvP" title="System Calls in OS (Unit 1)" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <div class="card" data-category="os">
+                <h3>OS Video 10</h3>
+                <p>System Programs in OS (Unit 1)</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/WmigROaNlpY?list=PLwo1otpvX6b_6I6m4b58btDQMLS_KoLvP" title="System Programs in OS (Unit 1)" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <div class="card" data-category="os">
+                <h3>OS Video 11</h3>
+                <p>Virtual Machine (Unit 1)</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/QBWJd5-PMUc?list=PLwo1otpvX6b_6I6m4b58btDQMLS_KoLvP" title="Virtual machine Unit 1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <div class="card" data-category="os">
+                <h3>OS Video 12</h3>
+                <p>Chapter 2 OS – Process, Process States, Diagram</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/b6eTzhYkDnQ?list=PLwo1otpvX6b_6I6m4b58btDQMLS_KoLvP" title="Chapter 2 OS process, process states, diagram" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <div class="card" data-category="cg">
+                <h3>CG Video 1</h3>
+                <p>Computer Graphics (CG) Session 1</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/NezQiTbl_JQ?list=PLwo1otpvX6b8CacGC1zj0ajvf6cXbF0-6" title="Computer Graphics (CG) Session 1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <div class="card" data-category="cg">
+                <h3>CG Video 2</h3>
+                <p>Cathode Ray Tube</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/zQ1shUbSaFQ?list=PLwo1otpvX6b8CacGC1zj0ajvf6cXbF0-6" title="Cathode Ray Tube" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <div class="card" data-category="cg">
+                <h3>CG Video 3</h3>
+                <p>Computer Graphics (CG) Session 2</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/1TpIRxoZDM0?list=PLwo1otpvX6b8CacGC1zj0ajvf6cXbF0-6" title="Computer Graphics (CG) Session 2" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <div class="card" data-category="cg">
+                <h3>CG Video 4</h3>
+                <p>Chapter 1 – CG Display Monitors</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/bTc8XHHSAmI?list=PLwo1otpvX6b8CacGC1zj0ajvf6cXbF0-6" title="Chapter 1 CG Display Monitors" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <div class="card" data-category="cg">
+                <h3>CG Video 5</h3>
+                <p>Chapter 1 – CG Raster Scan System</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/hOmtihGm4kY?list=PLwo1otpvX6b8CacGC1zj0ajvf6cXbF0-6" title="Chapter 1 CG Raster Scan System" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <div class="card" data-category="cg">
+                <h3>CG Video 6</h3>
+                <p>Chapter 1 – CG Operation of Video Controller</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/2nbfXsatR9E?list=PLwo1otpvX6b8CacGC1zj0ajvf6cXbF0-6" title="Chapter 1 CG operation of video controller" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <div class="card" data-category="cg">
+                <h3>CG Video 7</h3>
+                <p>Chapter 1 – CG Random Scan System</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/9IgEpuO2VLI?list=PLwo1otpvX6b8CacGC1zj0ajvf6cXbF0-6" title="Chapter 1 CG Random scan system" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <div class="card" data-category="cg">
+                <h3>CG Video 8</h3>
+                <p>Chapter 1 – CG Hard Copy Device and Other</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/nLg2s2-32B4?list=PLwo1otpvX6b8CacGC1zj0ajvf6cXbF0-6" title="Chapter 1 CG hard copy device and other" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <div class="card" data-category="cg">
+                <h3>CG Video 9</h3>
+                <p>Chapter 2 – CG Output Primitive</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/sxvG0YBNaSQ?list=PLwo1otpvX6b8CacGC1zj0ajvf6cXbF0-6" title="Chapter 2 CG Output Primitive" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <div class="card" data-category="cg">
+                <h3>CG Video 10</h3>
+                <p>Chapter 2 – CG Derivation of Parameter for Bresenham's Line Drawing</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/Lmx6OdHxMxY?list=PLwo1otpvX6b8CacGC1zj0ajvf6cXbF0-6" title="Chapter 2 CG Derivation of Paremeter for Brasenhams Line Drawing" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <div class="card" data-category="cg">
+                <h3>CG Video 11</h3>
+                <p>Chapter 3 – CG General 2D Pivot Point Rotation</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/WoT4gqOVih4?list=PLwo1otpvX6b8CacGC1zj0ajvf6cXbF0-6" title="Chapter 3 CG General 2D Pivot point Rotation" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <div class="card" data-category="cg">
+                <h3>CG Video 12</h3>
+                <p>Chapter 3 – CG Pivot Point Rotation</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/A4Qpx0K_FCg?list=PLwo1otpvX6b8CacGC1zj0ajvf6cXbF0-6" title="Chapter 3 CG Pivot point Rotation" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <div class="card" data-category="cg">
+                <h3>CG Video 13</h3>
+                <p>Chapter 3 – CG General 2D Fixed Point Scaling</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/C-zQnDMKlKo?list=PLwo1otpvX6b8CacGC1zj0ajvf6cXbF0-6" title="Chapter 3 CG General 2D fixed point scaling" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <div class="card" data-category="cg">
+                <h3>CG Video 14</h3>
+                <p>Chapter 4 – CG Viewing &amp; Window to Viewport</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/hl9sETpxgQA?list=PLwo1otpvX6b8CacGC1zj0ajvf6cXbF0-6" title="Chapter 4 CG Viewing" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <div class="card" data-category="cg">
+                <h3>CG Video 15</h3>
+                <p>Chapter 4 – CG Clipping, Point and Line Clipping</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/Tq32d1tQGWM?list=PLwo1otpvX6b8CacGC1zj0ajvf6cXbF0-6" title="Chapter 4 CG Clipping, point and Line clipping" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <div class="card" data-category="cg">
+                <h3>CG Video 16</h3>
+                <p>Chapter 4 – CG Cohen Sutherland Line Clipping Algorithm</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/i0mVHnT4ES4?list=PLwo1otpvX6b8CacGC1zj0ajvf6cXbF0-6" title="Chapter 4 CG Cohen Sutherland line clipping algorithm" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <div class="card" data-category="cg">
+                <h3>CG Video 17</h3>
+                <p>Chapter 4 – CG Liang Barsky and Nicholl Lee Nicholl Line Clipping</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/2ONGS6MhrXg?list=PLwo1otpvX6b8CacGC1zj0ajvf6cXbF0-6" title="Chapter 4 CG Liang barsky and Nicholl le Nicholl line clipping algorithm" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <div class="card" data-category="cg">
+                <h3>CG Video 18</h3>
+                <p>Chapter 4 – CG Polygon Clipping and Sutherland Hodgeman Algorithm</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/3qd0r2JQT7c?list=PLwo1otpvX6b8CacGC1zj0ajvf6cXbF0-6" title="Chapter 4 CG Polygon Clipping and Sutherland Hodgeman Polygon Clipping" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <div class="card" data-category="cg">
+                <h3>CG Video 19</h3>
+                <p>Chapter 4 – CG Curve and Text Clipping</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/T7FwfcPjHrY?list=PLwo1otpvX6b8CacGC1zj0ajvf6cXbF0-6" title="Chapter 4 CG Curve and Text Clipping" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <div class="card" data-category="cg">
+                <h3>CG Video 20</h3>
+                <p>Chapter 4 – CG Weiler Atherton Polygon Clipping, Curve and Text Clipping</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/SidAb9M3oH8?list=PLwo1otpvX6b8CacGC1zj0ajvf6cXbF0-6" title="Chapter 4 CG weiler autherton Polygon Clipping, Curve and Text Clipping" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <div class="card" data-category="cg">
+                <h3>CG Video 21</h3>
+                <p>Chapter 4 – CG Weiler Atherton Polygon Clipping</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/SRUqKSZSa84?list=PLwo1otpvX6b8CacGC1zj0ajvf6cXbF0-6" title="Chapter 4 CG weiler autherton Polygon Clipping" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <div class="card" data-category="cg">
+                <h3>CG Video 22</h3>
+                <p>Chapter 5 &amp; 6 – CG (Part 2)</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/SF3ZVliNu5Q?list=PLwo1otpvX6b8CacGC1zj0ajvf6cXbF0-6" title="Chapter 5 and 6 CG(2)" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <div class="card" data-category="cg">
+                <h3>CG Video 23</h3>
+                <p>Chapter 5 &amp; 6 – CG (Part 1)</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/8vDaTXZwTuc?list=PLwo1otpvX6b8CacGC1zj0ajvf6cXbF0-6" title="Chapter 5 and 6 CG(1)" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <div class="card" data-category="cg">
+                <h3>CG Video 24</h3>
+                <p>Chapter 5 – CG Interactive Picture Construction Techniques</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/az4vBj9Cv54?list=PLwo1otpvX6b8CacGC1zj0ajvf6cXbF0-6" title="Chapter 5 CG Interactive Picture Construction Techniques" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <div class="card" data-category="cg">
+                <h3>CG Video 25</h3>
+                <p>Chapter 5 – CG Diagram for Picture Construction Techniques</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/LAwNOaGNSV4?list=PLwo1otpvX6b8CacGC1zj0ajvf6cXbF0-6" title="Chapter 5 CG Diagram for Picture Construction Techniques" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <div class="card" data-category="cg">
+                <h3>CG Video 26</h3>
+                <p>Chapter 6 – CG Projections Concept</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/m628Gk6Bn24?list=PLwo1otpvX6b8CacGC1zj0ajvf6cXbF0-6" title="Chapter 6 CG Projections concept" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <div class="card" data-category="dbms">
+                <h3>DBMS Video 1</h3>
+                <p>Insurance Database (DBMS Lab Assignment)</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/JnyZ1xr-yho?list=PLYqZmchJlEoJaHY20IsiN0EUBYSe16vFu" title="Insurance Database (DBMS Lab Assignment)" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <div class="card" data-category="dbms">
+                <h3>DBMS Video 2</h3>
+                <p>Book Dealer DBMS Lab Assignment 2022</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/NPK2AhJZ9wc?list=PLYqZmchJlEoJaHY20IsiN0EUBYSe16vFu" title="Book Dealer DBMS Lab Assignment 2022" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <div class="card" data-category="dbms">
+                <h3>DBMS Video 3</h3>
+                <p>Student Enrollment and Book Adoption DB Lab Assignment Using MySQL(DBMS)</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/Q2LsfIBwRY8?list=PLYqZmchJlEoJaHY20IsiN0EUBYSe16vFu" title="Student Enrollment and Book Adoption DB Lab Assignment Using MySQL(DBMS)" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <div class="card" data-category="dbms">
+                <h3>DBMS Video 4</h3>
+                <p>DBMS Lab assignment: Orders DB(Salesman, Customer and Orders)</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/OYAmtHxN-L4?list=PLYqZmchJlEoJaHY20IsiN0EUBYSe16vFu" title="DBMS Lab assignment: Orders DB(Salesman, Customer and Orders)" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <div class="card" data-category="dbms">
+                <h3>DBMS Video 5</h3>
+                <p>Company DBMS Lab Assignment</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/ZXbJPgI8J3Y?list=PLYqZmchJlEoJaHY20IsiN0EUBYSe16vFu" title="Company DBMS Lab Assignment" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <div class="card" data-category="dbms">
+                <h3>DBMS Video 6</h3>
+                <p>DBMS lab assignment: Library Management System</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/t8ry4fb1j0w?list=PLYqZmchJlEoJaHY20IsiN0EUBYSe16vFu" title="DBMS lab assignment: Library Management System" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <div class="card" data-category="dbms">
+                <h3>DBMS Video 7</h3>
+                <p>Schedule and its Classifications (Concurrency Control)</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/9kxn2Wr3pcc" title="Schedule and its Classifications" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <div class="card" data-category="dbms">
+                <h3>DBMS Video 8</h3>
+                <p>Concurrency Control techniques Part 2</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/lOrHeuhdzkQ" title="Concurrency Control techniques Part 2" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+let currentCategory = "all";
+
+function setActive(el, category) {
+    document.querySelectorAll(".sidebar li").forEach(li => li.classList.remove("active"));
+    el.classList.add("active");
+    currentCategory = category;
+    filterAll();
+}
+
+function filterAll() {
+    let input = document.getElementById("searchInput").value.toLowerCase();
+    let cards = document.getElementsByClassName("card");
+
+    for (let i = 0; i < cards.length; i++) {
+        let text = cards[i].innerText.toLowerCase();
+        let category = cards[i].getAttribute("data-category");
+
+        let matchCategory = (currentCategory === "all" || (category && category.includes(currentCategory)));
+        let matchSearch = text.includes(input);
+
+        cards[i].style.display = (matchCategory && matchSearch) ? "flex" : "none";
+    }
+}
+</script>
+
+</body>
+</html>

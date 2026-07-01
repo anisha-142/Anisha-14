@@ -1,0 +1,321 @@
+MATRIX PROGRAMS
+1.Write a program to read and display two dimensional matrix
+
+#include<stdio.h>
+#include<conio.h>
+int main()
+{
+ 	int i, j,matrix[2][2];
+ 	clrscr();
+ 	printf("enter matrix elements\n");
+ 	for(i=0;i<2;i++)
+ 	{
+        		for(j=0;j<2;j++)
+         			 {
+                			scanf("%d",  &matrix[i][j]);
+          			}
+	}
+	printf("matrix elements are\n");
+	for(i=0;i<2;i++)
+     		{
+               		for(j=0;j<2;j++)
+                 		{
+                      			printf("%d\t", matrix[i][j]);
+                		}
+     			printf("\n");
+ 		 }
+   return 0;
+}
+
+2.Write a program to read and display three dimensional matrix
+
+
+
+
+
+
+3. write a program to add two matrix
+#include<stdio.h>
+#include<conio.h>
+void main()
+	{
+ 		int a[3][3],b[3][3],i,j,result[3][3];
+		 clrscr();
+		 printf("enter elements of first matrix");
+ 		for(i=0;i<3;i++)
+ 		{
+ 			 for(j=0;j<3;j++)
+ 			 {
+ 				 scanf("%d",&a[i][j]);
+  			}
+			 printf("\n");
+		}
+
+		printf("enter the elements of the second matrix");
+		for(i=0;i<3;i++)
+			 {
+  				for(j=0;j<3;j++)
+  				{
+   					scanf("%d",&b[i][j]);
+  				}
+ 				 printf("\n");
+ 			}
+		printf("Addition of two matrices is\n");
+		for(i=0;i<3;i++)
+		{
+ 			 for(j=0;j<3;j++)
+  				{
+ 					 result[i][j]=a[i][j]+b[i][j];
+   					printf("%d\t",result[i][j]);
+  				}
+  				printf("\n");
+		}
+	getch();
+}
+
+4. write a program to substract two matrix
+
+
+
+
+
+
+
+
+
+
+
+5.Write a program to Multiply Two matrices
+
+#include<stdio.h>
+#include<conio.h>
+void main()
+{
+       int a[10][10],b[10][10],i,j,k,mul[10][10],r,c;
+ 	clrscr();
+ 	printf("enter the number of rows\n");
+ 	scanf("%d",&r);
+       printf("enter the number of coloumns");
+       scanf("%d",&c);
+   printf("enter elements of first matrix");
+ 	for(i=0;i<r;i++)
+       {
+ 		 for(j=0;j<c;j++)
+  		{
+  			scanf("%d",&a[i][j]);
+  		}
+       printf("\n");
+      }
+printf("enter the elements of the second matrix");
+      for(i=0;i<r;i++)
+ 	{
+  		for(j=0;j<c;j++)
+ 		 {
+   			scanf("%d",&b[i][j]);
+        }
+ 	 printf("\n");
+ 	}
+printf("multiplication of two matrices\n");
+      for(i=0;i<r;i++)
+      {
+       for(j=0;j<c;j++)
+ 		{
+        mul[i][j]=0;
+        for(k=0;k<c;k++)
+        {
+         mul[i][j]+=a[i][k]*b[k][j];
+
+  			}
+       }
+      }
+
+
+
+
+
+
+
+
+//for printing result
+      
+      for(i=0;i<r;i++)
+      {
+  		for(j=0;j<c;j++)
+  		{
+         printf("%d\t",mul[i][j]);
+ 		 }
+      printf("\n");
+      }
+getch();
+}
+
+
+
+
+6.Write a program to implement Transpose of the matrix
+#include<stdio.h>
+#include<conio.h>
+void main()
+{
+     	int i,j,mat[2][2],trans[2][2];
+	clrscr();
+ 	printf("enter matrix elements\n");
+ 	for(i=0;i<2;i++)
+ 	{
+ 		 for(j=0;j<2;j++)
+  		{
+   			scanf("%d",&mat[i][j]);
+  		}
+ 	}
+ 	printf(" matrix elements are\n");
+ 	for(i=0;i<2;i++)
+ 	{
+  		for(j=0;j<2;j++)
+  		{
+   			printf("%d\t",mat[i][j]);
+  		}
+  		printf("\n");
+ 	}
+
+ 
+
+
+	for(i=0;i<2;i++)
+ 	{
+    		for(j=0;j<2;j++)
+     		{
+        			trans[j][i]=mat[i][j];
+    		}
+ 	}
+ 
+	printf("transpose of the matrix is\n");
+ 	for(i=0;i<2;i++)
+ 	{
+        		for(j=0;j<2;j++)
+       		{
+         			 printf("%d\t",trans[i][j]);
+       		}
+ printf("\n");
+ }
+ getch();
+}
+7.Write a program to find whether matrix is Identity Matrix or not.
+#include<stdio.h>
+#include<conio.h>
+void main()
+	{
+		int a[10][10],i,j,r,c,flag=1;
+		clrscr();
+		printf("enter order of the matrix\n");
+		scanf("%d%d",&c,&r);
+	       if(r==c)
+	      {
+ 		printf("enter the elements of the matrix\n");
+ 		for(i=0;i<c;i++)
+ 		{
+ 			 for(j=0;j<r;j++)
+  			{
+  				 scanf("%d",&a[i][j]);
+  			}
+ 		}
+
+ 	printf("matrix elements are");
+ 	for(i=0;i<r;i++)
+          {
+                        for(j=0;j<c;j++)
+   		{
+    		 	printf("%d\t",a[i][j]);
+                       }
+              printf("\n");
+ }
+ 	for(i=0;i<r;i++)
+ 	{
+   		for(j=0;j<c;j++)
+  	 	{
+        	 if(a[i][j]!=1&&a[j][i]!=0)
+ 				  {
+  			   		flag=0;
+  			  		 break;
+   				}
+  	 	}
+ 	}
+ 	if(flag==1)
+   		{
+ 			printf("it is an identity matrix");
+ 			else
+       		printf("it is not an identity matrix");
+   		}
+   	else
+    	printf("it is not square matrix to find identity matrix");
+  	getch();
+ }
+
+8.Write a program to check whether matrix is symmetrical  or not
+#include<stdio.h>
+#include<conio.h>
+int main()
+{
+ 	int a[3][3],b[3][3],i,j,f=0;
+ 	printf("enter matrix elements\n");
+ 	for(i=0;i<3;i++)
+ 	{
+  		for(j=0;j<3;j++)
+ 		 {
+   			 scanf("%d",&a[i][j]);
+  		}
+ 	}
+ 	printf("matrix elements are") ;
+ 	for(i=0;i<3;i++)
+ 	{
+  		for(j=0;j<3;j++)
+  		{
+    			printf("%d\t",a[i][j]);
+  		}
+  		printf("\n");
+ 	}
+ for(i=0;i<3;i++)
+ 	{
+  		for(j=0;j<3;j++)
+  		{
+    			b[i][j]=a[j][i];
+  		}
+ 	}
+  printf("transpose of matrix ") ;
+ 	for(i=0;i<3;i++)
+ 	{
+  		for(j=0;j<3;j++)
+  		{
+    			printf("%d\t",b[i][j]);
+  		}
+  		printf("\n");
+  	}
+   for(i=0;i<3;i++)
+ 	{
+  		for(j=0;j<3;j++)
+  		{
+ 			 if(a[i][j]!=b[i][j])
+  				{
+  					f=1;
+  					break;
+ 				 }
+  		}
+  	}
+  if(f==0)
+  {
+  	printf("matrix is symmetrical");
+  }
+  else
+  {
+ 	 printf("matrix is not symmetrical");
+  }
+  return 0;
+  }
+
+
+
+
+
+
+
+
+

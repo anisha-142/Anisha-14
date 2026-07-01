@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Registration | JSS Placement</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #4338ca;
+            --glass: rgba(255, 255, 255, 0.98);
+            --text-main: #1f2937;
+            --error: #ef4444;
+            --success: #10b981;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(rgba(15, 23, 42, 0.85), rgba(30, 27, 75, 0.85)),
+                url('http://www.jssinstitutionsdharwad.com/images/s2.jpg') no-repeat center center/cover;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .form-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            padding: 50px;
+            border-radius: 32px;
+            box-shadow: 0 40px 80px -15px rgba(0, 0, 0, 0.6);
+            width: 100%;
+            max-width: 800px;
+            animation: fadeInDown 0.6s ease;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            text-align: center;
+            color: #111827;
+            margin-bottom: 5px;
+            font-size: 2rem;
+            font-weight: 800;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #6b7280;
+            margin-bottom: 40px;
+            font-size: 1rem;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #111827;
+            margin: 25px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title:first-of-type {
+            margin-top: 0;
+        }
+
+        .section-title i {
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 5px;
+        }
+
+        .full-width {
+            grid-column: span 2;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .required::after {
+            content: '*';
+            color: var(--error);
+            margin-left: 4px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            transition: 0.3s;
+            pointer-events: none;
+        }
+
+        .input-wrapper textarea+i {
+            top: 20px;
+            transform: none;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px 14px 12px 45px;
+            background: #f8fafc;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        textarea {
+            padding: 12px;
+            height: 100px;
+            resize: vertical;
+        }
+
+        textarea+i {
+            top: 15px;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+        }
+
+        input:focus+i,
+        select:focus+i,
+        textarea:focus+i {
+            color: var(--primary);
+        }
+
+        select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 20px;
+            padding-right: 40px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 30px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px -5px rgba(79, 70, 229, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .messages {
+            margin-bottom: 25px;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .alert {
+            padding: 14px 18px;
+            border-radius: 12px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .alert.success {
+            background: #ecfdf5;
+            color: #065f46;
+            border-left: 4px solid var(--success);
+        }
+
+        .alert.error {
+            background: #fef2f2;
+            color: #991b1b;
+            border-left: 4px solid var(--error);
+        }
+
+        .alert i {
+            font-size: 1.2rem;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 30px;
+            color: #64748b;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: 0.3s;
+        }
+
+        .back-link:hover {
+            color: var(--primary);
+            transform: translateX(-5px);
+        }
+
+        @media (max-width: 650px) {
+            .form-card {
+                padding: 30px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .full-width {
+                grid-column: span 1;
+            }
+
+            .section-title {
+                font-size: 1.1rem;
+            }
+        }
+
+        /* Loading state */
+        .btn.loading {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .btn.loading i {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Password strength indicator */
+        .password-strength {
+            margin-top: 5px;
+            font-size: 0.75rem;
+        }
+
+        .strength-weak {
+            color: #ef4444;
+        }
+        .strength-medium {
+            color: #f59e0b;
+        }
+        .strength-strong {
+            color: #10b981;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="form-card animate__animated animate__fadeInDown">
+        <h1><i class="fas fa-building" style="color: var(--primary);"></i> Company Registration</h1>
+        <p class="subtitle">Onboard a new corporate partner to the JSS Placement Network</p>
+
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="alert {{ message.tags }}">
+                <i class="fas fa-{% if message.tags == 'success' %}check-circle{% else %}exclamation-circle{% endif %}"></i>
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <form method="POST" id="companyForm" novalidate>
+            {% csrf_token %}
+            
+            <!-- User Account Section -->
+            <div class="section-title">
+                <i class="fas fa-user-circle"></i>
+                <span>User Account Information</span>
+            </div>
+            
+            <div class="form-grid">
+                <div class="form-group full-width">
+                    <label class="required">Username</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user"></i>
+                        <input type="text" name="username" placeholder="Enter username" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="required">Password</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" name="password" id="password" placeholder="Enter password" required>
+                    </div>
+                    <div class="password-strength" id="passwordStrength"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="required">Confirm Password</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-check-circle"></i>
+                        <input type="password" name="confirm_password" id="confirm_password" placeholder="Confirm password" required>
+                    </div>
+                </div>
+                
+                <div class="form-group full-width">
+                    <label class="required">Email Address</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" name="email" placeholder="company@example.com" required>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Company Information Section -->
+            <div class="section-title">
+                <i class="fas fa-briefcase"></i>
+                <span>Company Information</span>
+            </div>
+            
+            <div class="form-grid">
+                <div class="form-group full-width">
+                    <label class="required">Company Name</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-building"></i>
+                        <input type="text" name="name" placeholder="Enter company name" required>
+                    </div>
+                </div>
+                
+                <div class="form-group full-width">
+                    <label>Website</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-globe"></i>
+                        <input type="url" name="website" placeholder="https://www.example.com">
+                    </div>
+                </div>
+                
+                <div class="form-group full-width">
+                    <label class="required">Company Description</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-info-circle"></i>
+                        <textarea name="description" placeholder="Describe your company, mission, and values..." required></textarea>
+                    </div>
+                </div>
+                
+                <!-- HR Details Sub-section -->
+                <div class="full-width">
+                    <div style="background: #f8fafc; padding: 20px; border-radius: 16px; margin-top: 10px;">
+                        <h4 style="margin-bottom: 20px; color: #374151; font-size: 1rem;">
+                            <i class="fas fa-user-tie"></i> HR Contact Details
+                        </h4>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="required">HR Name</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-user"></i>
+                                    <input type="text" name="hr_name" placeholder="Full name" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="required">HR Email</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-envelope"></i>
+                                    <input type="email" name="hr_email" placeholder="hr@company.com" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="required">HR Phone</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-phone"></i>
+                                    <input type="tel" name="hr_phone" placeholder="+91 1234567890" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group full-width">
+                    <label>Placement Officer (Optional)</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-chalkboard-user"></i>
+                        <select name="created_by">
+                            <option value="">-- Select Placement Officer --</option>
+                            {% for officer in officers %}
+                                <option value="{{ officer.id }}">
+                                    {{ officer.user.get_full_name|default:officer.user.username }} - {{ officer.college.name }} ({{ officer.designation }})
+                                </option>
+                            {% empty %}
+                                <option value="" disabled>No placement officers available</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn" id="submitBtn">
+                <i class="fas fa-plus-circle"></i>
+                Register Company
+            </button>
+        </form>
+        
+        <a href="{% url 'placementhome' %}" class="back-link">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+
+    <script>
+        // Form validation and enhancement
+        const form = document.getElementById('companyForm');
+        const password = document.getElementById('password');
+        const confirmPassword = document.getElementById('confirm_password');
+        const submitBtn = document.getElementById('submitBtn');
+        const passwordStrength = document.getElementById('passwordStrength');
+        
+        // Password strength checker
+        function checkPasswordStrength(pwd) {
+            if (!pwd) return '';
+            
+            let strength = 0;
+            if (pwd.length >= 6) strength++;
+            if (pwd.length >= 10) strength++;
+            if (/[A-Z]/.test(pwd)) strength++;
+            if (/[0-9]/.test(pwd)) strength++;
+            if (/[^A-Za-z0-9]/.test(pwd)) strength++;
+            
+            if (strength <= 2) return { text: 'Weak', class: 'strength-weak' };
+            if (strength <= 4) return { text: 'Medium', class: 'strength-medium' };
+            return { text: 'Strong', class: 'strength-strong' };
+        }
+        
+        // Real-time password strength
+        if (password) {
+            password.addEventListener('input', function() {
+                const strength = checkPasswordStrength(this.value);
+                if (this.value) {
+                    passwordStrength.innerHTML = `<span class="${strength.class}">🔒 Password Strength: ${strength.text}</span>`;
+                } else {
+                    passwordStrength.innerHTML = '';
+                }
+                
+                // Check confirm password match
+                if (confirmPassword.value && this.value !== confirmPassword.value) {
+                    confirmPassword.setCustomValidity('Passwords do not match');
+                } else {
+                    confirmPassword.setCustomValidity('');
+                }
+            });
+        }
+        
+        // Confirm password validation
+        if (confirmPassword) {
+            confirmPassword.addEventListener('input', function() {
+                if (password.value !== this.value) {
+                    this.setCustomValidity('Passwords do not match');
+                    this.style.borderColor = '#ef4444';
+                } else {
+                    this.setCustomValidity('');
+                    this.style.borderColor = '#e2e8f0';
+                }
+            });
+        }
+        
+        // Form submission with loading state
+        form.addEventListener('submit', function(e) {
+            // Additional validation
+            const email = form.querySelector('input[name="email"]');
+            const phone = form.querySelector('input[name="hr_phone"]');
+            const username = form.querySelector('input[name="username"]');
+            
+            // Username validation (no spaces, min 3 chars)
+            if (username.value.trim().length < 3) {
+                e.preventDefault();
+                showMessage('Username must be at least 3 characters long', 'error');
+                username.focus();
+                return;
+            }
+            
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email.value)) {
+                e.preventDefault();
+                showMessage('Please enter a valid email address', 'error');
+                email.focus();
+                return;
+            }
+            
+            // Phone validation (basic)
+            const phoneRegex = /^[0-9+\-\s]{10,15}$/;
+            if (!phoneRegex.test(phone.value.replace(/\s/g, ''))) {
+                e.preventDefault();
+                showMessage('Please enter a valid phone number (10-15 digits)', 'error');
+                phone.focus();
+                return;
+            }
+            
+            // Password validation
+            if (password.value.length < 6) {
+                e.preventDefault();
+                showMessage('Password must be at least 6 characters long', 'error');
+                password.focus();
+                return;
+            }
+            
+            if (password.value !== confirmPassword.value) {
+                e.preventDefault();
+                showMessage('Passwords do not match', 'error');
+                confirmPassword.focus();
+                return;
+            }
+            
+            // Show loading state
+            submitBtn.classList.add('loading');
+            submitBtn.innerHTML = '<i class="fas fa-spinner"></i> Creating Company...';
+            submitBtn.disabled = true;
+        });
+        
+        // Function to show temporary messages
+        function showMessage(message, type) {
+            const messagesDiv = document.querySelector('.messages');
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert ${type}`;
+            alertDiv.innerHTML = `
+                <i class="fas fa-${type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                ${message}
+            `;
+            messagesDiv.innerHTML = '';
+            messagesDiv.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                alertDiv.style.opacity = '0';
+                setTimeout(() => alertDiv.remove(), 300);
+            }, 5000);
+        }
+        
+        // Add floating label effect
+        const inputs = document.querySelectorAll('input, select, textarea');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.classList.add('focused');
+            });
+            
+            input.addEventListener('blur', function() {
+                if (!this.value) {
+                    this.parentElement.classList.remove('focused');
+                }
+            });
+        });
+        
+        // Real-time field validation
+        const nameFields = document.querySelectorAll('input[name="name"], input[name="username"]');
+        nameFields.forEach(field => {
+            field.addEventListener('input', function() {
+                if (this.value.trim() === '') {
+                    this.style.borderColor = '#fef2f2';
+                } else {
+                    this.style.borderColor = '#e2e8f0';
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

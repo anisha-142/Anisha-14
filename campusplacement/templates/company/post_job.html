@@ -1,0 +1,264 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Post Job | Company Dashboard{% endblock %}
+
+{# Suppress the public navbar & footer #}
+{% block navbar %}{% endblock %}
+{% block footer %}{% endblock %}
+
+{% block body_class %}company-dashboard-body{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* Reuse Dashboard Colors & Variables */
+  :root {
+    --cp: #8b5cf6;
+    --cp-dark: #7c3aed;
+    --cp-light: #a78bfa;
+    --cs: #1e1b4b;
+    --ca: #10b981;
+    --sidebar-w: 280px;
+  }
+
+  body.company-dashboard-body {
+    background: linear-gradient(135deg, #f5f3ff 0%, #ffffff 100%);
+    color: var(--cs);
+    min-height: 100vh;
+    display: flex;
+    overflow-x: hidden;
+    background-image: linear-gradient(135deg, #f5f3ff 0%, #ffffff 100%) !important;
+    background-attachment: initial !important;
+  }
+
+  /* ── SIDEBAR (Duplicate from Dashboard) ── */
+  .co-sidebar {
+    width: var(--sidebar-w);
+    background: #1e1b4b;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    color: white;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    padding: 30px 20px;
+    transition: all 0.3s ease;
+  }
+
+  .co-sidebar-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 800;
+    font-size: 1.4rem;
+    margin-bottom: 50px;
+    color: white;
+    text-decoration: none;
+  }
+
+  .co-sidebar-logo i { color: var(--cp-light); font-size: 1.9rem; }
+
+  .co-nav-menu { list-style: none; flex-grow: 1; }
+
+  .co-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 18px;
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    border-radius: 12px;
+    font-weight: 500;
+    margin-bottom: 6px;
+    transition: all 0.3s ease;
+  }
+
+  .co-nav-link:hover { background: rgba(255, 255, 255, 0.1); color: white; }
+  .co-nav-link.active { background: var(--cp); box-shadow: 0 4px 15px rgba(139, 92, 246, 0.35); color: white; }
+
+  .co-logout {
+    display: flex; align-items: center; gap: 14px; padding: 12px 18px;
+    color: #fca5a5; text-decoration: none; border-radius: 12px; font-weight: 600;
+    border-top: 1px solid rgba(255, 255, 255, 0.1); margin-top: 20px; transition: all 0.3s ease;
+  }
+  .co-logout:hover { color: #f87171; background: rgba(255, 255, 255, 0.05); }
+
+  /* ── MAIN ── */
+  .co-main {
+    margin-left: var(--sidebar-w);
+    flex-grow: 1;
+    padding: 40px;
+    min-height: 100vh;
+  }
+
+  .co-topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+  }
+
+  .co-topbar-title { font-weight: 700; font-size: 1rem; color: #64748b; letter-spacing: 2px; text-transform: uppercase; }
+
+  /* ── FORM STYLES ── */
+  .post-job-card {
+    background: white;
+    border-radius: 24px;
+    padding: 40px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .form-header { margin-bottom: 30px; border-bottom: 1px solid #f1f5f9; padding-bottom: 20px; }
+  .form-header h2 { font-size: 1.8rem; font-weight: 800; color: var(--cs); }
+  .form-header p { color: #64748b; font-size: 0.95rem; margin-top: 5px; }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .form-group { margin-bottom: 20px; }
+  .form-group.full-width { grid-column: span 2; }
+
+  .form-label {
+    display: block; font-size: 0.85rem; font-weight: 700; color: var(--cs);
+    margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+
+  .form-control {
+    width: 100%; padding: 14px 18px; border: 2px solid #e2e8f0; border-radius: 14px;
+    font-size: 0.95rem; color: var(--cs); background: #f8fafc; transition: all 0.3s ease;
+    font-family: inherit;
+  }
+  .form-control:focus { border-color: var(--cp); background: white; outline: none; box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1); }
+  
+  textarea.form-control { resize: vertical; min-height: 120px; }
+
+  .submit-btn {
+    background: var(--cp); color: white; border: none; padding: 16px 30px; font-size: 1.1rem;
+    font-weight: 800; border-radius: 14px; cursor: pointer; transition: all 0.3s ease;
+    width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px;
+  }
+  .submit-btn:hover { background: var(--cp-dark); transform: translateY(-3px); box-shadow: 0 10px 20px rgba(139, 92, 246, 0.3); }
+
+  .alert-error { background: #fee2e2; color: #991b1b; }
+  .alert-success { background: #dcfce7; color: #166534; }
+
+  @media (max-width: 768px) {
+    .co-sidebar { transform: translateX(-100%); }
+    .co-main { margin-left: 0; padding: 20px; }
+    .form-grid { grid-template-columns: 1fr; }
+    .form-group.full-width { grid-column: span 1; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- SIDEBAR -->
+<aside class="co-sidebar">
+  <a href="{% url 'company_home' %}" class="co-sidebar-logo">
+    <i class="fas fa-building"></i>
+    <span>{{ company.name }}</span>
+  </a>
+
+  <ul class="co-nav-menu">
+    <li><a href="{% url 'company_home' %}" class="co-nav-link"><i class="fas fa-th-large"></i> Dashboard</a></li>
+    <li><a href="{% url 'company_post_job' %}" class="co-nav-link active"><i class="fas fa-plus-circle"></i> Post Job</a></li>
+    <li><a href="{% url 'company_applications' %}" class="co-nav-link"><i class="fas fa-users"></i> Applications</a></li>
+    <li><a href="{% url 'company_interviews' %}" class="co-nav-link"><i class="fas fa-calendar-check"></i> Interviews</a></li>
+    <li><a href="{% url 'company_profile' %}" class="co-nav-link"><i class="fas fa-cog"></i> Profile Settings</a></li>
+  </ul>
+
+  <a href="{% url 'logout' %}" class="co-logout">
+    <i class="fas fa-sign-out-alt"></i> Logout
+  </a>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="co-main">
+  <nav class="co-topbar">
+    <span class="co-topbar-title">Partner Portal > Post Job</span>
+  </nav>
+
+  <div class="post-job-card animate__animated animate__fadeInUp">
+    <div class="form-header">
+      <h2>Post a New Opportunity</h2>
+      <p>Create a job listing to instantly reach the student pool.</p>
+    </div>
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert {% if message.tags == 'error' %}alert-error{% else %}alert-success{% endif %}" style="padding: 15px; border-radius: 12px; margin-bottom: 20px; font-weight:600;">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <form method="POST" action="{% url 'company_post_job' %}">
+      {% csrf_token %}
+      
+      <div class="form-grid">
+        <div class="form-group full-width">
+          <label class="form-label"><i class="fas fa-heading" style="color:var(--cp);"></i> Job Title</label>
+          <input type="text" name="title" class="form-control" placeholder="e.g. Associate Software Engineer" required>
+        </div>
+
+        <div class="form-group full-width">
+          <label class="form-label"><i class="fas fa-align-left" style="color:var(--cp);"></i> Job Description</label>
+          <textarea name="description" class="form-control" placeholder="Describe the role, responsibilities, and requirements..." required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label"><i class="fas fa-map-marker-alt" style="color:var(--cp);"></i> Location</label>
+          <input type="text" name="location" class="form-control" placeholder="e.g. Bangalore, Remote" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label"><i class="fas fa-money-bill-wave" style="color:var(--cp);"></i> Package (LPA)</label>
+          <input type="text" name="package" class="form-control" placeholder="e.g. 7.5 LPA" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label"><i class="fas fa-briefcase" style="color:var(--cp);"></i> Job Type</label>
+          <select name="job_type" class="form-control" required>
+            <option value="" disabled selected>Select Job Type</option>
+            <option value="Full-Time">Full-Time</option>
+            <option value="Internship">Internship</option>
+            <option value="Contract">Contract</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label"><i class="fas fa-calendar-times" style="color:var(--cp);"></i> Application Deadline</label>
+          <input type="date" name="deadline" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label"><i class="fas fa-graduation-cap" style="color:var(--cp);"></i> Minimum CGPA</label>
+          <input type="number" step="0.1" name="min_cgpa" class="form-control" placeholder="e.g. 7.0">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label"><i class="fas fa-times-circle" style="color:var(--cp);"></i> Max Backlogs Allowed</label>
+          <input type="number" name="max_backlogs" class="form-control" placeholder="e.g. 0">
+        </div>
+
+        <div class="form-group full-width">
+          <label class="form-label"><i class="fas fa-users" style="color:var(--cp);"></i> Eligible Departments</label>
+          <input type="text" name="eligible_departments" class="form-control" placeholder="e.g. BCA, BBA, Computer Science" required>
+        </div>
+      </div>
+
+      <button type="submit" class="submit-btn" style="margin-top: 20px;">
+        <i class="fas fa-paper-plane"></i> Publish Job Posting
+      </button>
+    </form>
+  </div>
+</main>
+{% endblock %}

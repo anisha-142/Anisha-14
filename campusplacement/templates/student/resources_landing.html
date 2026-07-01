@@ -1,0 +1,1162 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Placement Study Hub | JSS Portal{% endblock %}
+
+{% block body_class %}page-content{% endblock %}
+
+{% block extra_css %}
+<style>
+    .page-content-wrapper {
+        background: var(--bg-body);
+        padding: 40px 5%;
+    }
+
+    .container-hub {
+        max-width: 1300px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 24px;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        min-height: 85vh;
+        overflow: hidden;
+        position: relative;
+    }
+
+    /* Top Header */
+    .header-hub {
+        padding: 40px 50px 30px;
+        border-bottom: 1px solid var(--glass-border);
+        text-align: center;
+    }
+
+    .header-hub h1 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: var(--primary-dark);
+        margin-bottom: 10px;
+        display: inline-flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    /* Layout Container */
+    .hub-layout {
+        display: flex;
+        flex-grow: 1;
+    }
+
+    /* Vertical Sidebar Tabs */
+    .sidebar-tabs {
+        width: 320px;
+        background: #f8fafc;
+        border-right: 1px solid var(--glass-border);
+        padding: 30px 20px;
+        overflow-y: auto;
+    }
+
+    .tab-btn {
+        width: 100%;
+        text-align: left;
+        padding: 18px 20px;
+        background: transparent;
+        border: none;
+        border-radius: 12px;
+        font-size: 1.05rem;
+        font-weight: 600;
+        color: var(--text-muted);
+        cursor: pointer;
+        transition: 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 10px;
+    }
+
+    .tab-btn i {
+        font-size: 1.3rem;
+        width: 25px;
+        text-align: center;
+    }
+
+    .tab-btn:hover {
+        background: #e2e8f0;
+        color: var(--primary);
+    }
+
+    .tab-btn.active {
+        background: var(--primary);
+        color: white;
+        box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3);
+    }
+
+    /* Main Content View */
+    .content-view {
+        flex-grow: 1;
+        padding: 40px 50px;
+        overflow-y: auto;
+        max-height: 70vh;
+        background: white;
+    }
+
+    .tab-content {
+        display: none;
+        animation: fadeIn 0.4s ease;
+    }
+
+    .tab-content.active {
+        display: block;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .section-title {
+        font-size: 2rem;
+        color: #0f172a;
+        margin-bottom: 30px;
+        padding-bottom: 15px;
+        border-bottom: 3px solid #e0e7ff;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .topic-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 25px;
+    }
+
+    .topic-card {
+        background: #f8fafc;
+        border: 1px solid var(--glass-border);
+        border-radius: 16px;
+        padding: 25px;
+    }
+
+    .formula-box {
+        background: #eff6ff;
+        border-left: 4px solid #3b82f6;
+        padding: 15px 20px;
+        border-radius: 0 8px 8px 0;
+        margin: 10px 0 20px;
+    }
+
+    .code-block {
+        background: #0f172a;
+        color: #f8fafc;
+        padding: 25px;
+        border-radius: 12px;
+        font-family: 'Courier New', monospace;
+        overflow-x: auto;
+        line-height: 1.6;
+        font-size: 0.95rem;
+        margin: 15px 0;
+    }
+
+    .qa-box {
+        background: white;
+        border: 1px solid var(--glass-border);
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+    }
+
+    .pdf-ribbon {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin-bottom: 40px;
+        border-bottom: 2px dashed #cbd5e1;
+        padding-bottom: 30px;
+    }
+
+    .pdf-card {
+        background: white;
+        border: 1px solid var(--glass-border);
+        border-radius: 16px;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        transition: 0.3s;
+    }
+
+    .pdf-download {
+        background: #ef4444;
+        color: white;
+        text-decoration: none;
+        padding: 8px 15px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    /* Lock Overlay Styles */
+    .locked-overlay {
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        backdrop-filter: blur(12px);
+        background: rgba(255, 255, 255, 0.4);
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 24px;
+    }
+    
+    .locked-card {
+        background: white;
+        padding: 50px;
+        border-radius: 30px;
+        text-align: center;
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.1);
+        max-width: 500px;
+        animation: scaleUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    .locked-card i.fa-lock {
+        font-size: 4rem;
+        color: var(--primary);
+        margin-bottom: 25px;
+        background: var(--bg-body);
+        padding: 30px;
+        border-radius: 50%;
+        box-shadow: inset 0 5px 10px rgba(0,0,0,0.05);
+    }
+    
+    .locked-card h2 {
+        font-size: 2rem;
+        color: var(--secondary);
+        margin-bottom: 15px;
+    }
+    
+    .locked-card p {
+        color: var(--text-muted);
+        margin-bottom: 30px;
+        font-size: 1.1rem;
+    }
+    
+    .btn-login-lock {
+        display: inline-block;
+        padding: 15px 40px;
+        background: var(--gradient-primary);
+        color: white !important;
+        text-decoration: none;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        box-shadow: var(--shadow-button);
+        transition: 0.3s;
+    }
+    
+    .btn-login-lock:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 30px rgba(99, 102, 241, 0.4);
+    }
+
+    @keyframes scaleUp {
+        from { transform: scale(0.9); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+    }
+    
+    .locked-content {
+        filter: blur(8px);
+        user-select: none;
+        pointer-events: none;
+    }
+    
+    .filter-btn {
+        padding: 10px 18px;
+        border-radius: 10px;
+        border: 1px solid var(--glass-border);
+        background: white;
+        color: var(--text-muted);
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .filter-btn:hover {
+        background: #f1f5f9;
+        border-color: #cbd5e1;
+    }
+    .filter-btn.active {
+        background: var(--primary) !important;
+        color: white !important;
+        border-color: var(--primary) !important;
+        box-shadow: 0 4px 10px rgba(59, 130, 246, 0.25);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header" style="padding: 140px 10% 40px;">
+    <h1>Study Resources</h1>
+    <p>Everything you need for placement preparation in one place.</p>
+</div>
+
+<div class="page-content-wrapper">
+    <div class="container-hub animate__animated animate__fadeInUp">
+        
+        {% if is_locked %}
+        <div class="locked-overlay">
+            <div class="locked-card">
+                <i class="fas fa-lock"></i>
+                <h2>Access Restricted</h2>
+                <p>This premium placement study hub is exclusively available for registered candidates. Log in to unlock all resources.</p>
+                <a href="{% url 'login' %}?next={% url 'resources' %}" class="btn-login-lock">Portal Login</a>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="{% if is_locked %}locked-content{% endif %}" style="display: flex; flex-direction: column; flex-grow: 1;">
+            <div class="header-hub">
+                <h1><i class="fas fa-graduation-cap"></i> Complete Placement Guide 2026</h1>
+                <p>Your ultimate repository containing crucial formulas, code snippets, CS core theoretical concepts, and HR interview answers.</p>
+            </div>
+
+            <div class="hub-layout">
+                <div class="sidebar-tabs">
+                    <button class="tab-btn active" onclick="openTab('quant')"><i class="fas fa-calculator"></i> Quantitative Aptitude</button>
+                    <button class="tab-btn" onclick="openTab('logic')"><i class="fas fa-puzzle-piece"></i> Logical Reasoning</button>
+                    <button class="tab-btn" onclick="openTab('dsa')"><i class="fas fa-code"></i> Data Structures (DSA)</button>
+                    <button class="tab-btn" onclick="openTab('cs_core')"><i class="fas fa-server"></i> CS Core (DBMS, OS, CN)</button>
+                    <button class="tab-btn" onclick="openTab('php_prog')"><i class="fab fa-php"></i> PHP Programming</button>
+                    <button class="tab-btn" onclick="openTab('ai_ds')"><i class="fas fa-brain"></i> AI &amp; Data Science</button>
+                    <button class="tab-btn" onclick="openTab('dig_mkt')"><i class="fas fa-bullhorn"></i> Digital Marketing</button>
+                    <button class="tab-btn" onclick="openTab('hr')"><i class="fas fa-users"></i> HR Interview Preps</button>
+                    <button class="tab-btn" onclick="openTab('templates')"><i class="fas fa-folder"></i> All Subject Notes</button>
+                    
+                    <hr style="border: 0; border-top: 1px solid var(--glass-border); margin: 15px 0;">
+                    
+                    <a href="{% url 'practice' %}" class="tab-btn" style="text-decoration: none; color: white; background: var(--primary); justify-content: center;">
+                        <i class="fas fa-laptop-code" style="color: white; margin-right: 5px;"></i> Practice Arena
+                    </a>
+                </div>
+
+                <div class="content-view" id="main-content">
+                    <!-- QUANTITATIVE APTITUDE -->
+                    <div id="quant" class="tab-content active">
+                        <h2 class="section-title"><i class="fas fa-calculator"></i> Quantitative Aptitude MasterSheet</h2>
+                        <div class="pdf-ribbon">
+                            <div class="pdf-card">
+                                <div class="pdf-info">
+                                    <h4>TCS-NQT Complete Aptitude</h4>
+                                    <p>Comprehensive Offline PDF Module</p>
+                                </div>
+                                <a href="/static/resources/TCS-NQT%20Complete%20Aptitude.pdf" target="_blank" class="pdf-download"><i class="fas fa-book"></i> Read</a>
+                            </div>
+                        </div>
+                        <div class="topic-grid">
+                            <div class="topic-card">
+                                <h3>1. Numbers & LCM/HCF</h3>
+                                <div class="formula-box">
+                                    <strong>Key Formulas:</strong><br>
+                                    • Product of two numbers = Product of their HCF and LCM.<br>
+                                    • HCF of Fractions = (HCF of Numerators) / (LCM of Denominators)<br>
+                                    • LCM of Fractions = (LCM of Numerators) / (HCF of Denominators)
+                                </div>
+                            </div>
+                            <div class="topic-card">
+                                <h3>2. Time, Speed & Distance</h3>
+                                <div class="formula-box">
+                                    • Speed = Distance / Time<br>
+                                    • Average Speed = (2xy) / (x + y) (for equal distances at speeds x and y)<br>
+                                    • Relative Speed (Same Direction) = u - v<br>
+                                    • Relative Speed (Opposite Direction) = u + v
+                                </div>
+                            </div>
+                            <div class="topic-card">
+                                <h3>3. Profit, Loss & Discount</h3>
+                                <div class="formula-box">
+                                    • Profit % = (Profit / CP) * 100<br>
+                                    • SP = ((100 + Gain%) / 100) * CP<br>
+                                    • Discount = Marked Price - Selling Price
+                                </div>
+                            </div>
+                            <!-- Advanced Topics Added -->
+                            <div class="topic-card">
+                                <h3>4. Permutations & Combinations</h3>
+                                <div class="formula-box">
+                                    • Permutation (Arrangement): nPr = n! / (n-r)!<br>
+                                    • Combination (Selection): nCr = n! / (r! * (n-r)!)<br>
+                                    • Circular Permutation: (n-1)! for distinct objects
+                                </div>
+                            </div>
+                            <div class="topic-card">
+                                <h3>5. Probability</h3>
+                                <div class="formula-box">
+                                    • P(E) = Favorable outcomes / Total possible outcomes<br>
+                                    • Mutually Exclusive: P(A or B) = P(A) + P(B)<br>
+                                    • Independent Events: P(A and B) = P(A) * P(B)
+                                </div>
+                            </div>
+                            <div class="topic-card">
+                                <h3>6. Geometry & Mensuration</h3>
+                                <div class="formula-box">
+                                    • Circle: Area = πr², Circumference = 2πr<br>
+                                    • Cylinder: Volume = πr²h, Surface Area = 2πrh + 2πr²<br>
+                                    • Triangle: Area = ½ * base * height or √(s(s-a)(s-b)(s-c))
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- LOGICAL REASONING -->
+                    <div id="logic" class="tab-content">
+                        <h2 class="section-title"><i class="fas fa-puzzle-piece"></i> Logical Reasoning</h2>
+                        <div class="topic-grid">
+                            <div class="topic-card">
+                                <h3>1. Blood Relations</h3>
+                                <p class="text-slate-600 mb-4">Focus on family trees. Draw relationships generation by generation.</p>
+                                <div class="formula-box">
+                                    <strong>Common Symbols:</strong> Square (Male), Circle (Female), Single Line (Siblings), Double Line (Spouse).
+                                </div>
+                            </div>
+                            <div class="topic-card">
+                                <h3>2. Syllogisms</h3>
+                                <p class="text-slate-600">Use Venn Diagrams to validate conclusions. Remember: "Some A are B" does not always mean "Some B are NOT A".</p>
+                                <div class="formula-box">
+                                    <strong>Keywords:</strong> All, Some, None, Some Not. Always draw the minimal overlapping case to avoid false positives.
+                                </div>
+                            </div>
+                            <div class="topic-card">
+                                <h3>3. Coding-Decoding</h3>
+                                <div class="formula-box">
+                                    <strong>Alphabetic Positioning:</strong> A=1, E=5, J=10, O=15, T=20, Y=25 (EJOTY mnemonic). Always check for reverse positioning (Z=1, Y=2...).
+                                </div>
+                            </div>
+                            <!-- Advanced Topics Added -->
+                            <div class="topic-card">
+                                <h3>4. Seating Arrangements</h3>
+                                <p class="text-slate-600">Linear, Circular, and Matrix arrangements. Always fix the most constrained position first.</p>
+                                <div class="formula-box">
+                                    <strong>Tip:</strong> For circular facing center, Left = Clockwise, Right = Anti-clockwise. Facing outside is the exact opposite.
+                                </div>
+                            </div>
+                            <div class="topic-card">
+                                <h3>5. Clocks & Calendars</h3>
+                                <div class="formula-box">
+                                    • Angle between hands: |(30 * H) - (5.5 * M)|<br>
+                                    • Leap Year: Divisible by 4 (and 400 if century year).<br>
+                                    • Odd Days: Remainder when total days are divided by 7.
+                                </div>
+                            </div>
+                            <div class="topic-card">
+                                <h3>6. Data Sufficiency</h3>
+                                <p class="text-slate-600">Don't solve the problem! Just determine if the provided statements contain enough information to solve it.</p>
+                                <div class="formula-box">
+                                    <strong>Checklist:</strong> 1. Check A alone, 2. Check B alone, 3. Check A and B together.
+                                </div>
+                            </div>
+                            <div class="topic-card">
+                                <h3>7. Direction Sense</h3>
+                                <div class="formula-box">
+                                    • Pythagoras Theorem: c² = a² + b² (for finding shortest distance)<br>
+                                    • Sun sets in the West, rises in the East (shadow problems).
+                                </div>
+                            </div>
+                            <div class="topic-card">
+                                <h3>8. Number & Letter Series</h3>
+                                <div class="formula-box">
+                                    • Common patterns: Prime numbers, alternating series, squares/cubes ± n.<br>
+                                    • Fibonacci: 0, 1, 1, 2, 3, 5, 8, 13...
+                                </div>
+                            </div>
+                            <div class="topic-card">
+                                <h3>9. Venn Diagrams</h3>
+                                <div class="formula-box">
+                                    • n(A U B) = n(A) + n(B) - n(A ∩ B)<br>
+                                    • n(A U B U C) = n(A) + n(B) + n(C) - n(A ∩ B) - n(B ∩ C) - n(C ∩ A) + n(A ∩ B ∩ C)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- DATA STRUCTURES -->
+                    <div id="dsa" class="tab-content">
+                        <h2 class="section-title"><i class="fas fa-code"></i> Data Structures & Algorithms</h2>
+                        <div class="topic-grid">
+                            <div class="topic-card">
+                                <h3>1. Array & Strings</h3>
+                                <p class="text-slate-600 mb-2">Two Pointers, Sliding Window, Prefix Sum algorithms.</p>
+                                <div class="code-block">
+// Reverse an array in O(n/2)
+void reverse(int arr[], int n) {
+    for(int i=0; i < n/2; i++) {
+        swap(arr[i], arr[n-1-i]);
+    }
+}</div>
+                            </div>
+                            <div class="topic-card">
+                                <h3>2. Complexity Analysis</h3>
+                                <div class="formula-box">
+                                    • Binary Search: O(log n)<br>
+                                    • Quick Sort (Avg): O(n log n)<br>
+                                    • Merge Sort (All): O(n log n)<br>
+                                    • Hash Table: O(1) Avg
+                                </div>
+                            </div>
+                            <div class="topic-card">
+                                <h3>3. Linked Lists</h3>
+                                <p class="text-slate-600 mb-2">Fast & Slow Pointers, Reversal, Merge.</p>
+                                <div class="code-block">
+// Detect Loop in Linked List (Floyd's Cycle)
+bool hasCycle(Node* head) {
+    Node *slow = head, *fast = head;
+    while(fast && fast->next) {
+        slow = slow->next;
+        fast = fast->next->next;
+        if(slow == fast) return true;
+    }
+    return false;
+}</div>
+                            </div>
+                            <!-- Advanced Topics Added -->
+                            <div class="topic-card">
+                                <h3>4. Trees & Graphs</h3>
+                                <p class="text-slate-600 mb-2">Traversals (Inorder, Preorder, Postorder, BFS, DFS), Shortest Path, MST.</p>
+                                <div class="formula-box">
+                                    • BFS uses Queue. DFS uses Stack (or Recursion).<br>
+                                    • Dijkstra's Algorithm: O((V+E) log V)<br>
+                                    • BST Property: Left Child < Parent < Right Child
+                                </div>
+                            </div>
+                            <div class="topic-card">
+                                <h3>5. Dynamic Programming</h3>
+                                <p class="text-slate-600 mb-2">Overlapping Subproblems and Optimal Substructure. Memoization vs Tabulation.</p>
+                                <div class="formula-box">
+                                    <strong>Classic Problems:</strong> Fibonacci, 0/1 Knapsack, Longest Common Subsequence (LCS), Coin Change.
+                                </div>
+                            </div>
+                            <div class="topic-card">
+                                <h3>6. Sorting & Searching</h3>
+                                <p class="text-slate-600 mb-2">Know when to use which algorithm based on stability, space constraints, and data characteristics.</p>
+                                <div class="formula-box">
+                                    • Binary Search requires sorted array.<br>
+                                    • Merge Sort is stable. Quick Sort is in-place.<br>
+                                    • Counting Sort is O(N) but requires limited range.
+                                </div>
+                            </div>
+                            <div class="topic-card">
+                                <h3>7. Stacks & Queues</h3>
+                                <div class="formula-box">
+                                    • Stack: LIFO (Last In First Out). Uses: Valid Parentheses, Infix to Postfix.<br>
+                                    • Queue: FIFO (First In First Out). Uses: BFS, task scheduling.
+                                </div>
+                            </div>
+                            <div class="topic-card">
+                                <h3>8. Hashing & Heaps</h3>
+                                <div class="formula-box">
+                                    • Hash Table: O(1) average. Collision resolution: Chaining, Open Addressing.<br>
+                                    • Min Heap / Max Heap: Parent is always smaller/larger than children. Used for Priority Queues.
+                                </div>
+                            </div>
+                            <div class="topic-card">
+                                <h3>9. Bit Manipulation</h3>
+                                <div class="formula-box">
+                                    • n & (n-1): Clears the lowest set bit.<br>
+                                    • a ^ a = 0 (XOR). a ^ 0 = a.<br>
+                                    • Left shift: a << 1 (multiply by 2), Right shift: a >> 1 (divide by 2).
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CS CORE -->
+                    <div id="cs_core" class="tab-content">
+                        <h2 class="section-title"><i class="fas fa-server"></i> CS Core Essentials</h2>
+                        <div class="topic-grid">
+                            <div class="topic-card">
+                                <h3>1. Database Management (DBMS)</h3>
+                                <div class="formula-box">
+                                    <strong>ACID Properties:</strong> Atomicity, Consistency, Isolation, Durability.<br>
+                                    <strong>Normal Forms:</strong> 1NF (Atomic), 2NF (No partial dependency), 3NF (No transitive dependency), BCNF.<br>
+                                    <strong>Keys:</strong> Primary, Foreign, Candidate, Super, Alternate.<br>
+                                    <strong>Indexing:</strong> B-Trees, B+ Trees, Hashing to optimize retrieval speed.
+                                </div>
+                            </div>
+                            <div class="topic-card">
+                                <h3>2. Operating Systems (OS)</h3>
+                                <p class="text-slate-600">Process Management, Memory Management, and Concurrency.</p>
+                                <div class="formula-box">
+                                    <strong>Deadlock Conditions:</strong> Mutual Exclusion, Hold and Wait, No Preemption, Circular Wait.<br>
+                                    <strong>Scheduling Algorithms:</strong> FCFS, SJF, Round Robin, Priority Scheduling.<br>
+                                    <strong>Memory:</strong> Paging, Segmentation, Virtual Memory, Thrashing.
+                                </div>
+                            </div>
+                            <div class="topic-card">
+                                <h3>3. Computer Networks (CN)</h3>
+                                <div class="formula-box">
+                                    <strong>OSI Layers:</strong> Physical, Data Link, Network, Transport, Session, Presentation, Application.<br>
+                                    <strong>TCP vs UDP:</strong> TCP is reliable, connection-oriented. UDP is fast, connectionless.<br>
+                                    <strong>Key Protocols:</strong> HTTP/HTTPS, DNS, IP, ARP, ICMP, DHCP.<br>
+                                    <strong>Subnetting:</strong> IPv4 addressing, CIDR notation, subnet masks.
+                                </div>
+                            </div>
+                            <!-- Advanced Topics Added -->
+                            <div class="topic-card">
+                                <h3>4. Software Engineering</h3>
+                                <div class="formula-box">
+                                    <strong>SDLC Models:</strong> Waterfall, Agile, Scrum, DevOps.<br>
+                                    <strong>Testing:</strong> Unit, Integration, System, Acceptance, Regression.<br>
+                                    <strong>SOLID Principles:</strong> Single Responsibility, Open-Closed, Liskov Substitution, Interface Segregation, Dependency Inversion.
+                                </div>
+                            </div>
+                            <div class="topic-card">
+                                <h3>5. System Design Basics</h3>
+                                <div class="formula-box">
+                                    <strong>Scaling:</strong> Vertical (scale-up) vs Horizontal (scale-out).<br>
+                                    <strong>Load Balancing:</strong> Distributing traffic across multiple servers.<br>
+                                    <strong>Caching:</strong> Redis, Memcached. Reduces DB load.<br>
+                                    <strong>Microservices:</strong> Decoupled, independent deployable services vs Monolith.
+                                </div>
+                            </div>
+                            <div class="topic-card">
+                                <h3>6. Object Oriented Programming (OOP)</h3>
+                                <div class="formula-box">
+                                    <strong>Pillars:</strong> Encapsulation, Abstraction, Inheritance, Polymorphism.<br>
+                                    <strong>Access Modifiers:</strong> Public, Private, Protected.<br>
+                                    <strong>Overloading vs Overriding:</strong> Compile-time vs Run-time polymorphism.
+                                </div>
+                            </div>
+                            <div class="topic-card">
+                                <h3>7. Cloud Computing & DevOps</h3>
+                                <div class="formula-box">
+                                    <strong>IaaS, PaaS, SaaS:</strong> Infrastructure, Platform, Software as a service.<br>
+                                    <strong>CI/CD:</strong> Continuous Integration (Auto tests) / Continuous Deployment (Auto releases).<br>
+                                    <strong>Containers:</strong> Docker (lightweight virtualization), Kubernetes (orchestration).
+                                </div>
+                            </div>
+                            <div class="topic-card">
+                                <h3>8. Web Security & Cryptography</h3>
+                                <div class="formula-box">
+                                    <strong>Vulnerabilities:</strong> SQL Injection (un-sanitized inputs), XSS (cross-site scripting), CSRF.<br>
+                                    <strong>Encryption:</strong> Symmetric (same key) vs Asymmetric (Public/Private key).<br>
+                                    <strong>Hashing:</strong> One-way transformation (SHA-256, bcrypt).
+                                </div>
+                            </div>
+                            <div class="topic-card">
+                                <h3>9. REST APIs & Architecture</h3>
+                                <div class="formula-box">
+                                    <strong>HTTP Methods:</strong> GET (Read), POST (Create), PUT/PATCH (Update), DELETE (Remove).<br>
+                                    <strong>Status Codes:</strong> 200 (OK), 400 (Bad Request), 401 (Unauthorized), 404 (Not Found), 500 (Server Error).<br>
+                                    <strong>Statelessness:</strong> Server stores no client context between requests.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- HR INTERVIEW PREPS -->
+                    <div id="hr" class="tab-content">
+                        <h2 class="section-title"><i class="fas fa-users"></i> HR Interview Preps</h2>
+                        <div class="qa-box">
+                            <h4 class="font-bold text-jss-blue mb-2">Q: "Tell me about yourself."</h4>
+                            <p class="text-sm text-slate-600 italic">Target: 60-90 seconds. Structure: Present -> Past -> Future. Mention your current role/education, highlight 2-3 significant past achievements/projects, and end with why you're excited about this specific opportunity.</p>
+                        </div>
+                        <div class="qa-box">
+                            <h4 class="font-bold text-jss-blue mb-2">Q: "Why should we hire you?"</h4>
+                            <p class="text-sm text-slate-600 italic">Target: Align your specific skills with the job description. Give a concrete example of how your unique combination of skills solves a problem the company is currently facing.</p>
+                        </div>
+                        <div class="qa-box">
+                            <h4 class="font-bold text-jss-blue mb-2">Q: "What is your greatest weakness?"</h4>
+                            <p class="text-sm text-slate-600 italic">Target: Mention a real but non-critical weakness, and most importantly, show the actionable steps you are taking to improve it. Never say "I'm a perfectionist".</p>
+                        </div>
+                        <div class="qa-box">
+                            <h4 class="font-bold text-jss-blue mb-2">Q: "Where do you see yourself in 5 years?"</h4>
+                            <p class="text-sm text-slate-600 italic">Target: Show ambition but focus on learning and contributing to the company's growth. Express a desire for increased responsibility and expertise in your field.</p>
+                        </div>
+                        <!-- Advanced Topics Added -->
+                        <div class="qa-box" style="border-left: 4px solid #3b82f6;">
+                            <h4 class="font-bold text-jss-blue mb-2">Behavioral Questions: The STAR Method</h4>
+                            <p class="text-sm text-slate-600 italic mb-2">Use this to answer "Tell me about a time when..." questions.</p>
+                            <ul class="text-sm text-slate-700 list-disc pl-5">
+                                <li><strong>Situation:</strong> Set the scene and give necessary context.</li>
+                                <li><strong>Task:</strong> Describe your specific responsibility or the challenge.</li>
+                                <li><strong>Action:</strong> Explain exactly what YOU did (use "I", not "we").</li>
+                                <li><strong>Result:</strong> Share the positive outcome, using metrics if possible.</li>
+                            </ul>
+                        </div>
+                        <div class="qa-box">
+                            <h4 class="font-bold text-jss-blue mb-2">Q: "What are your salary expectations?"</h4>
+                            <p class="text-sm text-slate-600 italic">Target: Deflect if early in the process ("I'm currently focused on finding the right fit"). If pressed, provide a well-researched range based on the market and your skills, stating you're open to negotiation based on total compensation.</p>
+                        </div>
+                        <div class="qa-box">
+                            <h4 class="font-bold text-jss-blue mb-2">Q: "Do you have any questions for us?"</h4>
+                            <p class="text-sm text-slate-600 italic">Target: ALWAYS say yes. Ask about the team culture, the biggest challenges the team is facing right now, or the typical career path for this role. E.g., "What does a successful first 30 days look like in this role?"</p>
+                        </div>
+                        <div class="qa-box">
+                            <h4 class="font-bold text-jss-blue mb-2">Q: "Tell me about a time you failed."</h4>
+                            <p class="text-sm text-slate-600 italic">Target: Own the failure without blaming others. Focus 20% on the failure itself and 80% on what you learned and the systemic changes you made to prevent it from happening again.</p>
+                        </div>
+                        <div class="qa-box">
+                            <h4 class="font-bold text-jss-blue mb-2">Q: "How do you handle conflict in a team?"</h4>
+                            <p class="text-sm text-slate-600 italic">Target: Show empathy and communication skills. Mention active listening, addressing the issue privately, focusing on the shared goal, and finding a professional compromise.</p>
+                        </div>
+                    </div>
+
+                    <!-- ══════════════════════════════════════════════════════════
+                         PHP PROGRAMMING TAB
+                    ══════════════════════════════════════════════════════════ -->
+                    <div id="php_prog" class="tab-content">
+                        <h2 class="section-title"><i class="fab fa-php"></i> PHP Programming</h2>
+
+                        <!-- Download Ribbon -->
+                        {% if php_files %}
+                        <div class="pdf-ribbon" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:16px;border-bottom:2px dashed #cbd5e1;padding-bottom:28px;margin-bottom:32px;">
+                            {% for f in php_files %}
+                            <div class="pdf-card" style="border-radius:14px;border:1px solid var(--glass-border);background:white;padding:16px 18px;display:flex;align-items:center;gap:14px;box-shadow:0 4px 6px -1px rgba(0,0,0,0.04);transition:.3s;">
+                                <div style="width:46px;height:46px;border-radius:10px;background:#fff7ed;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;">
+                                    <i class="fas {{ f.icon }} {{ f.color }}"></i>
+                                </div>
+                                <div style="flex-grow:1;min-width:0;">
+                                    <h4 style="font-size:.85rem;font-weight:700;color:#1e293b;margin-bottom:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="{{ f.name }}">{{ f.name }}</h4>
+                                    <span style="font-size:.7rem;font-weight:600;color:#64748b;background:#f1f5f9;padding:2px 7px;border-radius:50px;text-transform:uppercase;">{{ f.file_type }}</span>
+                                </div>
+                                <a href="{% static f.name %}" target="_blank" style="background:#6366f1;color:white;padding:8px 14px;border-radius:8px;font-weight:600;font-size:.82rem;text-decoration:none;flex-shrink:0;"><i class="fas fa-external-link-alt"></i> Open</a>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <p style="color:var(--text-muted);margin-bottom:28px;">No PHP files found in the resources directory.</p>
+                        {% endif %}
+
+                        <!-- Topic Notes -->
+                        <div class="topic-grid">
+                            <div class="topic-card">
+                                <h3>1. PHP Basics – Variables, Datatypes &amp; Constants</h3>
+                                <div class="formula-box">
+                                    <strong>Variable Rules:</strong> Always start with <code>$</code>. Case-sensitive. No type declaration needed.<br>
+                                    <strong>Datatypes:</strong> String, Integer, Float, Boolean, Array, Object, NULL.<br>
+                                    <strong>Constants:</strong> <code>define("PI", 3.14);</code> or <code>const MAX = 100;</code> – global scope, no <code>$</code>.<br>
+                                    <strong>Magic Constants:</strong> <code>__LINE__</code>, <code>__FILE__</code>, <code>__DIR__</code>, <code>__FUNCTION__</code>, <code>__CLASS__</code>.
+                                </div>
+                            </div>
+                            <div class="topic-card">
+                                <h3>2. Operators &amp; Control Flow</h3>
+                                <div class="formula-box">
+                                    <strong>Operators:</strong> Arithmetic (+,-,*,/,%), Assignment (=,+=,-=), Comparison (==,===,!=,&lt;&gt;), Logical (&amp;&amp;,||,!), Ternary (?:), Null coalescing (??).<br>
+                                    <strong>Control:</strong> if/elseif/else, switch/case, match (PHP 8+).<br>
+                                    <strong>Loops:</strong> for, while, do-while, foreach (best for arrays).<br>
+                                    <strong>Jump:</strong> break, continue, return.
+                                </div>
+                            </div>
+                            <div class="topic-card">
+                                <h3>3. Functions &amp; Regular Expressions</h3>
+                                <div class="formula-box">
+                                    <strong>Functions:</strong> <code>function name($arg = default) { return ...; }</code><br>
+                                    <strong>Variable-length args:</strong> <code>...$args</code> (splat operator).<br>
+                                    <strong>Regex:</strong> <code>preg_match()</code>, <code>preg_replace()</code>, <code>preg_split()</code>.<br>
+                                    Common patterns: <code>/^[a-z]+$/i</code>, <code>/\d{10}/</code>, <code>/\b\w+@\w+\.\w+\b/</code>.
+                                </div>
+                            </div>
+                            <div class="topic-card">
+                                <h3>4. Arrays &amp; SuperGlobals</h3>
+                                <div class="formula-box">
+                                    <strong>Indexed:</strong> <code>$a = [1,2,3];</code> &nbsp; <strong>Associative:</strong> <code>$a = ['key'=>'val'];</code><br>
+                                    <strong>Key functions:</strong> array_push, array_pop, array_merge, array_keys, array_values, in_array, array_map, array_filter.<br>
+                                    <strong>SuperGlobals:</strong> $_GET, $_POST, $_SESSION, $_COOKIE, $_SERVER, $_FILES, $GLOBALS.
+                                </div>
+                            </div>
+                            <div class="topic-card">
+                                <h3>5. Object-Oriented PHP (OOP)</h3>
+                                <div class="formula-box">
+                                    <strong>Pillars:</strong> Encapsulation (access modifiers: public/protected/private), Inheritance (extends), Polymorphism, Abstraction (abstract class / interface).<br>
+                                    <strong>Constructor:</strong> <code>function __construct(...) {}</code><br>
+                                    <strong>Static:</strong> <code>self::$var</code>, <code>ClassName::method()</code>.<br>
+                                    <strong>Traits:</strong> horizontal code reuse across unrelated classes.
+                                </div>
+                            </div>
+                            <div class="topic-card">
+                                <h3>6. PHP with MySQL – CRUD</h3>
+                                <div class="formula-box">
+                                    <strong>Connect (MySQLi):</strong> <code>$conn = new mysqli($host,$user,$pass,$db);</code><br>
+                                    <strong>Query:</strong> <code>$res = $conn-&gt;query("SELECT * FROM table");</code><br>
+                                    <strong>Fetch:</strong> <code>$row = $res-&gt;fetch_assoc();</code><br>
+                                    <strong>Prepared Statements:</strong> Use <code>prepare/bind_param/execute</code> to prevent SQL injection.<br>
+                                    <strong>PDO:</strong> Database-agnostic; use named placeholders <code>:name</code>.
+                                </div>
+                            </div>
+                            <div class="topic-card">
+                                <h3>7. Sessions &amp; Cookies</h3>
+                                <div class="formula-box">
+                                    <strong>Session:</strong> <code>session_start();</code> then <code>$_SESSION['key'] = val;</code> Destroy: <code>session_destroy();</code><br>
+                                    <strong>Cookie:</strong> <code>setcookie(name, value, expiry, path);</code> Read: <code>$_COOKIE['name']</code>.<br>
+                                    <strong>Difference:</strong> Sessions stored server-side (secure); cookies stored client-side (persist across browser close).
+                                </div>
+                            </div>
+                            <div class="topic-card">
+                                <h3>8. HTTP Methods – GET vs POST</h3>
+                                <div class="formula-box">
+                                    <strong>GET:</strong> Data in URL query string; bookmarkable; max ~2 KB; idempotent – use for reads.<br>
+                                    <strong>POST:</strong> Data in request body; not cached; no size limit; use for writes/sensitive data.<br>
+                                    <strong>Form embedding:</strong> <code>&lt;form method="POST" action="handler.php"&gt;</code>.<br>
+                                    <strong>Embedding PHP:</strong> <code>&lt;?php echo $var; ?&gt;</code> or short echo <code>&lt;?= $var ?&gt;</code>.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ══════════════════════════════════════════════════════════
+                         AI & DATA SCIENCE TAB
+                    ══════════════════════════════════════════════════════════ -->
+                    <div id="ai_ds" class="tab-content">
+                        <h2 class="section-title"><i class="fas fa-brain"></i> Artificial Intelligence &amp; Data Science</h2>
+
+                        <!-- Download Ribbon -->
+                        {% if ai_files %}
+                        <div class="pdf-ribbon" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:16px;border-bottom:2px dashed #cbd5e1;padding-bottom:28px;margin-bottom:32px;">
+                            {% for f in ai_files %}
+                            <div class="pdf-card" style="border-radius:14px;border:1px solid var(--glass-border);background:white;padding:16px 18px;display:flex;align-items:center;gap:14px;box-shadow:0 4px 6px -1px rgba(0,0,0,0.04);transition:.3s;">
+                                <div style="width:46px;height:46px;border-radius:10px;background:#f0fdf4;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;">
+                                    <i class="fas {{ f.icon }} {{ f.color }}"></i>
+                                </div>
+                                <div style="flex-grow:1;min-width:0;">
+                                    <h4 style="font-size:.85rem;font-weight:700;color:#1e293b;margin-bottom:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="{{ f.name }}">{{ f.name }}</h4>
+                                    <span style="font-size:.7rem;font-weight:600;color:#64748b;background:#f1f5f9;padding:2px 7px;border-radius:50px;text-transform:uppercase;">{{ f.file_type }}</span>
+                                </div>
+                                <a href="{% static f.name %}" target="_blank" style="background:#10b981;color:white;padding:8px 14px;border-radius:8px;font-weight:600;font-size:.82rem;text-decoration:none;flex-shrink:0;"><i class="fas fa-external-link-alt"></i> Open</a>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <p style="color:var(--text-muted);margin-bottom:28px;">No AI / Data Science files found.</p>
+                        {% endif %}
+
+                        <!-- Topic Notes -->
+                        <div class="topic-grid">
+                            <div class="topic-card">
+                                <h3>1. Introduction to AI – Agents &amp; Environments</h3>
+                                <div class="formula-box">
+                                    <strong>Agent:</strong> Perceives environment via sensors, acts via actuators.<br>
+                                    <strong>PEAS:</strong> Performance measure, Environment, Actuators, Sensors.<br>
+                                    <strong>Environment types:</strong> Fully/Partially observable, Deterministic/Stochastic, Episodic/Sequential, Static/Dynamic, Discrete/Continuous.<br>
+                                    <strong>Agent types:</strong> Simple Reflex → Model-based → Goal-based → Utility-based → Learning Agent.
+                                </div>
+                            </div>
+                            <div class="topic-card">
+                                <h3>2. Problem Solving – Search Algorithms</h3>
+                                <div class="formula-box">
+                                    <strong>Uninformed:</strong> BFS (Complete, Optimal for unit cost), DFS (Not optimal), DLS, IDDFS, UCS.<br>
+                                    <strong>Informed (Heuristic):</strong> Greedy Best-First (f = h), A* (f = g + h), IDA*.<br>
+                                    <strong>Admissibility:</strong> h(n) ≤ true cost → A* is optimal.<br>
+                                    <strong>Local Search:</strong> Hill Climbing, Simulated Annealing, Genetic Algorithms (for large-space optimisation).
+                                </div>
+                            </div>
+                            <div class="topic-card">
+                                <h3>3. Knowledge Representation &amp; Reasoning</h3>
+                                <div class="formula-box">
+                                    <strong>Propositional Logic:</strong> AND (∧), OR (∨), NOT (¬), Implication (→), Biconditional (↔).<br>
+                                    <strong>First-Order Logic (FOL):</strong> Predicates, Quantifiers (∀, ∃), Functions.<br>
+                                    <strong>Inference:</strong> Modus Ponens, Resolution, Unification.<br>
+                                    <strong>Semantic Nets &amp; Frames:</strong> Graph-based KR structures.
+                                </div>
+                            </div>
+                            <div class="topic-card">
+                                <h3>4. Machine Learning – Core Concepts</h3>
+                                <div class="formula-box">
+                                    <strong>Types:</strong> Supervised (labelled data), Unsupervised (clustering), Reinforcement (reward-based).<br>
+                                    <strong>Key Algorithms:</strong> Linear/Logistic Regression, Decision Trees, SVM, k-NN, Naive Bayes, k-Means, Random Forest.<br>
+                                    <strong>Bias-Variance:</strong> High bias = underfitting; High variance = overfitting.<br>
+                                    <strong>Evaluation:</strong> Accuracy, Precision, Recall, F1-Score, ROC-AUC.
+                                </div>
+                            </div>
+                            <div class="topic-card">
+                                <h3>5. Data Science Lifecycle</h3>
+                                <div class="formula-box">
+                                    <strong>Steps:</strong> Problem Definition → Data Collection → EDA → Preprocessing → Modelling → Evaluation → Deployment.<br>
+                                    <strong>EDA Tools:</strong> Pandas (DataFrames), Matplotlib/Seaborn (visualisation), NumPy (arrays).<br>
+                                    <strong>Preprocessing:</strong> Handling nulls, encoding categoricals, feature scaling (StandardScaler, MinMaxScaler), feature engineering.
+                                </div>
+                            </div>
+                            <div class="topic-card">
+                                <h3>6. Data Mining &amp; Warehousing</h3>
+                                <div class="formula-box">
+                                    <strong>Data Mining:</strong> KDD process – Selection → Preprocessing → Transformation → Mining → Interpretation.<br>
+                                    <strong>Techniques:</strong> Classification, Clustering, Association Rules (Apriori – support, confidence, lift).<br>
+                                    <strong>Data Warehouse:</strong> OLAP (Online Analytical Processing) vs OLTP. Star schema, Snowflake schema, Fact &amp; Dimension tables.<br>
+                                    <strong>ETL:</strong> Extract, Transform, Load.
+                                </div>
+                            </div>
+                            <div class="topic-card">
+                                <h3>7. Deep Learning &amp; Neural Networks</h3>
+                                <div class="formula-box">
+                                    <strong>ANN:</strong> Input → Hidden layers → Output. Activation: ReLU, Sigmoid, Softmax.<br>
+                                    <strong>Backpropagation:</strong> Chain rule to compute gradients; optimised by SGD / Adam.<br>
+                                    <strong>CNN:</strong> Convolutional layers for image data (edge/pattern detection).<br>
+                                    <strong>RNN/LSTM:</strong> Sequential data – NLP, time-series.
+                                </div>
+                            </div>
+                            <div class="topic-card">
+                                <h3>8. Natural Language Processing (NLP)</h3>
+                                <div class="formula-box">
+                                    <strong>Pipeline:</strong> Tokenisation → Stopword removal → Stemming/Lemmatisation → Vectorisation → Model.<br>
+                                    <strong>Vectorisation:</strong> Bag of Words, TF-IDF, Word2Vec, BERT embeddings.<br>
+                                    <strong>Tasks:</strong> Sentiment Analysis, Named Entity Recognition (NER), Machine Translation, Text Summarisation.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ══════════════════════════════════════════════════════════
+                         DIGITAL MARKETING TAB
+                    ══════════════════════════════════════════════════════════ -->
+                    <div id="dig_mkt" class="tab-content">
+                        <h2 class="section-title"><i class="fas fa-bullhorn"></i> Digital Marketing</h2>
+
+                        <!-- Download Ribbon -->
+                        {% if dm_files %}
+                        <div class="pdf-ribbon" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:16px;border-bottom:2px dashed #cbd5e1;padding-bottom:28px;margin-bottom:32px;">
+                            {% for f in dm_files %}
+                            <div class="pdf-card" style="border-radius:14px;border:1px solid var(--glass-border);background:white;padding:16px 18px;display:flex;align-items:center;gap:14px;box-shadow:0 4px 6px -1px rgba(0,0,0,0.04);transition:.3s;">
+                                <div style="width:46px;height:46px;border-radius:10px;background:#fdf4ff;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;">
+                                    <i class="fas {{ f.icon }} {{ f.color }}"></i>
+                                </div>
+                                <div style="flex-grow:1;min-width:0;">
+                                    <h4 style="font-size:.85rem;font-weight:700;color:#1e293b;margin-bottom:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="{{ f.name }}">{{ f.name }}</h4>
+                                    <span style="font-size:.7rem;font-weight:600;color:#64748b;background:#f1f5f9;padding:2px 7px;border-radius:50px;text-transform:uppercase;">{{ f.file_type }}</span>
+                                </div>
+                                <a href="{% static f.name %}" target="_blank" style="background:#a855f7;color:white;padding:8px 14px;border-radius:8px;font-weight:600;font-size:.82rem;text-decoration:none;flex-shrink:0;"><i class="fas fa-external-link-alt"></i> Open</a>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <p style="color:var(--text-muted);margin-bottom:28px;">No Digital Marketing files found.</p>
+                        {% endif %}
+
+                        <!-- Topic Notes -->
+                        <div class="topic-grid">
+                            <div class="topic-card">
+                                <h3>1. Introduction to Digital Marketing</h3>
+                                <div class="formula-box">
+                                    <strong>Definition:</strong> Promotion of products/services through digital channels – search engines, social media, email, websites.<br>
+                                    <strong>Key Channels:</strong> SEO, SEM/PPC, Social Media Marketing (SMM), Content Marketing, Email Marketing, Affiliate Marketing, Influencer Marketing.<br>
+                                    <strong>Advantages over traditional:</strong> Measurable ROI, targeted audience, real-time analytics, cost-effective, global reach.
+                                </div>
+                            </div>
+                            <div class="topic-card">
+                                <h3>2. Search Engine Optimisation (SEO)</h3>
+                                <div class="formula-box">
+                                    <strong>On-Page SEO:</strong> Title tags, meta descriptions, heading hierarchy (H1-H6), keyword density, alt text, URL structure.<br>
+                                    <strong>Off-Page SEO:</strong> Backlinks (quality over quantity), Domain Authority (DA), social signals.<br>
+                                    <strong>Technical SEO:</strong> Site speed, mobile-friendliness, sitemap.xml, robots.txt, HTTPS, Core Web Vitals.<br>
+                                    <strong>Tools:</strong> Google Search Console, Ahrefs, SEMrush, Moz, Screaming Frog.
+                                </div>
+                            </div>
+                            <div class="topic-card">
+                                <h3>3. Search Engine Marketing (SEM) &amp; PPC</h3>
+                                <div class="formula-box">
+                                    <strong>PPC (Pay-Per-Click):</strong> Pay only when a user clicks the ad (Google Ads, Bing Ads).<br>
+                                    <strong>Ad Rank = Bid × Quality Score.</strong><br>
+                                    <strong>Quality Score factors:</strong> Expected CTR, Ad relevance, Landing page experience (1-10 scale).<br>
+                                    <strong>Metrics:</strong> CTR, CPC, CPM, CPA, ROAS, Impression Share, Conversion Rate.
+                                </div>
+                            </div>
+                            <div class="topic-card">
+                                <h3>4. Social Media Marketing (SMM)</h3>
+                                <div class="formula-box">
+                                    <strong>Platforms:</strong> Facebook/Instagram (Meta Ads), YouTube, LinkedIn (B2B), Twitter/X, Pinterest, Snapchat.<br>
+                                    <strong>Organic vs Paid:</strong> Organic = free posts; Paid = boosted/sponsored content with audience targeting.<br>
+                                    <strong>Content Types:</strong> Reels, Stories, Carousels, Lives, Polls, UGC (User Generated Content).<br>
+                                    <strong>Engagement Rate</strong> = (Likes + Comments + Shares) / Reach × 100.
+                                </div>
+                            </div>
+                            <div class="topic-card">
+                                <h3>5. Content Marketing</h3>
+                                <div class="formula-box">
+                                    <strong>Content Funnel:</strong> Awareness (blogs, infographics) → Consideration (case studies, webinars) → Decision (demos, testimonials).<br>
+                                    <strong>Content Calendar:</strong> Plan topics, formats, publishing dates, and distribution channels.<br>
+                                    <strong>SEO Content:</strong> Long-tail keywords, pillar pages, topic clusters, internal linking.<br>
+                                    <strong>KPIs:</strong> Page views, Time on page, Bounce rate, Leads generated.
+                                </div>
+                            </div>
+                            <div class="topic-card">
+                                <h3>6. Email Marketing</h3>
+                                <div class="formula-box">
+                                    <strong>List Building:</strong> Opt-in forms, lead magnets (ebooks, webinars), GDPR-compliant consent.<br>
+                                    <strong>Segmentation:</strong> By demographics, behaviour (clicks, purchases), lifecycle stage.<br>
+                                    <strong>Metrics:</strong> Open Rate, Click-Through Rate (CTR), Unsubscribe Rate, Deliverability, Conversion Rate.<br>
+                                    <strong>Tools:</strong> Mailchimp, SendGrid, HubSpot, ActiveCampaign.
+                                </div>
+                            </div>
+                            <div class="topic-card">
+                                <h3>7. Web Analytics &amp; Data-Driven Marketing</h3>
+                                <div class="formula-box">
+                                    <strong>Google Analytics 4 (GA4):</strong> Event-based model. Key metrics – Sessions, Users, Engagement Rate, Conversions.<br>
+                                    <strong>Key Concepts:</strong> Bounce Rate, Average Session Duration, Pages/Session, Goal Completion.<br>
+                                    <strong>UTM Parameters:</strong> Track campaign source, medium, and name in URLs.<br>
+                                    <strong>A/B Testing:</strong> Test one variable at a time; sufficient sample size needed for statistical significance.
+                                </div>
+                            </div>
+                            <div class="topic-card">
+                                <h3>8. E-Commerce &amp; Affiliate Marketing</h3>
+                                <div class="formula-box">
+                                    <strong>E-Commerce Funnels:</strong> Visit → Product View → Add to Cart → Checkout → Purchase → Retention.<br>
+                                    <strong>Cart Abandonment:</strong> Avg ~70%; recover with retargeting ads, abandoned-cart emails.<br>
+                                    <strong>Affiliate Marketing:</strong> Publisher earns commission per sale/lead through a tracked affiliate link.<br>
+                                    <strong>Influencer Tiers:</strong> Nano (&lt;10K), Micro (10-100K), Macro (100K-1M), Mega (&gt;1M) followers.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ALL SUBJECT NOTES RESOURCES -->
+                    <div id="templates" class="tab-content">
+                        <h2 class="section-title"><i class="fas fa-folder"></i> All Subject Notes Resources</h2>
+                        
+                        <!-- Search & Filter Controls -->
+                        <div class="search-filter-container" style="margin-bottom: 25px; display: flex; gap: 15px; flex-wrap: wrap; align-items: center; background: #f8fafc; padding: 15px 20px; border-radius: 16px; border: 1px solid var(--glass-border);">
+                            <div style="flex-grow: 1; position: relative; min-width: 250px;">
+                                <i class="fas fa-search" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
+                                <input type="text" id="resourceSearch" onkeyup="filterResources()" placeholder="Search from all resources..." style="width: 100%; padding: 12px 12px 12px 45px; border-radius: 10px; border: 1px solid var(--glass-border); outline: none; font-size: 0.95rem; font-weight: 500; transition: 0.3s; background: white;" />
+                            </div>
+                            <div class="filter-buttons" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                <button class="filter-btn active" onclick="filterType('all', this)">All Files</button>
+                                <button class="filter-btn" onclick="filterType('pdf', this)"><i class="fas fa-file-pdf text-red-500"></i> PDFs</button>
+                                <button class="filter-btn" onclick="filterType('presentation', this)"><i class="fas fa-file-powerpoint text-orange-500"></i> Presentations</button>
+                                <button class="filter-btn" onclick="filterType('word', this)"><i class="fas fa-file-word text-blue-500"></i> Word Docs</button>
+                            </div>
+                        </div>
+
+                        <!-- Categorized Subjects Accordion -->
+                        <div class="subjects-container" style="display: flex; flex-direction: column; gap: 20px;">
+                            {% for subject in subjects %}
+                            <div class="subject-card" id="card_{{ subject.safe_id }}" style="border-radius: 16px; border: 1px solid var(--glass-border); background: white; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02); transition: 0.3s;">
+                                <!-- Subject Header -->
+                                <div class="subject-header" onclick="toggleSubject('{{ subject.safe_id }}')" style="padding: 18px 24px; background: #f8fafc; border-bottom: 1px solid var(--glass-border); display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; transition: 0.2s;">
+                                    <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                                        <i class="fas fa-book-reader text-indigo-500" style="font-size: 1.25rem;"></i>
+                                        <h3 style="font-size: 1.1rem; font-weight: 700; color: #0f172a; margin: 0;">{{ subject.name }}</h3>
+                                        <span style="font-size: 0.75rem; font-weight: 700; color: var(--primary); background: rgba(79, 70, 229, 0.08); padding: 4px 10px; border-radius: 50px;">{{ subject.count }} File{{ subject.count|pluralize }}</span>
+                                    </div>
+                                    <div class="subject-chevron" id="chevron_{{ subject.safe_id }}" style="font-size: 1rem; color: #64748b; transition: transform 0.3s ease;">
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                </div>
+                                
+                                <!-- Subject Files List -->
+                                <div class="subject-content" id="content_{{ subject.safe_id }}" style="display: none; padding: 24px; border-top: 1px solid var(--glass-border); background: white;">
+                                    <div class="pdf-ribbon" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; border: none; padding: 0;">
+                                        {% for f in subject.files %}
+                                        <div class="pdf-card resource-item" data-name="{{ f.name|lower }}" data-type="{{ f.file_type_class }}" data-subject="{{ subject.safe_id }}" style="margin-bottom: 0; border-radius: 16px; border: 1px solid var(--glass-border); background: white; padding: 18px 22px; display: flex; align-items: center; gap: 20px; transition: all 0.3s ease; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02); width: 100%;">
+                                            <div class="file-icon-wrapper {{ f.bg_color }}" style="width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0;">
+                                                <i class="fas {{ f.icon }} {{ f.color }}"></i>
+                                            </div>
+                                            <div class="pdf-info" style="flex-grow: 1; min-width: 0;">
+                                                <h4 style="word-break: break-word; font-size: 0.95rem; font-weight: 700; color: #1e293b; margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="{{ f.name }}">{{ f.name }}</h4>
+                                                <span style="font-size: 0.75rem; font-weight: 600; color: #64748b; background: #f1f5f9; padding: 3px 8px; border-radius: 50px; text-transform: uppercase;">{{ f.file_type }}</span>
+                                            </div>
+                                            <a href="{% static f.name %}" target="_blank" class="pdf-download" style="background: var(--primary); color: white; display: flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 10px; font-weight: 600; font-size: 0.85rem; transition: 0.2s; box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.15); text-decoration: none; flex-shrink: 0;">
+                                                <i class="fas fa-external-link-alt"></i> Open
+                                            </a>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                            {% empty %}
+                            <p style="color: var(--text-muted); text-align: center; padding: 40px 0;">No study materials or template resources found.</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function openTab(tabId) {
+        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        event.currentTarget.classList.add('active');
+    }
+
+    function toggleSubject(id) {
+        const content = document.getElementById('content_' + id);
+        const chevron = document.getElementById('chevron_' + id);
+        
+        if (content.style.display === 'none') {
+            content.style.setProperty('display', 'block', 'important');
+            chevron.style.transform = 'rotate(180deg)';
+        } else {
+            content.style.setProperty('display', 'none', 'important');
+            chevron.style.transform = 'rotate(0deg)';
+        }
+    }
+
+    let currentType = 'all';
+    
+    function filterResources() {
+        const query = document.getElementById('resourceSearch').value.toLowerCase().trim();
+        const items = document.querySelectorAll('.resource-item');
+        
+        // Track how many items match per subject
+        const subjectMatchCounts = {};
+        
+        items.forEach(item => {
+            const name = item.getAttribute('data-name');
+            const type = item.getAttribute('data-type');
+            const subjectId = item.getAttribute('data-subject');
+            
+            const matchesSearch = name.includes(query);
+            const matchesType = (currentType === 'all' || type === currentType);
+            
+            if (matchesSearch && matchesType) {
+                item.style.setProperty('display', 'flex', 'important');
+                subjectMatchCounts[subjectId] = (subjectMatchCounts[subjectId] || 0) + 1;
+            } else {
+                item.style.setProperty('display', 'none', 'important');
+            }
+        });
+        
+        // Show or hide subjects based on match counts
+        document.querySelectorAll('.subject-card').forEach(card => {
+            const subjectId = card.id.replace('card_', '');
+            const matchCount = subjectMatchCounts[subjectId] || 0;
+            const content = document.getElementById('content_' + subjectId);
+            const chevron = document.getElementById('chevron_' + subjectId);
+            
+            if (matchCount > 0) {
+                card.style.setProperty('display', 'block', 'important');
+                // Automatically expand subject content if there is an active search query
+                if (query.length > 0 || currentType !== 'all') {
+                    content.style.setProperty('display', 'block', 'important');
+                    chevron.style.transform = 'rotate(180deg)';
+                }
+            } else {
+                if (query.length > 0 || currentType !== 'all') {
+                    card.style.setProperty('display', 'none', 'important');
+                } else {
+                    // Show all subjects collapsed by default if no active search or filter
+                    card.style.setProperty('display', 'block', 'important');
+                    content.style.setProperty('display', 'none', 'important');
+                    chevron.style.transform = 'rotate(0deg)';
+                }
+            }
+        });
+    }
+    
+    function filterType(type, btn) {
+        currentType = type;
+        
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        filterResources();
+    }
+</script>
+{% endblock %}

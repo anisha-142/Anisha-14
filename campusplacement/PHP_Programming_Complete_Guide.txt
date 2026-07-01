@@ -1,0 +1,98 @@
+================================================================================
+                    PHP PROGRAMMING: COMPLETE PLACEMENT GUIDE
+================================================================================
+
+1. INTRODUCTION TO PHP
+-----------------------
+PHP (Hypertext Preprocessor) is a widely-used open source general-purpose 
+scripting language that is especially suited for web development and can be 
+embedded into HTML. PHP runs on the server side, meaning the code is executed 
+on the server, and the plain HTML output is sent back to the browser.
+
+Syntax:
+<?php
+    echo "Hello from JSS Placement Study Vault!";
+?>
+
+2. CORE CONCEPTS & SYNTAX
+--------------------------
+- Variables in PHP start with a dollar sign ($) followed by the name:
+  $txt = "Hello World";
+  $x = 5;
+  $y = 10.5;
+
+- Loose Typing: PHP is loosely typed. You do not need to declare data types for 
+  variables, as PHP automatically associates a data type to the variable 
+  depending on its value.
+
+- Arrays: PHP supports three types of arrays:
+  1. Indexed Arrays - Arrays with a numeric index (e.g., $cars = array("Volvo", "BMW");)
+  2. Associative Arrays - Arrays with named keys (e.g., $age = array("Peter"=>"35", "Ben"=>"37");)
+  3. Multidimensional Arrays - Arrays containing one or more arrays.
+
+3. OBJECT-ORIENTED PHP (OOP)
+-----------------------------
+Modern PHP (PHP 7.0+) heavily utilizes OOP principles. Classes are templates for 
+objects, defined using the 'class' keyword:
+
+class Car {
+    public $color;
+    public $model;
+    
+    public function __construct($color, $model) {
+        $this->color = $color;
+        $this->model = $model;
+    }
+    
+    public function message() {
+        return "My car is a " . $this->color . " " . $this->model . ".";
+    }
+}
+
+$myCar = new Car("black", "Volvo");
+echo $myCar->message();
+
+4. DATABASE CONNECTIVITY (PDO)
+-------------------------------
+PDO (PHP Data Objects) is the modern, secure way to connect to databases in PHP. 
+It supports prepared statements, protecting applications against SQL Injection:
+
+try {
+    $conn = new PDO("mysql:host=$host;dbname=$db", $username, $password);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    
+    // Prepared Statement
+    $stmt = $conn->prepare("SELECT id, name FROM users WHERE email = :email");
+    $stmt->execute(['email' => $user_email]);
+    $user = $stmt->fetch();
+} catch(PDOException $e) {
+    echo "Connection failed: " . $e->getMessage();
+}
+
+================================================================================
+                        POPULAR PHP INTERVIEW QUESTIONS
+================================================================================
+
+Q1. What is the difference between GET and POST methods in PHP?
+---------------------------------------------------------------
+- GET: Appends variable name-value pairs to the URL (visible to everyone). 
+  Ideal for bookmarks, has length restrictions (max 2048 characters), and 
+  should never be used for sensitive data.
+- POST: Sends variables embedded in the HTTP request body (invisible in URL). 
+  No length restrictions, supports file uploads, and is secure for sending logins/keys.
+
+Q2. What are Sessions and Cookies in PHP?
+-----------------------------------------
+- Session: Stores sensitive user data on the server side under a unique session ID. 
+  It is temporary and destroyed when the browser closes. Created using session_start().
+- Cookie: Stores non-sensitive identifier data on the client side (browser). 
+  It has an expiration date and remains active after the browser is restarted.
+
+Q3. What is the difference between require and include in PHP?
+--------------------------------------------------------------
+- include: Imports a file. If the file is not found, a warning (E_WARNING) is 
+  thrown, but the script CONTINUES to run.
+- require: Imports a file. If the file is not found, a fatal error (E_COMPILE_ERROR) 
+  is thrown, and the script STOPS execution immediately.
+
+================================================================================

@@ -1,0 +1,89 @@
+================================================================================
+                ARTIFICIAL INTELLIGENCE & DATA SCIENCE FUNDAMENTALS
+================================================================================
+
+1. WHAT IS ARTIFICIAL INTELLIGENCE (AI)?
+-----------------------------------------
+Artificial Intelligence refers to the simulation of human intelligence processes 
+by machines, especially computer systems. These processes include:
+- Learning: The acquisition of information and rules for using it.
+- Reasoning: Using rules to reach approximate or definite conclusions.
+- Self-correction: Fine-tuning decisions based on accuracy results.
+
+2. MACHINE LEARNING (ML)
+-------------------------
+Machine Learning is a major subset of AI that provides systems the ability to 
+automatically learn and improve from experience without being explicitly 
+programmed.
+
+ML Algorithms are classified into three core types:
+- Supervised Learning: The algorithm is trained on labeled training data 
+  (e.g., Linear Regression, Decision Trees, Support Vector Machines).
+- Unsupervised Learning: The algorithm finds patterns or structures in unlabeled 
+  data (e.g., K-Means Clustering, Principal Component Analysis).
+- Reinforcement Learning: The algorithm learns to make decisions by trial and 
+  error, receiving rewards or penalties based on actions (e.g., Q-Learning).
+
+3. DEEP LEARNING (DL)
+----------------------
+Deep Learning is a specialized subfield of Machine Learning based on Artificial 
+Neural Networks (ANNs) with multiple hidden layers (hence "deep"). DL handles 
+large volumes of unstructured data extremely well:
+
+- Convolutional Neural Networks (CNNs): Primarily used for image processing and 
+  computer vision tasks.
+- Recurrent Neural Networks (RNNs) & LSTMs: Used for sequential data like time series 
+  and Natural Language Processing (NLP).
+- Transformers: Modern architecture that powers Large Language Models (LLMs) like GPT.
+
+4. THE DATA SCIENCE LIFECYCLE
+------------------------------
+Data Science combines stats, mathematics, and programming to extract meaningful 
+insights from structured and unstructured data.
+
+Core Pipeline:
+1. Data Acquisition: Retrieving data from databases, APIs, CSVs, or web scraping.
+2. Data Preprocessing & Cleaning: Dealing with missing values, removing outliers, 
+   normalizing features, and encoding categorical columns.
+3. Exploratory Data Analysis (EDA): Visualizing distributions and relationships 
+   using Python libraries like Pandas, Matplotlib, and Seaborn.
+4. Model Training: Fitting ML models to training datasets using libraries like Scikit-Learn.
+5. Evaluation: Measuring accuracy, precision, recall, and F1-score on a test set.
+
+================================================================================
+                    AI & DATA SCIENCE INTERVIEW QUESTIONS
+================================================================================
+
+Q1. What is the difference between Overfitting and Underfitting?
+-----------------------------------------------------------------
+- Overfitting: The model performs extremely well on the training data but poorly 
+  on unseen test data because it memorized the noise/patterns. 
+  * Solutions: Reduce model complexity, apply L1/L2 regularization, or add more data.
+- Underfitting: The model is too simple to capture the underlying trend of the data, 
+  performing poorly on both training and test sets.
+  * Solutions: Use a more complex model, engineer better features, or train longer.
+
+Q2. What is the "Bias-Variance Tradeoff"?
+-----------------------------------------
+- Bias: Error introduced by simplifying assumptions made by the model. 
+  High bias leads to underfitting.
+- Variance: Error introduced by the model's sensitivity to small fluctuations in 
+  the training set. High variance leads to overfitting.
+- Tradeoff: As you decrease bias (increase model complexity), variance increases, 
+  and vice versa. The goal is to find the sweet spot that minimizes total error.
+
+Q3. What is a Confusion Matrix?
+-------------------------------
+A Confusion Matrix is a table used to describe the performance of a classification 
+model on a set of test data for which the true values are known. It details:
+- True Positive (TP): Predicted Yes, Actual Yes.
+- True Negative (TN): Predicted No, Actual No.
+- False Positive (FP): Predicted Yes, Actual No (Type I Error).
+- False Negative (FN): Predicted No, Actual Yes (Type II Error).
+
+Metrics:
+- Accuracy = (TP + TN) / (TP + TN + FP + FN)
+- Precision = TP / (TP + FP)  -- out of all predicted positive, how many were correct?
+- Recall (Sensitivity) = TP / (TP + FN) -- out of all actual positive, how many did we find?
+
+================================================================================

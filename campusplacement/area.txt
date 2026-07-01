@@ -1,0 +1,23 @@
+# shell script to find area of a square,rectangle,circle and triangle
+clear
+echo "enter the side of a square"
+read s
+echo "enter the length and breadth of a rectangle"
+read l 
+read b
+echo "enter the radius of a circle"
+read r
+echo "enter the base and height of a triangle"
+read bs
+read h
+as=`expr $s \* $s`
+ar=`expr $l \* $b`
+ac=`echo 3.142  \*  $r  \*  $r  | bc `
+at=`echo 0.5 \* $bs \* $h  | bc `
+echo area of a square = $as
+echo area of a reactangle=$ar
+echo  area of a circle = $ac
+echo  area of a triangle =$at
+
+
+

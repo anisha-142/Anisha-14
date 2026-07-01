@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Contact Us | JSS SMI UG & PG Studies{% endblock %}
+
+{% block content %}
+
+<!-- Hero Banner (matches other pages) -->
+<section class="page-header relative">
+    <div class="absolute inset-0 bg-jss-blue/80 z-[-1] rounded-b-[40px] md:rounded-b-[60px]" style="top: -120px;"></div>
+    <div class="animate__animated animate__fadeInDown">
+        <h1 class="font-black text-5xl md:text-6xl text-white mb-4">Contact Us</h1>
+        <div class="underline"></div>
+        <p class="mt-6 text-slate-300 text-xl font-light tracking-wide">
+            Get in touch with the JSS SMI placement cell and leadership.
+        </p>
+    </div>
+</section>
+
+<!-- Main Page Content -->
+<div class="page-content-wrapper">
+    <div class="max-w-7xl mx-auto">
+
+        <!-- Info & Form Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-12">
+            
+            <!-- Contact Details Card -->
+            <div class="glass-card animate__animated animate__fadeInLeft h-full" style="box-shadow: 0 20px 50px rgba(0,0,0,0.05); padding: 40px;">
+                <h3 class="text-3xl font-black text-slate-800 mb-8 border-b-2 border-indigo-100 pb-4">
+                    College Address & Office
+                </h3>
+                
+                <div class="space-y-6">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center shrink-0">
+                            <i class="fas fa-map-marker-alt text-indigo-600 text-xl"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-bold text-slate-800">Principal</h4>
+                            <p class="text-slate-600 font-medium">
+                                JSS Shri Manjunatheshwara Institute of UG and PG Studies<br>
+                                Vidyagiri, Dharwad-580004
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center shrink-0">
+                            <i class="fas fa-phone-alt text-indigo-600 text-xl"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-bold text-slate-800">Office Contact</h4>
+                            <p class="text-slate-600 font-medium tracking-wide">
+                                0836 - 2460886<br>
+                                9980292705 / 8123627730 / 8050489914
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center shrink-0">
+                            <i class="fas fa-envelope text-indigo-600 text-xl"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-bold text-slate-800">Mail ID</h4>
+                            <p class="text-slate-600 font-medium">
+                                <a href="mailto:jsssmiugpg@gmail.com" class="hover:text-indigo-600 transition-colors">jsssmiugpg@gmail.com</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Governing Body Card -->
+            <div class="glass-card animate__animated animate__fadeInRight h-full" style="box-shadow: 0 20px 50px rgba(0,0,0,0.05); padding: 40px;">
+                <h3 class="text-3xl font-black text-slate-800 mb-8 border-b-2 border-indigo-100 pb-4">
+                    Governing Body Office
+                </h3>
+                <div class="space-y-6">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center shrink-0">
+                            <i class="fas fa-building text-slate-600 text-xl"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-bold text-slate-800">Address</h4>
+                            <p class="text-slate-600 font-medium">
+                                Janata Shikshana Samiti,<br>
+                                Vidyagiri, Dharwad-580004
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center shrink-0">
+                            <i class="fas fa-address-book text-slate-600 text-xl"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-bold text-slate-800">Contact Details</h4>
+                            <p class="text-slate-600 font-medium mt-2">
+                                <strong>Office:</strong> 0836 - 2461184<br>
+                                <strong>Fax:</strong> 0836 - 2467479<br>
+                                <strong>Mail:</strong> <a href="mailto:jssgbo.dharwad@gmail.com" class="hover:text-indigo-600">jssgbo.dharwad@gmail.com</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Campus Map Embed -->
+        <div class="glass-card animate__animated animate__fadeInUp overflow-hidden w-full mb-16" style="padding: 0; border: 4px solid white; box-shadow: 0 20px 50px rgba(0,0,0,0.05); display: flex; flex-direction: column;">
+            <div class="bg-indigo-600 p-6 text-white">
+                <h3 class="text-2xl font-bold flex items-center gap-3">
+                    <i class="fas fa-map-marked-alt text-amber-400"></i> Full Campus Map
+                </h3>
+                <p class="text-indigo-100 mt-1 font-medium text-sm">Vidyagiri, Dharwad Campus</p>
+            </div>
+            <div class="w-full relative min-h-[600px] h-[65vh]">
+                <iframe 
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15383.003117467657!2d75.00030589999999!3d15.444399!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bb8d2a6a02b66bf%3A0xcadcd28825227cd7!2sJSS%20Banashankari%20Arts%2C%20Commerce%20and%20S.K.%20Gubbi%20Science%20College!5e0!3m2!1sen!2sin!4v1712211900000!5m2!1sen!2sin" 
+                    class="absolute inset-0 w-full h-full border-0" 
+                    allowfullscreen="" 
+                    loading="lazy" 
+                    referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,14 @@
+ #shell script to exchange the content of two variables
+echo "enter the value for v1: "
+read v1
+echo "enter the value for v2: "
+read v2
+echo -e "values before swap  \n v1=$v1  \n v2=$v2"
+temp=$v1
+v1=$v2
+v2=$temp
+echo -e "values after swap   \n v1=$v1  \n v2=$v2"
+
+
+
+

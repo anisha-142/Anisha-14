@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ student.user.first_name }} {{ student.user.last_name }} - Resume</title>
+    <!-- html2pdf.js library -->
+    <script>
+        // Load html2pdf.js and auto-trigger once ready
+        (function() {
+            var s = document.createElement('script');
+            s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
+            s.onload = function() {
+                // Auto-download after a short delay to let page render
+                setTimeout(triggerDownload, 800);
+            };
+            s.onerror = function() {
+                console.error('html2pdf.js failed to load. Falling back to print.');
+                setTimeout(function() { window.print(); }, 500);
+            };
+            document.head.appendChild(s);
+        })();
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: #e2e8f0;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+
+        .resume-container {
+            width: 850px;
+            min-height: 1100px; /* Standard letter size proportion */
+            background: #ffffff;
+            margin: 40px auto;
+            padding: 50px 60px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        /* HEADER */
+        .header {
+            border-bottom: 2px solid #3b82f6;
+            padding-bottom: 20px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .header h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1.1;
+            margin-bottom: 5px;
+        }
+
+        .header h2 {
+            font-size: 1.2rem;
+            color: #3b82f6;
+            font-weight: 600;
+        }
+
+        .contact-info {
+            text-align: right;
+            font-size: 0.9rem;
+            color: #475569;
+        }
+
+        .contact-info p {
+            margin-bottom: 3px;
+        }
+
+        /* SECTION */
+        .section {
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #0f172a;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #cbd5e1;
+            display: flex;
+            align-items: center;
+        }
+
+        .summary {
+            font-size: 0.95rem;
+            color: #334155;
+            text-align: justify;
+        }
+
+        /* EDUCATION */
+        .edu-item {
+            margin-bottom: 15px;
+        }
+
+        .edu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 700;
+            color: #1e293b;
+            font-size: 1.05rem;
+        }
+
+        .edu-sub {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: #64748b;
+            font-style: italic;
+        }
+
+        .edu-details {
+            margin-top: 5px;
+            font-size: 0.95rem;
+            color: #334155;
+        }
+
+        /* SKILLS */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .skill-group h4 {
+            font-size: 0.95rem;
+            color: #1e293b;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .skill-list {
+            font-size: 0.9rem;
+            color: #475569;
+        }
+
+        /* PRINT STYLES */
+        @media print {
+            body {
+                background: white;
+            }
+            .resume-container {
+                margin: 0;
+                padding: 0;
+                box-shadow: none;
+                width: 100%;
+            }
+            @page {
+                size: auto;
+                margin: 20mm;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+
+        /* UTILS */
+        .btn-print {
+            display: block;
+            width: 200px;
+            margin: 20px auto;
+            background: #3b82f6;
+            color: white;
+            text-align: center;
+            padding: 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
+        }
+        .btn-print:hover { background: #2563eb; }
+    </style>
+</head>
+<body>
+
+    <div class="no-print" style="text-align:center; margin: 20px auto; display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
+        <button id="downloadBtn" onclick="downloadAsPDF()" class="btn-print" style="margin:0; display:inline-flex; align-items:center; gap:8px;">
+            <i class="fas fa-file-download"></i> <span id="dlBtnText">Download PDF</span>
+        </button>
+        <button onclick="window.print()" class="btn-print" style="background:#64748b; margin:0; display:inline-flex; align-items:center; gap:8px;">
+            <i class="fas fa-print"></i> Print / Save
+        </button>
+    </div>
+
+    <div class="resume-container" id="resumeContent">
+        <!-- HEADER -->
+        <div class="header">
+            <div>
+                <h1>{{ student.user.first_name }} {{ student.user.last_name }}</h1>
+                <h2>{{ target_role }}</h2>
+            </div>
+            <div class="contact-info">
+                <p>{{ student.user.email }}</p>
+                <p>{{ student.phone|default:"+91 98765 43210" }}</p>
+                <p>{{ student.address|default:"Bangalore, India" }}</p>
+            </div>
+        </div>
+
+        <!-- SUMMARY -->
+        <div class="section">
+            <div class="section-title">Professional Summary</div>
+            <p class="summary">{{ custom_summary|default:"Highly motivated and detail-oriented professional with a strong academic foundation. Eager to leverage skills and technical knowledge to contribute effectively in the industry." }}</p>
+        </div>
+
+        <!-- EDUCATION -->
+        <div class="section">
+            <div class="section-title">Education</div>
+            
+            <div class="edu-item">
+                <div class="edu-header">
+                    <span>{{ student.college.name|default:"JSS College" }}</span>
+                    <span>2020 - 2024</span>
+                </div>
+                <div class="edu-sub">
+                    <span>{{ custom_education|default:"Bachelor of Technology / Degree" }}</span>
+                    <span>
+                        CGPA: {{ student.cgpa|default:"N/A" }}
+                        {% if custom_backlogs and custom_backlogs != "0" %}
+                        &nbsp;|&nbsp; Active Backlogs: {{ custom_backlogs }}
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+            
+            {% if student.percentage_12th %}
+            <div class="edu-item">
+                <div class="edu-header">
+                    <span>Pre-University College (12th Grade)</span>
+                </div>
+                <div class="edu-sub">
+                    <span>Percentage: {{ student.percentage_12th }}%</span>
+                </div>
+            </div>
+            {% endif %}
+            
+            {% if student.percentage_10th %}
+            <div class="edu-item">
+                <div class="edu-header">
+                    <span>Secondary School (10th Grade)</span>
+                </div>
+                <div class="edu-sub">
+                    <span>Percentage: {{ student.percentage_10th }}%</span>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- SKILLS -->
+        <div class="section">
+            <div class="section-title">Technical Skills</div>
+            <div class="skills-grid">
+                <div class="skill-group" style="grid-column: span 2;">
+                    <h4>Core Competencies</h4>
+                    <p class="skill-list">
+                        {% for skill in custom_skills %}
+                            {{ skill }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- EXPERIENCE -->
+        {% if custom_experience %}
+        <div class="section">
+            <div class="section-title">Professional Experience & Internships</div>
+            <div class="edu-item">
+                <div class="edu-header">{{ custom_experience }}</div>
+                <ul style="margin-top: 5px; margin-left: 20px; font-size: 0.95rem; color: #334155;">
+                    <li>Contributed to key project deliverables and collaborated with cross-functional teams.</li>
+                    <li>Applied theoretical knowledge to solve real-world problems effectively.</li>
+                </ul>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- PROJECTS -->
+        <div class="section">
+            <div class="section-title">Academic & Personal Projects</div>
+            
+            <div class="edu-item" style="margin-bottom: 20px;">
+                <div class="edu-header">{{ custom_project|default:"Campus Placement Portal System" }}</div>
+                <div class="edu-sub">Role: Lead Developer</div>
+                <ul style="margin-top: 5px; margin-left: 20px; font-size: 0.95rem; color: #334155;">
+                    <li>Designed and developed a comprehensive solution tailored to requirements.</li>
+                    <li>Integrated modern aesthetic UI frameworks and database management.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ACHIEVEMENTS -->
+        <div class="section">
+            <div class="section-title">Achievements & Certifications</div>
+            <ul style="margin-left: 20px; font-size: 0.95rem; color: #334155; line-height: 1.8;">
+                {% if custom_awards %}
+                    <li>{{ custom_awards }}</li>
+                {% endif %}
+                <li>Successfully solved 300+ coding problems on platforms like LeetCode and HackerRank.</li>
+                <li>Certified in Advanced Python Programming.</li>
+                <li>Participated in national-level hackathons and secured a top 10 position in the Web Development track.</li>
+            </ul>
+        </div>
+        
+    </div>
+
+    <script>
+        var pdfFilename = '{% if student.user.first_name %}{{ student.user.first_name }}_{{ student.user.last_name }}{% else %}{{ student.user.username }}{% endif %}_Resume.pdf';
+
+        function downloadAsPDF() {
+            if (typeof html2pdf === 'undefined') {
+                alert('PDF engine is still loading. Please wait a moment and try again.');
+                return;
+            }
+            var btn = document.getElementById('downloadBtn');
+            var btnText = document.getElementById('dlBtnText');
+            if (btn) { btn.disabled = true; btnText.textContent = 'Generating...'; }
+
+            var element = document.getElementById('resumeContent');
+            var opt = {
+                margin:      [8, 10, 8, 10],
+                filename:    pdfFilename,
+                image:       { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true, letterRendering: true },
+                jsPDF:       { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            html2pdf().set(opt).from(element).save().then(function() {
+                if (btn) { btn.disabled = false; btnText.textContent = 'Download PDF'; }
+            }).catch(function(err) {
+                console.error('PDF generation failed:', err);
+                if (btn) { btn.disabled = false; btnText.textContent = 'Download PDF'; }
+                alert('PDF generation failed. Use the Print / Save button instead.');
+            });
+        }
+
+        // Called by the script loader above once html2pdf.js is ready
+        function triggerDownload() {
+            downloadAsPDF();
+        }
+    </script>
+</body>
+</html>

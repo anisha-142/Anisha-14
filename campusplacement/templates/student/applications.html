@@ -1,0 +1,485 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Applications | JSS Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary2: #60a5fa;
+            --accent: #93c5fd;
+            --rose: #f43f5e;
+            --amber: #f59e0b;
+            --green: #10b981;
+            --dark: #0b1a33;
+            --dark2: #1a3650;
+            --card: rgba(255,255,255,0.05);
+            --border: rgba(255,255,255,0.1);
+            --text: #e2e8f0;
+            --muted: #94a3b8;
+            --sidebar-w: 270px;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        html { scroll-behavior:smooth; }
+        body {
+            font-family:'Inter',sans-serif;
+            background:linear-gradient(145deg,var(--dark) 0%,var(--dark2) 100%);
+            background-attachment:fixed;
+            color:var(--text);
+            min-height:100vh;
+            overflow-x:hidden;
+        }
+        .campus-bg {
+            position:fixed; inset:0; z-index:0;
+            background-image:url("{% static 'images/campus_s2.jpg' %}");
+            background-size:cover; background-position:center; background-attachment:fixed;
+        }
+        .campus-bg::after {
+            content:''; position:absolute; inset:0;
+            background:linear-gradient(135deg,rgba(11,26,51,0.75) 0%,rgba(26,54,80,0.65) 50%,rgba(11,26,51,0.75) 100%);
+        }
+        /* ── SIDEBAR ── */
+        .sidebar {
+            position:fixed; left:0; top:0; height:100%; width:var(--sidebar-w);
+            z-index:1000; background:rgba(11,26,51,0.4); backdrop-filter:blur(15px);
+            border-right:1px solid var(--border); box-shadow:4px 0 30px rgba(0,0,0,.3);
+            display:flex; flex-direction:column; transition:transform .35s cubic-bezier(.4,0,.2,1);
+        }
+        .sidebar-logo {
+            padding:28px 22px 22px; display:flex; align-items:center; gap:14px;
+            border-bottom:1px solid rgba(255,255,255,.05); position:relative;
+        }
+        .sidebar-logo::after {
+            content:''; position:absolute; bottom:0; left:10%; right:10%; height:1px;
+            background:linear-gradient(90deg,transparent,var(--primary),transparent);
+        }
+        .logo-gem {
+            width:44px; height:44px; border-radius:13px; flex-shrink:0;
+            background:linear-gradient(135deg,var(--primary),var(--accent));
+            display:flex; align-items:center; justify-content:center;
+            font-size:20px; color:white; box-shadow:0 6px 20px rgba(59,130,246,.5);
+        }
+        .logo-name { font-size:16px; font-weight:800; color:white; line-height:1.1; }
+        .logo-name span { font-size:11px; font-weight:400; color:#cbd5e1; display:block; }
+        .sidebar-nav { flex:1; padding:16px 12px; overflow-y:auto; }
+        .nav-section {
+            font-size:9px; font-weight:700; color:var(--muted);
+            text-transform:uppercase; letter-spacing:2px; padding:14px 12px 6px;
+        }
+        .nav-link {
+            display:flex; align-items:center; gap:13px; padding:11px 14px;
+            border-radius:12px; text-decoration:none; color:#cbd5e1;
+            font-weight:500; font-size:13px; transition:all .22s ease;
+            margin-bottom:3px; position:relative;
+        }
+        .nav-link .nav-icon {
+            width:34px; height:34px; border-radius:9px; flex-shrink:0;
+            display:flex; align-items:center; justify-content:center; font-size:14px;
+            background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.06);
+            transition:all .22s;
+        }
+        .nav-link:hover { color:white; transform:translateX(4px); background:rgba(255,255,255,0.05); }
+        .nav-link:hover .nav-icon { background:linear-gradient(135deg,var(--primary),var(--accent)); border-color:transparent; box-shadow:0 4px 14px rgba(59,130,246,.45); color:white; }
+        .nav-link.active { color:white; background:rgba(255,255,255,0.1); box-shadow:0 4px 20px rgba(0,0,0,.2); }
+        .nav-link.active::before { content:''; position:absolute; left:0; top:20%; bottom:20%; width:3px; background:linear-gradient(180deg,var(--primary),var(--accent)); border-radius:0 2px 2px 0; }
+        .nav-link.active .nav-icon { background:linear-gradient(135deg,var(--primary),var(--accent)); border-color:transparent; box-shadow:0 4px 14px rgba(59,130,246,.45); color:white; }
+        .sidebar-user {
+            margin:12px; padding:16px 14px; border-radius:14px;
+            background:rgba(59,130,246,.08); border:1px solid rgba(59,130,246,.18);
+            display:flex; align-items:center; gap:12px;
+        }
+        .user-ava {
+            width:38px; height:38px; border-radius:50%; flex-shrink:0;
+            background:linear-gradient(135deg,var(--primary),var(--accent));
+            display:flex; align-items:center; justify-content:center;
+            font-weight:800; font-size:15px; color:white; box-shadow:0 0 0 2px rgba(59,130,246,.4);
+        }
+        .user-info-s .name { font-size:13px; font-weight:700; color:white; }
+        .user-info-s .role { font-size:10px; font-weight:500; color:var(--muted); }
+        .logout-btn {
+            margin:0 12px 18px; padding:12px 14px; border-radius:12px;
+            text-decoration:none; display:flex; align-items:center; gap:12px;
+            color:#ef4444; font-size:13px; font-weight:600;
+            border:1px solid rgba(239,68,68,.15); background:rgba(239,68,68,.06); transition:all .2s;
+        }
+        .logout-btn:hover { background:rgba(239,68,68,.15); transform:translateX(3px); color:#f87171; }
+        /* ── MAIN ── */
+        .topbar {
+            position:sticky; top:0; z-index:900; height:62px;
+            display:flex; align-items:center; justify-content:space-between;
+            padding:0 30px; background:rgba(11,26,51,.6); backdrop-filter:blur(20px);
+            border-bottom:1px solid rgba(255,255,255,.05); box-shadow:0 4px 30px rgba(0,0,0,.2);
+        }
+        .topbar-left { display:flex; align-items:center; gap:14px; }
+        .mob-tog {
+            display:none; width:36px; height:36px; border-radius:9px;
+            border:1px solid rgba(255,255,255,.07); background:rgba(255,255,255,.04);
+            color:var(--text); font-size:15px; cursor:pointer; align-items:center; justify-content:center;
+        }
+        .breadcrumb { font-size:13px; color:var(--muted); }
+        .breadcrumb span { color:white; font-weight:600; }
+        .topbar-right { display:flex; align-items:center; gap:12px; }
+        .tb-live {
+            display:flex; align-items:center; gap:7px; padding:6px 14px;
+            border-radius:50px; background:rgba(34,197,94,.1); border:1px solid rgba(34,197,94,.25);
+            font-size:11px; font-weight:700; color:#4ade80;
+        }
+        .tb-live i { font-size:6px; animation:pulse-dot 1.2s infinite; }
+        @keyframes pulse-dot { 0%,100%{transform:scale(1)} 50%{transform:scale(1.3)} }
+        .main { margin-left:var(--sidebar-w); min-height:100vh; position:relative; z-index:1; }
+        .content { padding:28px 32px; }
+
+        /* ── PAGE HEADER ── */
+        .page-hero {
+            border-radius:22px; padding:34px 40px; margin-bottom:28px;
+            background:rgba(255,255,255,0.05); backdrop-filter:blur(10px);
+            border:1px solid rgba(255,255,255,0.1); box-shadow:0 15px 35px rgba(0,0,0,0.3);
+            display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;
+        }
+        .page-hero-left {}
+        .page-hero-badge {
+            display:inline-flex; align-items:center; gap:7px; margin-bottom:10px;
+            background:rgba(59,130,246,.15); border:1px solid rgba(59,130,246,.3);
+            color:var(--primary2); font-size:11px; font-weight:700;
+            padding:4px 13px; border-radius:50px; letter-spacing:1px; text-transform:uppercase;
+        }
+        .page-hero-title { font-size:28px; font-weight:900; color:white; margin-bottom:4px; }
+        .page-hero-sub { font-size:13px; color:var(--muted); }
+        .page-hero-stats { display:flex; gap:20px; flex-wrap:wrap; }
+        .hs { text-align:center; }
+        .hs-num { font-size:28px; font-weight:900; color:white; line-height:1; }
+        .hs-label { font-size:10px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; margin-top:2px; }
+
+        /* ── FILTER TABS ── */
+        .filter-bar {
+            display:flex; gap:8px; margin-bottom:22px; flex-wrap:wrap;
+        }
+        .filter-btn {
+            padding:8px 18px; border-radius:50px; font-size:12px; font-weight:700;
+            border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.04);
+            color:var(--muted); cursor:pointer; transition:all .2s; letter-spacing:.3px;
+        }
+        .filter-btn:hover { background:rgba(59,130,246,.12); color:var(--primary2); border-color:rgba(59,130,246,.25); }
+        .filter-btn.active { background:linear-gradient(135deg,var(--primary),var(--primary2)); color:white; border-color:transparent; box-shadow:0 4px 14px rgba(59,130,246,.35); }
+
+        /* ── APPLICATION CARDS ── */
+        .apps-grid { display:flex; flex-direction:column; gap:14px; }
+        .app-card {
+            background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.07);
+            border-radius:18px; padding:22px 26px; display:flex;
+            align-items:center; justify-content:space-between; gap:18px;
+            transition:all .28s ease; backdrop-filter:blur(6px); flex-wrap:wrap;
+        }
+        .app-card:hover {
+            background:rgba(255,255,255,.07); border-color:rgba(59,130,246,.25);
+            box-shadow:0 8px 32px rgba(0,0,0,.3); transform:translateY(-2px);
+        }
+        .app-card-left { display:flex; align-items:center; gap:18px; flex:1; min-width:220px; }
+        .company-logo {
+            width:52px; height:52px; border-radius:14px; flex-shrink:0;
+            background:linear-gradient(135deg,rgba(59,130,246,.25),rgba(59,130,246,.1));
+            display:flex; align-items:center; justify-content:center;
+            font-size:20px; font-weight:900; color:var(--primary2);
+            border:1px solid rgba(59,130,246,.2); text-transform:uppercase;
+        }
+        .app-info {}
+        .app-company { font-size:16px; font-weight:800; color:white; margin-bottom:3px; }
+        .app-role { font-size:12px; color:var(--muted); font-weight:500; margin-bottom:6px; }
+        .app-meta { display:flex; gap:10px; flex-wrap:wrap; }
+        .app-tag {
+            font-size:10px; font-weight:700; padding:3px 10px; border-radius:50px;
+            display:inline-flex; align-items:center; gap:4px;
+        }
+        .tag-package { background:rgba(16,185,129,.12); color:#34d399; border:1px solid rgba(16,185,129,.2); }
+        .tag-type { background:rgba(59,130,246,.1); color:#93c5fd; border:1px solid rgba(59,130,246,.18); }
+        .tag-date { background:rgba(148,163,184,.08); color:#94a3b8; border:1px solid rgba(148,163,184,.15); }
+        .tag-dept { background:rgba(245,158,11,.1); color:#fbbf24; border:1px solid rgba(245,158,11,.18); }
+
+        .app-card-right { display:flex; align-items:center; gap:14px; flex-shrink:0; }
+
+        /* ── STATUS BADGES ── */
+        .status-badge {
+            padding:7px 18px; border-radius:50px; font-size:12px; font-weight:800;
+            display:inline-flex; align-items:center; gap:6px; letter-spacing:.3px;
+            white-space:nowrap;
+        }
+        .status-badge i { font-size:9px; }
+        .badge-applied { background:rgba(59,130,246,.15); color:#60a5fa; border:1px solid rgba(59,130,246,.3); }
+        .badge-shortlisted { background:rgba(245,158,11,.15); color:#fbbf24; border:1px solid rgba(245,158,11,.3); animation:pulse-glow-amber 2s ease-in-out infinite; }
+        .badge-selected { background:rgba(16,185,129,.15); color:#34d399; border:1px solid rgba(16,185,129,.3); animation:pulse-glow-green 2s ease-in-out infinite; }
+        .badge-rejected { background:rgba(239,68,68,.12); color:#f87171; border:1px solid rgba(239,68,68,.2); }
+        .badge-pending { background:rgba(148,163,184,.1); color:#94a3b8; border:1px solid rgba(148,163,184,.2); }
+        @keyframes pulse-glow-amber { 0%,100%{box-shadow:0 0 0 0 rgba(245,158,11,0)} 50%{box-shadow:0 0 12px 3px rgba(245,158,11,.25)} }
+        @keyframes pulse-glow-green { 0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,0)} 50%{box-shadow:0 0 12px 3px rgba(16,185,129,.25)} }
+
+        /* ── EMPTY STATE ── */
+        .empty-state {
+            text-align:center; padding:80px 20px; color:var(--muted);
+        }
+        .empty-icon {
+            width:90px; height:90px; border-radius:50%; margin:0 auto 24px;
+            background:rgba(59,130,246,.08); border:2px dashed rgba(59,130,246,.25);
+            display:flex; align-items:center; justify-content:center; font-size:36px; color:var(--primary2);
+        }
+        .empty-title { font-size:20px; font-weight:800; color:white; margin-bottom:8px; }
+        .empty-sub { font-size:13px; color:var(--muted); margin-bottom:24px; max-width:320px; margin-left:auto; margin-right:auto; }
+        .btn-explore {
+            display:inline-flex; align-items:center; gap:8px; padding:12px 28px;
+            border-radius:50px; background:linear-gradient(135deg,var(--primary),var(--primary2));
+            color:white; font-weight:700; font-size:13px; text-decoration:none;
+            box-shadow:0 6px 20px rgba(59,130,246,.35); transition:all .2s;
+        }
+        .btn-explore:hover { transform:translateY(-3px); box-shadow:0 10px 30px rgba(59,130,246,.5); }
+
+        /* Flash */
+        .flash { position:fixed; top:20px; right:20px; z-index:9999; display:flex; flex-direction:column; gap:10px; }
+        .flash-msg {
+            display:flex; align-items:center; gap:12px; padding:14px 18px;
+            border-radius:12px; font-size:13px; font-weight:600;
+            background:rgba(16,185,129,.12); border:1px solid rgba(16,185,129,.3);
+            color:#34d399; box-shadow:0 8px 30px rgba(0,0,0,.4); animation:slideInRight .35s ease;
+        }
+        @keyframes slideInRight { from{transform:translateX(30px);opacity:0} to{transform:translateX(0);opacity:1} }
+
+        /* Responsive */
+        @media(max-width:768px) {
+            .sidebar { transform:translateX(calc(-1 * var(--sidebar-w))); }
+            .sidebar.show { transform:translateX(0); }
+            .main { margin-left:0 !important; }
+            .mob-tog { display:flex !important; }
+            .content { padding:20px 16px; }
+            .app-card { flex-direction:column; align-items:flex-start; }
+            .app-card-right { width:100%; justify-content:flex-start; }
+            .page-hero { flex-direction:column; }
+        }
+        ::-webkit-scrollbar { width:5px; }
+        ::-webkit-scrollbar-thumb { background:rgba(59,130,246,.3); border-radius:3px; }
+    </style>
+</head>
+
+<body>
+    <div class="campus-bg"></div>
+
+    {% if messages %}
+    <div class="flash" id="flashContainer">
+        {% for message in messages %}
+        <div class="flash-msg">
+            <i class="fas fa-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}exclamation-circle{% else %}info-circle{% endif %}"></i>
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-gem" style="background:white;box-shadow:0 4px 15px rgba(0,0,0,0.2);padding:2px;">
+                <img src="{% static 'images/logos/jss logo.jpeg' %}" alt="JSS Logo" style="width:100%;height:100%;object-fit:contain;border-radius:10px;">
+            </div>
+            <div class="logo-name">JSS PORTAL<span>Student Hub</span></div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section">Menu</div>
+            <a href="{% url 'home' %}" class="nav-link">
+                <div class="nav-icon"><i class="fas fa-gauge-high"></i></div>Dashboard
+            </a>
+            <a href="{% url 'companies' %}" class="nav-link">
+                <div class="nav-icon"><i class="fas fa-building"></i></div>Companies
+            </a>
+            <a href="{% url 'applications' %}" class="nav-link active">
+                <div class="nav-icon"><i class="fas fa-paper-plane"></i></div>My Applications
+            </a>
+
+            <div class="nav-section">Resources</div>
+            <a href="{% url 'practice' %}" class="nav-link">
+                <div class="nav-icon"><i class="fas fa-laptop-code"></i></div>Practice Lab
+            </a>
+            <a href="{% url 'resources' %}" class="nav-link">
+                <div class="nav-icon"><i class="fas fa-book-open"></i></div>Resources
+            </a>
+            <a href="{% url 'video_resource' %}" class="nav-link">
+                <div class="nav-icon"><i class="fab fa-youtube"></i></div>Videos
+            </a>
+        </nav>
+
+        <div class="sidebar-user">
+            <div class="user-ava">{{ request.user.username|first|upper }}</div>
+            <div class="user-info-s">
+                <div class="name">{{ request.user.get_full_name|default:request.user.username|title }}</div>
+                <div class="role">Student</div>
+            </div>
+        </div>
+        <a href="{% url 'logout' %}" class="logout-btn">
+            <i class="fas fa-right-from-bracket"></i> Sign Out
+        </a>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="main" id="main">
+        <!-- TOP BAR -->
+        <div class="topbar">
+            <div class="topbar-left">
+                <button class="mob-tog" id="mobTog" onclick="document.getElementById('sidebar').classList.toggle('show')">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="breadcrumb">🏠 › Dashboard › <span>My Applications</span></div>
+            </div>
+            <div class="topbar-right">
+                <div class="tb-live"><i class="fas fa-circle"></i> Live</div>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- PAGE HERO -->
+            <div class="page-hero">
+                <div class="page-hero-left">
+                    <div class="page-hero-badge"><i class="fas fa-circle" style="font-size:6px;"></i> Application Tracker</div>
+                    <div class="page-hero-title">My Applications</div>
+                    <div class="page-hero-sub">Track every company you've applied to and monitor your placement journey.</div>
+                </div>
+                <div class="page-hero-stats">
+                    <div class="hs">
+                        <div class="hs-num" style="color:#60a5fa;">{{ total_applied }}</div>
+                        <div class="hs-label">Total Applied</div>
+                    </div>
+                    <div class="hs">
+                        <div class="hs-num" style="color:#fbbf24;">{{ total_shortlisted }}</div>
+                        <div class="hs-label">Shortlisted</div>
+                    </div>
+                    <div class="hs">
+                        <div class="hs-num" style="color:#34d399;">{{ total_selected }}</div>
+                        <div class="hs-label">Selected</div>
+                    </div>
+                    <div class="hs">
+                        <div class="hs-num" style="color:#f87171;">{{ total_rejected }}</div>
+                        <div class="hs-label">Rejected</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FILTER TABS -->
+            <div class="filter-bar">
+                <button class="filter-btn active" onclick="filterApps('all', this)">
+                    <i class="fas fa-list"></i> All ({{ total_applied }})
+                </button>
+                <button class="filter-btn" onclick="filterApps('Applied', this)">
+                    <i class="fas fa-paper-plane"></i> Applied
+                </button>
+                <button class="filter-btn" onclick="filterApps('Shortlisted', this)">
+                    <i class="fas fa-bolt"></i> Shortlisted
+                </button>
+                <button class="filter-btn" onclick="filterApps('Selected', this)">
+                    <i class="fas fa-trophy"></i> Selected
+                </button>
+                <button class="filter-btn" onclick="filterApps('Rejected', this)">
+                    <i class="fas fa-times-circle"></i> Rejected
+                </button>
+            </div>
+
+            <!-- APPLICATION CARDS -->
+            {% if applications %}
+            <div class="apps-grid" id="appsGrid">
+                {% for app in applications %}
+                <div class="app-card" data-status="{{ app.status }}">
+                    <div class="app-card-left">
+                        <!-- Company Logo initial -->
+                        <div class="company-logo">
+                            {{ app.job.company.name|first|upper }}
+                        </div>
+                        <div class="app-info">
+                            <div class="app-company">{{ app.job.company.name }}</div>
+                            <div class="app-role">{{ app.job.title }}</div>
+                            <div class="app-meta">
+                                {% if app.job.package %}
+                                <span class="app-tag tag-package"><i class="fas fa-indian-rupee-sign"></i> {{ app.job.package }} LPA</span>
+                                {% endif %}
+                                {% if app.job.job_type %}
+                                <span class="app-tag tag-type"><i class="fas fa-briefcase"></i> {{ app.job.job_type }}</span>
+                                {% endif %}
+                                {% if app.job.location %}
+                                <span class="app-tag tag-dept"><i class="fas fa-location-dot"></i> {{ app.job.location }}</span>
+                                {% endif %}
+                                <span class="app-tag tag-date"><i class="fas fa-calendar-check"></i> Applied {{ app.applied_at|date:"d M Y" }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="app-card-right">
+                        {% if app.status == 'Selected' %}
+                        <span class="status-badge badge-selected"><i class="fas fa-circle"></i> Selected 🎉</span>
+                        {% elif app.status == 'Shortlisted' %}
+                        <span class="status-badge badge-shortlisted"><i class="fas fa-circle"></i> Shortlisted ⚡</span>
+                        {% elif app.status == 'Rejected' %}
+                        <span class="status-badge badge-rejected"><i class="fas fa-circle"></i> Rejected</span>
+                        {% else %}
+                        <span class="status-badge badge-applied"><i class="fas fa-circle"></i> Applied</span>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- NO RESULTS AFTER FILTER -->
+            <div id="noFilterResult" style="display:none; text-align:center; padding:50px 20px; color:var(--muted);">
+                <i class="fas fa-filter" style="font-size:32px; margin-bottom:12px; display:block; color:var(--primary2);"></i>
+                <p style="font-size:14px; font-weight:600;">No applications with this status.</p>
+            </div>
+
+            {% else %}
+            <!-- EMPTY STATE -->
+            <div class="empty-state">
+                <div class="empty-icon"><i class="fas fa-paper-plane"></i></div>
+                <div class="empty-title">No Applications Yet</div>
+                <div class="empty-sub">You haven't applied to any companies yet. Start exploring opportunities and submit your first application!</div>
+                <a href="{% url 'companies' %}" class="btn-explore">
+                    <i class="fas fa-building"></i> Explore Companies
+                </a>
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+
+    <script>
+        // Auto-dismiss flash messages
+        setTimeout(() => {
+            const fc = document.getElementById('flashContainer');
+            if (fc) fc.style.transition = 'opacity 0.5s', fc.style.opacity = '0', setTimeout(() => fc.remove(), 500);
+        }, 4000);
+
+        // Filter function
+        function filterApps(status, btn) {
+            // Update active button
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const cards = document.querySelectorAll('.app-card');
+            let visible = 0;
+            cards.forEach(card => {
+                const cardStatus = card.getAttribute('data-status');
+                const show = status === 'all' || cardStatus === status;
+                card.style.display = show ? 'flex' : 'none';
+                if (show) visible++;
+            });
+
+            const noResult = document.getElementById('noFilterResult');
+            if (noResult) noResult.style.display = visible === 0 ? 'block' : 'none';
+        }
+
+        // Mobile sidebar toggle close on outside click
+        document.addEventListener('click', function(e) {
+            const sidebar = document.getElementById('sidebar');
+            const tog = document.getElementById('mobTog');
+            if (sidebar && tog && !sidebar.contains(e.target) && !tog.contains(e.target)) {
+                sidebar.classList.remove('show');
+            }
+        });
+    </script>
+</body>
+</html>

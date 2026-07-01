@@ -1,0 +1,462 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}JSS SMI UG & PG Studies | Official Portal{% endblock %}</title>
+
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎓</text></svg>">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4338ca;
+            --primary-light: #818cf8;
+            --secondary: #0f172a;
+            --accent: #f59e0b;
+            --accent-glow: rgba(245, 158, 11, 0.4);
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --text-light: #94a3b8;
+            --bg-body: #f8fafc;
+            --white: #ffffff;
+            --glass: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --gradient-primary: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            --gradient-dark: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            --shadow-premium: 0 20px 50px rgba(0, 0, 0, 0.1);
+            --shadow-button: 0 10px 20px rgba(99, 102, 241, 0.3);
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            --bg-light: #f1f5f9;
+        }
+
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-body);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            overflow-x: hidden;
+            line-height: 1.6;
+            background-image:
+                radial-gradient(at 0% 0%, hsla(253, 16%, 7%, 1) 0, transparent 50%),
+                radial-gradient(at 50% 0%, hsla(225, 39%, 30%, 1) 0, transparent 50%),
+                radial-gradient(at 100% 0%, hsla(339, 49%, 30%, 1) 0, transparent 50%);
+            background-attachment: fixed;
+            background-size: cover;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* TYPOGRAPHY */
+        h1,
+        h2,
+        h3,
+        .logo {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        .gradient-text {
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+
+        /* NAVBAR */
+        nav {
+            position: fixed;
+            top: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 95%;
+            max-width: 1200px;
+            padding: 12px 35px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            transition: var(--transition);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border-radius: 100px;
+            border: 1px solid var(--glass-border);
+        }
+
+        nav.scrolled {
+            top: 15px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow-premium);
+            padding: 10px 35px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 35px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: white;
+            font-weight: 800;
+            font-size: 1.1rem;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        nav.scrolled .nav-links a,
+        body.page-content .nav-links a {
+            color: var(--secondary);
+        }
+
+        /* Override for scrolled/page-content state */
+        nav.scrolled .logo span:first-child,
+        body.page-content nav .logo span:first-child {
+            color: var(--primary) !important;
+        }
+
+        nav.scrolled {
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .btn-portal {
+            padding: 12px 30px;
+            border-radius: 50px;
+            background: var(--gradient-primary);
+            color: white !important;
+            box-shadow: var(--shadow-button);
+            font-weight: 900 !important;
+            font-size: 1.1rem;
+            letter-spacing: 0.5px;
+            transition: var(--transition);
+            border: none;
+        }
+
+        .btn-portal:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 30px rgba(99, 102, 241, 0.5);
+        }
+
+        /* SECTION STYLING */
+        section {
+            padding: 120px 10%;
+            position: relative;
+            z-index: 5;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .section-header h6 {
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            font-size: 0.85rem;
+        }
+
+        .section-header h2 {
+            font-size: 3.5rem;
+            color: var(--secondary);
+            margin-bottom: 25px;
+        }
+
+        .underline {
+            width: 100px;
+            height: 6px;
+            background: var(--gradient-primary);
+            margin: 0 auto;
+            border-radius: 10px;
+        }
+
+        /* FOOTER */
+        footer {
+            background: #020617;
+            color: white;
+            padding: 120px 10% 60px;
+            position: relative;
+            overflow: hidden;
+            margin-top: auto;
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--gradient-primary);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 0.5fr 1fr 1fr;
+            gap: 80px;
+            margin-bottom: 80px;
+        }
+
+        .footer-col h4 {
+            font-size: 1.4rem;
+            margin-bottom: 35px;
+            color: var(--primary-light);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .footer-links li {
+            list-style: none;
+            margin-bottom: 18px;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            transition: var(--transition);
+            display: inline-block;
+        }
+
+        .footer-links a:hover {
+            color: white;
+            transform: translateX(10px);
+        }
+
+        /* INTERNAL PAGES STYLES */
+        .page-header {
+            padding: 180px 10% 80px;
+            background: var(--gradient-dark);
+            color: white;
+            text-align: center;
+        }
+
+        .page-header h1 {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .page-content-wrapper {
+            background: var(--bg-body);
+            padding: 80px 10%;
+        }
+
+        /* PLACEMENT & ABOUT SPECIFIC */
+        .glass-card {
+            background: white;
+            padding: 50px;
+            border-radius: 40px;
+            border: 1px solid var(--bg-body);
+            box-shadow: var(--shadow-premium);
+            transition: var(--transition);
+            margin-bottom: 30px;
+        }
+
+        .activity-list li {
+            list-style: none;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 1.1rem;
+            color: var(--text-main);
+            font-weight: 500;
+        }
+
+        .activity-list li i {
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        .heritage-card {
+            background: white;
+            padding: 50px;
+            border-radius: 40px;
+            margin-bottom: 50px;
+            box-shadow: var(--shadow-premium);
+            transition: var(--transition);
+            border-left: 10px solid var(--primary);
+        }
+
+        .campus-quote {
+            background: var(--gradient-dark);
+            color: white;
+            padding: 40px;
+            border-radius: 30px;
+            font-style: italic;
+            position: relative;
+            margin-top: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body class="{% block body_class %}{% endblock %}">
+
+    <!-- NAVBAR -->
+    {% block navbar %}
+    <nav id="navbar">
+        <a href="{% url 'index' %}" class="logo">
+            <img src="{% static 'images/logos/jss logo.jpeg' %}" alt="JSS Logo"
+                style="height: 75px; width: auto; margin-right: 15px; border-radius: 50%; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            <div style="display: flex; flex-direction: column; line-height: 1;">
+                <span style="font-size: 1.8rem; font-weight: 900; color: #6366f1;">JSS SMI</span>
+                <span style="font-size: 0.85rem; font-weight: 800; color: #64748b; margin-top: 2px;">UG & PG
+                    STUDIES</span>
+            </div>
+        </a>
+        <div class="nav-links">
+            <a href="{% url 'index' %}">Home</a>
+            <a href="{% url 'about' %}">About Us</a>
+            <a href="{% url 'placements-info' %}">Placements</a>
+            {% if user.is_authenticated %}
+            <a href="{% url 'resources' %}"><i class="fas fa-book-open" style="margin-right: 5px;"></i> Resources</a>
+            {% else %}
+            <a href="{% url 'login' %}?next={% url 'resources' %}"><i class="fas fa-lock"
+                    style="margin-right: 5px; font-size: 0.8rem; opacity: 0.5;"></i> Resources</a>
+            {% endif %}
+            <a href="{% url 'contact' %}">Contact</a>
+            {% if user.is_authenticated %}
+            <a href="{% url 'home' %}" class="btn-portal"
+                style="background: var(--gradient-primary); box-shadow: var(--shadow-button);">Dashboard</a>
+            {% else %}
+            <a href="{% url 'login' %}" class="btn-portal">Portal Login</a>
+            {% endif %}
+        </div>
+    </nav>
+    {% endblock %}
+
+    {% block content %}{% endblock %}
+
+    <!-- FOOTER -->
+    <footer id="contact">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h4>Janata Shikshana Samiti</h4>
+                <p>
+                    Janata Shikshana Samiti has a vast network of educational and Nation-Building Institutions on the
+                    Vidyagiri
+                    Campus, providing excellence in Computer Applications.
+                </p>
+                <div style="margin-top: 30px; display: flex; gap: 20px;">
+                    <a href="#" style="color: white; font-size: 1.3rem; opacity: 0.8; transition: 0.3s;"><i
+                            class="fab fa-facebook"></i></a>
+                    <a href="#" style="color: white; font-size: 1.3rem; opacity: 0.8; transition: 0.3s;"><i
+                            class="fab fa-linkedin"></i></a>
+                    <a href="#" style="color: white; font-size: 1.3rem; opacity: 0.8; transition: 0.3s;"><i
+                            class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-col">
+                <h4>College Address</h4>
+                <p style="opacity: 0.7; font-size: 0.9rem; line-height: 2;">
+                    <strong>Principal</strong><br>
+                    JSS Shri Manjunatheshwara Institute of UG and PG Studies<br>
+                    Vidyagiri, Dharwad-580004<br><br>
+                    <strong>Office:</strong> 0836 - 2460886 / 9980292705 / 8123627730 / 8050489914<br>
+                    <strong>Mail id:</strong> jsssmiugpg@gmail.com<br>
+                    <strong>Web Site:</strong> www.jsssmiugpg.com
+                </p>
+            </div>
+            <div class="footer-col">
+                <h4>Governing Body Office</h4>
+                <p style="opacity: 0.7; font-size: 0.9rem; line-height: 2;">
+                    <strong>Governing Body Office</strong><br>
+                    Janata Shikshana Samiti,<br>
+                    Vidyagiri, Dharwad-580004<br><br>
+                    <strong>Office:</strong> 0836 - 2461184<br>
+                    <strong>Fax:</strong> 0836 - 2467479<br>
+                    <strong>Mail id:</strong> jssgbo.dharwad@gmail.com
+                </p>
+            </div>
+        </div>
+        <div
+            style="text-align: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 30px; font-size: 0.8rem; opacity: 0.5;">
+            &copy; 2026 JSS Shri Manjunatheshwara Institute of UG & PG Studies. All Rights Reserved.
+        </div>
+    </footer>
+
+    <script>
+        window.addEventListener('scroll', function () {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) nav.classList.add('scrolled');
+            else nav.classList.remove('scrolled');
+        });
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>

@@ -1,0 +1,97 @@
+{% extends 'admin/base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h2 class="mb-1 fw-bold" style="color: #667eea;">
+                                <i class="fas fa-bell me-2"></i>Notifications
+                            </h2>
+                            <p class="text-muted mb-0">Management of system alerts and notifications</p>
+                        </div>
+                        <div>
+                            <a href="/placement_app/notification/" class="btn btn-primary">
+                                <i class="fas fa-plus me-2"></i>Send New Alert
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white py-3 border-0">
+                    <h5 class="mb-0 fw-bold">Notification History</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead style="background-color: #667eea; color: white;">
+                                <tr>
+                                    <th class="px-4 py-3">ID</th>
+                                    <th class="px-4 py-3">Recipient Student</th>
+                                    <th class="px-4 py-3">Message</th>
+                                    <th class="px-4 py-3">Status</th>
+                                    <th class="px-4 py-3">Sent At</th>
+                                    <th class="px-4 py-3 text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for notify in notificationd %}
+                                <tr class="notify-row">
+                                    <td class="px-4 py-3 fw-bold">{{ notify.id }}</td>
+                                    <td class="px-4 py-3"><strong>{{ notify.student.user.username }}</strong></td>
+                                    <td class="px-4 py-3"><small>{{ notify.message|truncatechars:100 }}</small></td>
+                                    <td class="px-4 py-3">
+                                        {% if notify.is_read %}
+                                        <span class="badge bg-success">Read</span>
+                                        {% else %}
+                                        <span class="badge bg-warning">Unread</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="px-4 py-3">{{ notify.created_at|date:"d M, h:i A" }}</td>
+                                    <td class="px-4 py-3 text-center">
+                                        <div class="btn-group">
+                                            <a href="/placement_app/notification/edit/{{ notify.id }}/" class="btn btn-sm btn-outline-primary me-2"><i class="fas fa-edit"></i></a>
+                                            <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ notify.id }}"><i class="fas fa-trash-alt"></i></button>
+                                        </div>
+                                        <!-- Delete Confirmation Modal -->
+                                        <div class="modal fade" id="deleteModal{{ notify.id }}" tabindex="-1">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header bg-danger text-white">
+                                                        <h5 class="modal-title"><i class="fas fa-exclamation-triangle me-2"></i>Confirm Delete</h5>
+                                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p class="mb-0">Delete notification for <strong>{{ notify.student.user.username }}</strong>?</p>
+                                                        <p class="text-muted small mt-2">This action cannot be undone.</p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                        <a href="/placement_app/notification/delete/{{ notify.id }}/" class="btn btn-danger">Delete</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr><td colspan="6" class="text-center py-5">No notifications sent yet.</td></tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

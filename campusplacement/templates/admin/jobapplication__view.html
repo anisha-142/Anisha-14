@@ -1,0 +1,147 @@
+{% extends 'admin/base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h2 class="mb-1 fw-bold" style="color: #667eea;">
+                                <i class="fas fa-file-alt me-2"></i>Application Management
+                            </h2>
+                            <p class="text-muted mb-0">Track and manage student job applications</p>
+                        </div>
+                        <div>
+                            <a href="/placement_app/jobapplication/" class="btn btn-primary">
+                                <i class="fas fa-plus me-2"></i>Add Manual Application
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Table Card -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white py-3 border-0">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h5 class="mb-0 fw-bold">
+                                <i class="fas fa-list me-2"></i>Application List
+                            </h5>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <input type="text" id="searchInput" class="form-control" placeholder="Search applications...">
+                                <button class="btn btn-outline-secondary" type="button" onclick="searchApp()">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead style="background-color: #667eea; color: white;">
+                                <tr>
+                                    <th class="px-4 py-3">ID</th>
+                                    <th class="px-4 py-3">Student</th>
+                                    <th class="px-4 py-3">Job Title</th>
+                                    <th class="px-4 py-3">Company</th>
+                                    <th class="px-4 py-3">Status</th>
+                                    <th class="px-4 py-3">Applied At</th>
+                                    <th class="px-4 py-3 text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="appTableBody">
+                                {% for appinfo in jobapplicationd %}
+                                <tr class="app-row">
+                                    <td class="px-4 py-3 fw-bold">{{ appinfo.id }}</td>
+                                    <td class="px-4 py-3">
+                                        <strong>{{ appinfo.student.user.username }}</strong>
+                                        <br>
+                                        <small class="text-muted">ID: {{ appinfo.student.registration_number }}</small>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <strong>{{ appinfo.job.title }}</strong>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        {{ appinfo.job.company.name }}
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <span class="badge {% if appinfo.status == 'Selected' %}bg-success{% elif appinfo.status == 'Rejected' %}bg-danger{% elif appinfo.status == 'Shortlisted' %}bg-info{% else %}bg-warning{% endif %}">
+                                            {{ appinfo.status }}
+                                        </span>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        {{ appinfo.applied_at|date:"d M Y" }}
+                                    </td>
+                                    <td class="px-4 py-3 text-center">
+                                        <div class="btn-group" role="group">
+                                            <a href="/placement_app/jobapplication/edit/{{ appinfo.id }}/" 
+                                               class="btn btn-sm btn-outline-primary me-2">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <button type="button" 
+                                                    class="btn btn-sm btn-outline-danger" 
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#deleteModal{{ appinfo.id }}">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </div>
+                                        <!-- Delete Confirmation Modal -->
+                                        <div class="modal fade" id="deleteModal{{ appinfo.id }}" tabindex="-1">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header bg-danger text-white">
+                                                        <h5 class="modal-title">Confirm Delete</h5>
+                                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p>Delete application for <strong>{{ appinfo.student.user.username }}</strong>?</p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                        <a href="/placement_app/jobapplication/delete/{{ appinfo.id }}/" class="btn btn-danger">Delete</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="7" class="text-center py-5">
+                                        <i class="fas fa-file-alt fa-3x text-muted mb-3 d-block"></i>
+                                        <h5 class="text-muted">No applications found</h5>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function searchApp() {
+        const filter = document.getElementById('searchInput').value.toUpperCase();
+        const rows = document.getElementsByClassName('app-row');
+        for (let i = 0; i < rows.length; i++) {
+            const text = rows[i].textContent || rows[i].innerText;
+            rows[i].style.display = text.toUpperCase().indexOf(filter) > -1 ? '' : 'none';
+        }
+    }
+    document.getElementById('searchInput')?.addEventListener('keyup', searchApp);
+</script>
+{% endblock %}

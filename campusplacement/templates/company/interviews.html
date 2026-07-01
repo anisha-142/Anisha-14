@@ -1,0 +1,212 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Interviews | Company Dashboard{% endblock %}
+
+{% block navbar %}{% endblock %}
+{% block footer %}{% endblock %}
+
+{% block body_class %}company-dashboard-body{% endblock %}
+
+{% block extra_css %}
+<style>
+  :root {
+    --cp: #8b5cf6;
+    --cp-dark: #7c3aed;
+    --cp-light: #a78bfa;
+    --cs: #1e1b4b;
+    --ca: #10b981;
+    --sidebar-w: 280px;
+  }
+
+  body.company-dashboard-body {
+    background: linear-gradient(135deg, #f5f3ff 0%, #ffffff 100%);
+    color: var(--cs);
+    min-height: 100vh;
+    display: flex;
+    overflow-x: hidden;
+  }
+
+  .co-sidebar {
+    width: var(--sidebar-w); background: #1e1b4b; height: 100vh; position: fixed; left: 0; top: 0;
+    color: white; z-index: 1000; display: flex; flex-direction: column; padding: 30px 20px; transition: all 0.3s ease;
+  }
+  .co-sidebar-logo { display: flex; align-items: center; gap: 12px; font-weight: 800; font-size: 1.4rem; margin-bottom: 50px; color: white; text-decoration: none; }
+  .co-sidebar-logo i { color: var(--cp-light); font-size: 1.9rem; }
+
+  .co-nav-menu { list-style: none; flex-grow: 1; }
+  .co-nav-link { display: flex; align-items: center; gap: 14px; padding: 12px 18px; color: rgba(255, 255, 255, 0.7); text-decoration: none; border-radius: 12px; font-weight: 500; margin-bottom: 6px; transition: all 0.3s ease; }
+  .co-nav-link:hover { background: rgba(255, 255, 255, 0.1); color: white; }
+  .co-nav-link.active { background: var(--cp); box-shadow: 0 4px 15px rgba(139, 92, 246, 0.35); color: white; }
+  .co-logout { display: flex; align-items: center; gap: 14px; padding: 12px 18px; color: #fca5a5; text-decoration: none; border-radius: 12px; font-weight: 600; border-top: 1px solid rgba(255, 255, 255, 0.1); margin-top: 20px; transition: all 0.3s ease; }
+  .co-logout:hover { color: #f87171; background: rgba(255, 255, 255, 0.05); }
+
+  .co-main { margin-left: var(--sidebar-w); flex-grow: 1; padding: 40px; min-height: 100vh; }
+  .co-topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
+  .co-topbar-title { font-weight: 700; font-size: 1rem; color: #64748b; letter-spacing: 2px; text-transform: uppercase; }
+
+  .layout-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+
+  .co-card { background: white; border-radius: 24px; padding: 30px; border: 1px solid #e2e8f0; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02); }
+  .co-card-header { margin-bottom: 25px; border-bottom: 1px solid #f1f5f9; padding-bottom: 15px; }
+  .co-card-header h2 { font-size: 1.4rem; font-weight: 800; color: var(--cs); }
+
+  .form-group { margin-bottom: 20px; }
+  .form-label { display: block; font-size: 0.85rem; font-weight: 700; color: var(--cs); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .form-control { width: 100%; padding: 12px 16px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 0.95rem; color: var(--cs); background: #f8fafc; transition: all 0.3s ease; font-family: inherit; }
+  .form-control:focus { border-color: var(--cp); background: white; outline: none; box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1); }
+  
+  .submit-btn { background: var(--cp); color: white; border: none; padding: 14px 24px; font-size: 1rem; font-weight: 800; border-radius: 12px; cursor: pointer; transition: all 0.3s ease; width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 10px;}
+  .submit-btn:hover { background: var(--cp-dark); transform: translateY(-2px); box-shadow: 0 10px 20px rgba(139, 92, 246, 0.3); }
+
+  .alert-error { background: #fee2e2; color: #991b1b; padding: 12px; border-radius: 10px; margin-bottom: 20px; font-weight: 600; font-size: 0.9rem;}
+  .alert-success { background: #dcfce7; color: #166534; padding: 12px; border-radius: 10px; margin-bottom: 20px; font-weight: 600; font-size: 0.9rem;}
+
+  .interview-item { padding: 20px; background: #f8fafc; border-radius: 16px; border-left: 4px solid var(--cp); margin-bottom: 16px; transition: all 0.3s ease; }
+  .interview-item:hover { transform: translateX(5px); background: #f1f0ff; }
+  .interview-title { font-size: 1.1rem; font-weight: 700; color: var(--cs); margin-bottom: 8px; }
+  .interview-detail { font-size: 0.85rem; color: #64748b; margin-bottom: 4px; display: flex; align-items: center; gap: 8px;}
+  .interview-description { margin-top: 10px; padding-top: 8px; border-top: 1px solid #e2e8f0; font-size: 0.85rem; color: #6b7280; }
+  .co-empty { text-align: center; color: #94a3b8; padding: 40px 20px; font-size: 0.95rem; }
+
+  @media (max-width: 900px) {
+    .layout-grid { grid-template-columns: 1fr; }
+    .co-sidebar { transform: translateX(-100%); }
+    .co-main { margin-left: 0; padding: 20px; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<aside class="co-sidebar">
+  <a href="{% url 'company_home' %}" class="co-sidebar-logo">
+    <i class="fas fa-building"></i>
+    <span>{{ company.name }}</span>
+  </a>
+
+  <ul class="co-nav-menu">
+    <li><a href="{% url 'company_home' %}" class="co-nav-link"><i class="fas fa-th-large"></i> Dashboard</a></li>
+    <li><a href="{% url 'company_post_job' %}" class="co-nav-link"><i class="fas fa-plus-circle"></i> Post Job</a></li>
+    <li><a href="{% url 'company_applications' %}" class="co-nav-link"><i class="fas fa-users"></i> Applications</a></li>
+    <li><a href="{% url 'company_interviews' %}" class="co-nav-link active"><i class="fas fa-calendar-check"></i> Interviews</a></li>
+    <li><a href="{% url 'company_profile' %}" class="co-nav-link"><i class="fas fa-cog"></i> Profile Settings</a></li>
+  </ul>
+
+  <a href="{% url 'logout' %}" class="co-logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+</aside>
+
+<main class="co-main">
+  <nav class="co-topbar">
+    <span class="co-topbar-title">Partner Portal > Interviews</span>
+  </nav>
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="{% if message.tags == 'error' %}alert-error{% else %}alert-success{% endif %} animate__animated animate__fadeInDown">
+        <i class="fas fa-{% if message.tags == 'error' %}exclamation-circle{% else %}check-circle{% endif %}"></i>
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  <div class="layout-grid">
+    
+    <!-- Left Column: Schedule Form -->
+    <div class="co-card animate__animated animate__fadeInLeft">
+      <div class="co-card-header">
+        <h2><i class="fas fa-calendar-plus"></i> Schedule an Interview</h2>
+      </div>
+      
+      <form method="POST" action="{% url 'company_interviews' %}">
+        {% csrf_token %}
+        
+        <div class="form-group">
+          <label class="form-label"><i class="fas fa-briefcase"></i> Select Job Posting</label>
+          <select name="job_id" class="form-control" required>
+            <option value="" disabled selected>-- Choose Job --</option>
+            {% for job in jobs %}
+              <option value="{{ job.id }}">{{ job.title }} ({{ job.job_type }})</option>
+            {% empty %}
+              <option value="" disabled>No jobs posted yet</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label"><i class="fas fa-comment"></i> Interview Name</label>
+          <input type="text" name="round_name" class="form-control" placeholder="e.g. Technical Round Round 1, HR Interview" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label"><i class="fas fa-tag"></i> Round Type</label>
+          <select name="round_type" class="form-control" required>
+            <option value="" disabled selected>-- Select Round Type --</option>
+            <option value="Aptitude">Aptitude</option>
+            <option value="Technical">Technical</option>
+            <option value="HR">HR</option>
+            <option value="Group Discussion">Group Discussion</option>
+          </select>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+          <div class="form-group">
+            <label class="form-label"><i class="fas fa-calendar-day"></i> Date</label>
+            <input type="date" name="scheduled_date" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label"><i class="fas fa-clock"></i> Time</label>
+            <input type="time" name="scheduled_time" class="form-control" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label"><i class="fas fa-info-circle"></i> Description / Instructions</label>
+          <textarea name="description" class="form-control" placeholder="Enter interview details, venue, Google Meet link, or special instructions..." style="min-height: 100px; resize: vertical;"></textarea>
+        </div>
+
+        <button type="submit" class="submit-btn">
+          <i class="fas fa-calendar-check"></i> Schedule Interview
+        </button>
+      </form>
+    </div>
+
+    <!-- Right Column: Upcoming Interviews List -->
+    <div class="co-card animate__animated animate__fadeInRight">
+      <div class="co-card-header">
+        <h2><i class="fas fa-calendar-week"></i> Upcoming Schedule</h2>
+      </div>
+      
+      <div class="interview-list">
+        {% for inv in interviews %}
+          <div class="interview-item">
+            <div class="interview-title">
+              <i class="fas fa-briefcase"></i> {{ inv.job.title }} - {{ inv.name }}
+            </div>
+            <div class="interview-detail">
+              <i class="fas fa-tag" style="color:var(--cp);"></i> {{ inv.get_round_type_display }}
+            </div>
+            <div class="interview-detail">
+              <i class="fas fa-calendar-day" style="color:var(--cp);"></i> {{ inv.scheduled_date|date:"l, F j, Y" }}
+            </div>
+            <div class="interview-detail">
+              <i class="fas fa-clock" style="color:var(--cp);"></i> {{ inv.scheduled_date|time:"h:i A" }}
+            </div>
+            {% if inv.description %}
+            <div class="interview-description">
+              <i class="fas fa-info-circle"></i> {{ inv.description }}
+            </div>
+            {% endif %}
+          </div>
+        {% empty %}
+          <div class="co-empty">
+            <i class="fas fa-calendar-times" style="font-size:2.5rem; margin-bottom:12px; display:block; color:#cbd5e1;"></i>
+            <p>No upcoming interviews scheduled yet.</p>
+            <small>Use the form on the left to schedule your first interview.</small>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+  </div>
+</main>
+{% endblock %}

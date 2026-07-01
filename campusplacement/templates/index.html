@@ -1,0 +1,1354 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block navbar %}
+<!-- 1. ANNOUNCEMENT BAR -->
+<div class="bg-jss-blue text-white py-2 px-4 overflow-hidden relative z-[60]">
+    <div class="flex whitespace-nowrap animate-scroll">
+        <div class="flex gap-12 text-sm font-bold uppercase tracking-widest shrink-0">
+            <span>JSS SMI UG PG STUDIES, Dharwad</span>
+            <span class="text-jss-gold">Placement Drive 2026: 15+ Companies visiting this month!</span>
+            <span>JSS SMI UG PG STUDIES, Dharwad</span>
+            <span class="text-jss-gold">Placement Drive 2026: 15+ Companies visiting this month!</span>
+        </div>
+    </div>
+</div>
+
+<!-- 2. NAVBAR (Replicated with Alpine.js logic) -->
+<nav x-data="{ scrolled: false }" @scroll.window="scrolled = (window.pageYOffset > 20)"
+    class="fixed w-full z-50 transition-all duration-300 top-12"
+    :class="scrolled ? 'bg-white/95 backdrop-blur-md shadow-lg py-3 !top-0' : 'bg-transparent py-5'">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <img src="{% static 'images/logos/jss logo.jpeg' %}" alt="JSS Logo"
+                    class="h-20 w-auto object-contain rounded-full border border-white/20 shadow-md">
+                <div class="flex flex-col ml-2">
+                    <span class="font-black text-2xl leading-none tracking-tight"
+                        :class="scrolled ? 'text-jss-blue' : 'text-white'">JSS SMI</span>
+                    <span class="text-xs font-black tracking-widest uppercase mt-0.5"
+                        :class="scrolled ? 'text-slate-500' : 'text-slate-200'">UG & PG STUDIES</span>
+                </div>
+            </div>
+
+            <div class="hidden md:flex items-center gap-8">
+                <a href="{% url 'index' %}" class="text-base font-bold hover:text-jss-gold transition-all"
+                    :class="scrolled ? 'text-slate-800' : 'text-white'">Home</a>
+                <a href="{% url 'about' %}" class="text-base font-bold hover:text-jss-gold transition-all"
+                    :class="scrolled ? 'text-slate-800' : 'text-white'">About Us</a>
+                <a href="{% url 'placements-info' %}" class="text-base font-bold hover:text-jss-gold transition-all"
+                    :class="scrolled ? 'text-slate-800' : 'text-white'">Placements</a>
+                {% if user.is_authenticated %}
+                <a href="{% url 'resources' %}"
+                    class="text-base font-bold hover:text-jss-gold transition-all flex items-center gap-1.5"
+                    :class="scrolled ? 'text-slate-800' : 'text-white'">
+                    Resources
+                </a>
+                {% else %}
+                <a href="#"
+                    onclick="event.preventDefault(); openLoginModal('Study Resources', `{% url 'resources' %}`);"
+                    class="text-base font-bold hover:text-jss-gold transition-all flex items-center gap-1.5"
+                    :class="scrolled ? 'text-slate-800' : 'text-white'">
+                    Resources <i class="fas fa-lock text-[10px] opacity-40"></i>
+                </a>
+                {% endif %}
+                <a href="{% url 'contact' %}" class="text-base font-bold hover:text-jss-gold transition-all"
+                    :class="scrolled ? 'text-slate-800' : 'text-white'">Contact</a>
+
+                {% if user.is_authenticated %}
+                <div class="flex items-center gap-4">
+                    <a href="{% url 'home' %}"
+                        class="bg-jss-blue text-white px-6 py-2.5 rounded-xl text-base font-black border border-white/20 hover:bg-slate-800 transition-all">Dashboard</a>
+                </div>
+                {% else %}
+                <a href="{% url 'login' %}"
+                    class="bg-jss-gold hover:bg-amber-500 text-jss-blue px-6 py-2.5 rounded-xl text-base font-black transition-all shadow-lg">Portal
+                    Login</a>
+					
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<!-- Use Tailwind CSS & Alpine.js CDNs to achieve high-impact React-like UI -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    'jss-blue': '#0f172a',
+                    'jss-gold': '#f59e0b',
+                },
+                animation: {
+                    'scroll': 'scroll 30s linear infinite',
+                    'bounce-slow': 'bounce 2s infinite',
+                },
+                keyframes: {
+                    scroll: {
+                        '0%': { transform: 'translateX(0)' },
+                        '100%': { transform: 'translateX(-50%)' },
+                    }
+                }
+            }
+        }
+    }
+</script>
+
+<div class="selection:bg-jss-gold selection:text-jss-blue font-sans antialiased text-slate-900 bg-white min-h-screen">
+
+
+    <!-- 3. HERO SECTION -->
+    <section class="relative min-h-screen flex items-center pt-32 pb-20 overflow-hidden bg-slate-900">
+        <!-- BACKGROUND IMAGE LAYER -->
+        <div class="absolute inset-0 z-0">
+            <img src="{% static 'images/bg1.jpg' %}" class="w-full h-full object-cover opacity-100" alt="JSS Campus">
+            <div class="absolute inset-0 bg-jss-blue/50"></div>
+        </div>
+
+        <!-- Animated visual shapes (glows) -->
+        <div class="absolute top-1/4 -left-20 w-96 h-96 bg-jss-gold/10 rounded-full blur-[120px] animate-pulse"></div>
+        <div
+            class="absolute bottom-1/4 -right-20 w-96 h-96 bg-jss-blue/20 rounded-full blur-[120px] animate-pulse delay-1000">
+        </div>
+
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10 w-full">
+            <div class="grid lg:grid-cols-2 gap-20 items-center">
+                <div class="animate__animated animate__fadeInLeft">
+                    <div
+                        class="inline-flex items-center gap-3 bg-white/10 backdrop-blur-md border border-white/20 px-5 py-2.5 rounded-full text-white text-xs font-black uppercase tracking-[0.2em] mb-8">
+                        <span class="w-2 h-2 bg-jss-gold rounded-full animate-ping"></span>
+                        Legacy of 80 Years
+                    </div>
+                    <h1
+                        class="text-6xl lg:text-8xl font-black text-white mb-8 leading-[0.95] tracking-tighter drop-shadow-2xl">
+                        EMPOWERING <br />
+                        <span class="text-jss-gold italic">THE FUTURE.</span>
+                    </h1>
+                    <p class="text-xl text-slate-200 mb-12 max-w-xl leading-relaxed font-medium">
+                        JSS SMI UG & PG Studies, Dharwad – A premier educational hub under the visionary leadership of
+                        Dr. D. Veerendra Heggade.
+                    </p>
+                    <div class="flex flex-wrap gap-5">
+                        <a href="{% url 'login' %}"
+                            class="bg-jss-gold hover:bg-amber-500 text-jss-blue px-10 py-5 rounded-2xl font-black text-lg flex items-center gap-3 transition-all">
+                            Candidate Portal <i class="fas fa-arrow-right"></i>
+                        </a>
+                        <a href="#programs"
+                            class="bg-white/10 hover:bg-white/20 backdrop-blur-xl border border-white/30 text-white px-10 py-5 rounded-2xl font-black text-lg transition-all">
+                            Explore Courses
+                        </a>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-6 animate__animated animate__fadeInRight">
+                    <div
+                        class="bg-white/10 backdrop-blur-xl border border-white/20 p-8 rounded-[2rem] text-center text-white h-48 flex flex-col justify-center hover:bg-white/20 transition-all">
+                        <i class="fas fa-award text-jss-gold text-3xl mb-4"></i>
+                        <div class="text-4xl font-black mb-1">74</div>
+                        <div class="text-[10px] text-slate-300 font-bold uppercase tracking-widest">Uni Ranks</div>
+                    </div>
+                    <div
+                        class="bg-white/10 backdrop-blur-xl border border-white/20 p-8 rounded-[2rem] text-center text-white h-48 flex flex-col justify-center hover:bg-white/20 transition-all">
+                        <i class="fas fa-users text-jss-gold text-3xl mb-4"></i>
+                        <div class="text-4xl font-black mb-1">4000+</div>
+                        <div class="text-[10px] text-slate-300 font-bold uppercase tracking-widest">Placed</div>
+                    </div>
+                    <div
+                        class="bg-white/10 backdrop-blur-xl border border-white/20 p-8 rounded-[2rem] text-center text-white h-48 flex flex-col justify-center hover:bg-white/20 transition-all">
+                        <i class="fas fa-trophy text-jss-gold text-3xl mb-4"></i>
+                        <div class="text-4xl font-black mb-1">41</div>
+                        <div class="text-[10px] text-slate-300 font-bold uppercase tracking-widest">Uni Blues</div>
+                    </div>
+                    <div
+                        class="bg-white/10 backdrop-blur-xl border border-white/10 p-8 rounded-[2rem] text-center text-white h-48 flex flex-col justify-center hover:bg-white/20 transition-all">
+                        <i class="fas fa-shield-check text-jss-gold text-3xl mb-4"></i>
+                        <div class="text-4xl font-black mb-1">A+</div>
+                        <div class="text-[10px] text-slate-300 font-bold uppercase tracking-widest">NAAC Grade</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. RECRUITERS SLIDER -->
+    <section class="bg-white py-24 overflow-hidden border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-6 mb-12">
+            <h2 class="text-jss-blue text-sm font-black uppercase tracking-[0.3em] mb-4 text-center">Our Hiring Partners
+            </h2>
+        </div>
+        <div class="flex overflow-hidden relative">
+            <div class="flex animate-scroll gap-12 whitespace-nowrap">
+                {% for company in "TCS Infosys Wipro Microsoft Google Amazon Accenture IBM Cognizant"|make_list %}{% endfor %}
+                <!-- Replicating the list manually for reliability -->
+                <div class="flex items-center gap-6 p-6 rounded-[2rem] bg-slate-50 border border-slate-100 min-w-max">
+                    <i class="fas fa-building text-jss-blue text-2xl"></i><span
+                        class="text-2xl font-black text-slate-800">TCS</span>
+                </div>
+                <div class="flex items-center gap-6 p-6 rounded-[2rem] bg-slate-50 border border-slate-100 min-w-max">
+                    <i class="fas fa-microchip text-jss-blue text-2xl"></i><span
+                        class="text-2xl font-black text-slate-800">Infosys</span>
+                </div>
+                <div class="flex items-center gap-6 p-6 rounded-[2rem] bg-slate-50 border border-slate-100 min-w-max">
+                    <i class="fas fa-laptop-code text-jss-blue text-2xl"></i><span
+                        class="text-2xl font-black text-slate-800">Wipro</span>
+                </div>
+                <div class="flex items-center gap-6 p-6 rounded-[2rem] bg-slate-50 border border-slate-100 min-w-max">
+                    <i class="fab fa-microsoft text-jss-blue text-2xl"></i><span
+                        class="text-2xl font-black text-slate-800">Microsoft</span>
+                </div>
+                <div class="flex items-center gap-6 p-6 rounded-[2rem] bg-slate-50 border border-slate-100 min-w-max">
+                    <i class="fab fa-google text-jss-blue text-2xl"></i><span
+                        class="text-2xl font-black text-slate-800">Google</span>
+                </div>
+                <!-- Repeat set -->
+                <div class="flex items-center gap-6 p-6 rounded-[2rem] bg-slate-50 border border-slate-100 min-w-max">
+                    <i class="fas fa-building text-jss-blue text-2xl"></i><span
+                        class="text-2xl font-black text-slate-800">TCS</span>
+                </div>
+                <div class="flex items-center gap-6 p-6 rounded-[2rem] bg-slate-50 border border-slate-100 min-w-max">
+                    <i class="fas fa-microchip text-jss-blue text-2xl"></i><span
+                        class="text-2xl font-black text-slate-800">Infosys</span>
+                </div>
+                <div class="flex items-center gap-6 p-6 rounded-[2rem] bg-slate-50 border border-slate-100 min-w-max">
+                    <i class="fas fa-laptop-code text-jss-blue text-2xl"></i><span
+                        class="text-2xl font-black text-slate-800">Wipro</span>
+                </div>
+                <div class="flex items-center gap-6 p-6 rounded-[2rem] bg-slate-50 border border-slate-100 min-w-max">
+                    <i class="fab fa-microsoft text-jss-blue text-2xl"></i><span
+                        class="text-2xl font-black text-slate-800">Microsoft</span>
+                </div>
+                <div class="flex items-center gap-6 p-6 rounded-[2rem] bg-slate-50 border border-slate-100 min-w-max">
+                    <i class="fab fa-google text-jss-blue text-2xl"></i><span
+                        class="text-2xl font-black text-slate-800">Google</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. PROGRAMS SECTION -->
+    <section id="programs" class="py-32 bg-white">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <h2 class="text-jss-blue text-sm font-black uppercase tracking-[0.3em] mb-4">Academic Excellence</h2>
+            <h3 class="text-5xl font-black text-slate-900 tracking-tight mb-20">Programs Built for <span
+                    class="text-jss-blue">Modern Careers.</span></h3>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div
+                    class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-xl transition-all">
+                    <div class="w-14 h-14 bg-blue-50 text-jss-blue rounded-2xl flex items-center justify-center mb-6"><i
+                            class="fas fa-code text-2xl"></i></div>
+                    <span class="text-jss-gold text-[10px] font-black uppercase tracking-widest mb-2 block">UG -
+                        BCA</span>
+                    <h4 class="text-2xl font-black text-slate-900 mb-4">Computer Applications</h4>
+                    <p class="text-slate-500 text-sm leading-relaxed mb-6">Master the art of software development, web
+                        technologies, and database management.</p>
+                </div>
+                <div
+                    class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-xl transition-all">
+                    <div
+                        class="w-14 h-14 bg-orange-50 text-orange-500 rounded-2xl flex items-center justify-center mb-6">
+                        <i class="fas fa-chart-line text-2xl"></i>
+                    </div>
+                    <span class="text-jss-gold text-[10px] font-black uppercase tracking-widest mb-2 block">UG -
+                        BBA</span>
+                    <h4 class="text-2xl font-black text-slate-900 mb-4">Business Administration</h4>
+                    <p class="text-slate-500 text-sm leading-relaxed mb-6">Develop leadership skills, financial acumen,
+                        and strategic business thinking.</p>
+                </div>
+                <div
+                    class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-xl transition-all">
+                    <div
+                        class="w-14 h-14 bg-purple-50 text-purple-500 rounded-2xl flex items-center justify-center mb-6">
+                        <i class="fas fa-database text-2xl"></i>
+                    </div>
+                    <span class="text-jss-gold text-[10px] font-black uppercase tracking-widest mb-2 block">PG -
+                        M.Sc</span>
+                    <h4 class="text-2xl font-black text-slate-900 mb-4">Computer Science</h4>
+                    <p class="text-slate-500 text-sm leading-relaxed mb-6">Advanced research and development in AI,
+                        Cloud Computing, and Data Science.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. MANAGEMENT & LEADERSHIP -->
+    <section class="py-32 bg-slate-50 relative overflow-hidden">
+        <!-- Decoration side element -->
+        <div class="absolute top-0 right-0 w-1/3 h-full bg-jss-blue/5 -skew-x-12 transform translate-x-1/2"></div>
+
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+            <div class="flex flex-col lg:flex-row gap-16 items-center mb-20">
+                <div class="lg:w-1/2">
+                    <h2 class="text-jss-blue text-sm font-black uppercase tracking-[0.3em] mb-4">Our Leadership</h2>
+                    <h3 class="text-5xl font-black text-slate-900 tracking-tight leading-tight mb-8">
+                        The Visionaries <br />Behind <span class="text-jss-blue">JSS Legacy.</span>
+                    </h3>
+                    <p class="text-xl text-slate-500 max-w-xl leading-relaxed mb-12">
+                        Guided by the eternal wisdom of our founders and the strategic vision of our current leadership,
+                        JSS continues to be a beacon of academic excellence and value-based education.
+                    </p>
+
+                    <!-- Leadership List -->
+                    <div class="grid sm:grid-cols-2 gap-8">
+                        <div
+                            class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-lg transition-all group flex items-center gap-6">
+                            <div class="w-16 h-16 rounded-full overflow-hidden shrink-0 border-2 border-jss-gold">
+                                <img src="{% static 'images/logos/founder.jpeg' %}" class="w-full h-full object-cover"
+                                    alt="Founder">
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-black text-slate-900">Late Shri R. S. Hukkerikar</h4>
+                                <p class="text-jss-blue text-[10px] font-bold uppercase tracking-widest mt-1">Founder
+                                </p>
+                            </div>
+                        </div>
+                        <div
+                            class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-lg transition-all group flex items-center gap-6">
+                            <div class="w-16 h-16 rounded-full overflow-hidden shrink-0 border-2 border-jss-gold">
+                                <img src="{% static 'images/logos/Dr.veerendra hegde.jpeg' %}"
+                                    class="w-full h-full object-cover" alt="Chairman">
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-black text-slate-900">Dr. D. Veerendra Heggade</h4>
+                                <p class="text-jss-blue text-[10px] font-bold uppercase tracking-widest mt-1">Chairman
+                                </p>
+                            </div>
+                        </div>
+                        <div
+                            class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-lg transition-all group flex items-center gap-6">
+                            <div class="w-16 h-16 rounded-full overflow-hidden shrink-0 border-2 border-jss-gold">
+                                <img src="{% static 'images/logos/secretary.jpeg' %}" class="w-full h-full object-cover"
+                                    alt="Secretary">
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-black text-slate-900">Dr. Ajith Prasad</h4>
+                                <p class="text-jss-blue text-[10px] font-bold uppercase tracking-widest mt-1">Secretary
+                                </p>
+                            </div>
+                        </div>
+                        <div
+                            class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-lg transition-all group flex items-center gap-6">
+                            <div class="w-16 h-16 rounded-full overflow-hidden shrink-0 border-2 border-jss-gold">
+                                <img src="{% static 'images/logos/suraj_jain.jpeg' %}"
+                                    class="w-full h-full object-cover" alt="Principal">
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-black text-slate-900">Dr. Suraj Jain</h4>
+                                <p class="text-jss-blue text-[10px] font-bold uppercase tracking-widest mt-1">Principal
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:w-1/2 relative">
+                    <div class="relative rounded-[3rem] overflow-hidden shadow-2xl border-4 border-white">
+                        <img src="{% static 'images/leadership_group.jpg' %}"
+                            class="w-full h-auto object-cover transform hover:scale-105 transition-transform duration-700"
+                            alt="JSS Management Board">
+                        <div class="absolute inset-0 bg-gradient-to-t from-jss-blue/40 to-transparent"></div>
+                    </div>
+                    <!-- Badge -->
+                    <div
+                        class="absolute -bottom-8 -right-8 bg-jss-gold p-8 rounded-3xl text-jss-blue shadow-2xl animate-bounce-slow hidden sm:block">
+                        <div class="text-4xl font-black">80+</div>
+                        <div class="text-[10px] font-black uppercase tracking-widest opacity-80">Years of Legacy</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. PLACEMENT ECOSYSTEM -->
+    <section class="py-32 bg-jss-blue text-white overflow-hidden relative">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+            <div class="grid lg:grid-cols-2 gap-20 items-center">
+                <div>
+                    <h2 class="text-jss-gold text-sm font-black uppercase tracking-[0.3em] mb-6">Placement Hub</h2>
+                    <h3 class="text-5xl font-black mb-8 leading-tight">Bridging the Gap <br /><span
+                            class="text-jss-gold">to Your Dream Job.</span></h3>
+                    <p class="text-lg text-slate-400 mb-12">Our digital portal provides systematic guidance, mock
+                        drills, and direct access to 150+ recruiters.</p>
+
+                    <div class="grid sm:grid-cols-2 gap-8 mb-12">
+                        <div class="flex gap-4">
+                            <div
+                                class="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center shrink-0 text-jss-gold">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold">92% Success</h4>
+                                <p class="text-xs text-slate-500">Placement rate for 2025.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div
+                                class="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center shrink-0 text-jss-gold">
+                                <i class="fas fa-globe"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold">150+ Partners</h4>
+                                <p class="text-xs text-slate-500">Global hiring ties.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative">
+                    <img src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&q=80&w=1000"
+                        class="rounded-[3rem] shadow-2xl border-8 border-white/10" alt="Testimonial">
+                    <div
+                        class="absolute -bottom-6 -left-6 bg-jss-gold p-8 rounded-3xl text-jss-blue max-w-xs shadow-2xl animate-bounce-slow">
+                        <i class="fas fa-quote-left text-2xl opacity-20 mb-4 block"></i>
+                        <p class="font-black text-lg leading-tight">"JSS SMI gave me the confidence to crack my
+                            Microsoft interview."</p>
+                        <p class="mt-4 text-xs font-bold opacity-60 uppercase">Anusha K. • Alumna @ Microsoft</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 8. RESOURCES SHOWCASE SECTION -->
+    <section class="py-32 bg-white relative overflow-hidden">
+        <div class="absolute -top-40 -left-40 w-96 h-96 bg-purple-100 rounded-full blur-[120px] opacity-50"></div>
+        <div class="absolute -bottom-40 -right-40 w-96 h-96 bg-indigo-100 rounded-full blur-[120px] opacity-50"></div>
+
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+            <h2 class="text-jss-blue text-sm font-black uppercase tracking-[0.3em] mb-4">Student Resources</h2>
+            <h3 class="text-5xl font-black text-slate-900 tracking-tight mb-6">Everything You Need to <span
+                    class="text-jss-blue">Crack the Interview.</span></h3>
+            <p class="text-lg text-slate-500 max-w-2xl mb-16">Curated study materials, mock tests, video tutorials, and
+                practice arenas — all designed by placement experts.</p>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Resource Card 1: Study Materials -->
+                {% if user.is_authenticated %}
+                <a href="{% url 'resources' %}"
+                {% else %}
+                <a href="#" onclick="event.preventDefault(); openLoginModal('Study Materials Hub', `{% url 'resources' %}`);"
+                {% endif %}
+                    class="group bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 block relative overflow-hidden">
+                    <div
+                        class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-indigo-50 to-transparent rounded-bl-full">
+                    </div>
+                    <div
+                        class="w-16 h-16 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-book-open text-2xl"></i>
+                    </div>
+                    <span
+                        class="text-jss-gold text-[10px] font-black uppercase tracking-widest mb-2 block">Comprehensive</span>
+                    <h4 class="text-2xl font-black text-slate-900 mb-3">Study Materials</h4>
+                    <p class="text-slate-500 text-sm leading-relaxed mb-6">Aptitude formulas, DSA cheat sheets, CS core
+                        notes, and HR preparation — all in one place.</p>
+                    <div class="flex items-center gap-2 text-indigo-600 font-bold text-sm">
+                        {% if user.is_authenticated %}<span>Open Hub</span>{% else %}<i
+                            class="fas fa-lock text-xs"></i><span>Login to Access</span>{% endif %}
+                        <i class="fas fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
+                    </div>
+                </a>
+
+                <!-- Resource Card 2: Practice Arena -->
+                {% if user.is_authenticated %}
+                <a href="{% url 'practice' %}"
+                {% else %}
+                <a href="#" onclick="event.preventDefault(); openLoginModal('Practice Arena', `{% url 'practice' %}`);"
+                {% endif %}
+                    class="group bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 block relative overflow-hidden">
+                    <div
+                        class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-orange-50 to-transparent rounded-bl-full">
+                    </div>
+                    <div
+                        class="w-16 h-16 bg-orange-50 text-orange-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-laptop-code text-2xl"></i>
+                    </div>
+                    <span
+                        class="text-jss-gold text-[10px] font-black uppercase tracking-widest mb-2 block">Interactive</span>
+                    <h4 class="text-2xl font-black text-slate-900 mb-3">Practice Arena</h4>
+                    <p class="text-slate-500 text-sm leading-relaxed mb-6">Timed mock tests simulating real TCS-NQT,
+                        Infosys, and Wipro exam patterns with instant scoring.</p>
+                    <div class="flex items-center gap-2 text-orange-500 font-bold text-sm">
+                        {% if user.is_authenticated %}<span>Start Practice</span>{% else %}<i
+                            class="fas fa-lock text-xs"></i><span>Login to Access</span>{% endif %}
+                        <i class="fas fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
+                    </div>
+                </a>
+
+                <!-- Resource Card 3: Video Tutorials -->
+                {% if user.is_authenticated %}
+                <a href="{% url 'video_resource' %}"
+                {% else %}
+                <a href="#" onclick="event.preventDefault(); openLoginModal('Video Tutorials', `{% url 'video_resource' %}`);"
+                {% endif %}
+                    class="group bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 block relative overflow-hidden">
+                    <div
+                        class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-purple-50 to-transparent rounded-bl-full">
+                    </div>
+                    <div
+                        class="w-16 h-16 bg-purple-50 text-purple-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-play-circle text-2xl"></i>
+                    </div>
+                    <span class="text-jss-gold text-[10px] font-black uppercase tracking-widest mb-2 block">Visual
+                        Learning</span>
+                    <h4 class="text-2xl font-black text-slate-900 mb-3">Video Tutorials</h4>
+                    <p class="text-slate-500 text-sm leading-relaxed mb-6">Expert-led video walkthroughs on coding
+                        problems, aptitude shortcuts, and interview techniques.</p>
+                    <div class="flex items-center gap-2 text-purple-500 font-bold text-sm">
+                        {% if user.is_authenticated %}<span>Watch Now</span>{% else %}<i
+                            class="fas fa-lock text-xs"></i><span>Login to Access</span>{% endif %}
+                        <i class="fas fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
+                    </div>
+                </a>
+            </div>
+
+            {% if not user.is_authenticated %}
+            <div class="mt-12 text-center">
+                <p class="text-slate-400 text-sm"><i class="fas fa-shield-alt mr-2"></i>All resources are exclusive to
+                    registered students. <a href="#"
+                        onclick="event.preventDefault(); openLoginModal('Study Resources', `{% url 'resources' %}`);"
+                        class="text-indigo-600 font-bold hover:text-indigo-800 transition-colors">Sign in</a> or <a
+                        href="{% url 'register' %}"
+                        class="text-indigo-600 font-bold hover:text-indigo-800 transition-colors">create an account</a>
+                    to unlock.</p>
+            </div>
+            {% endif %}
+        </div>
+    </section>
+
+</div>
+
+{% if not user.is_authenticated %}
+<div id="loginModal" class="login-modal-overlay" onclick="handleOverlayClick(event)">
+    <div class="login-modal-card animate__animated" id="loginModalCard">
+        <!-- Close Button -->
+        <button class="modal-close-btn" onclick="closeLoginModal()" aria-label="Close">
+            <i class="fas fa-times"></i>
+        </button>
+
+        <!-- Gradient top bar -->
+        <div class="modal-gradient-bar"></div>
+
+        <!-- Lock Icon Badge -->
+        <div class="modal-lock-badge" id="modalLockBadge">
+            <i class="fas fa-lock"></i>
+        </div>
+
+        <!-- Header -->
+        <h2 class="modal-title" id="modalTitle">Access Restricted</h2>
+        <p class="modal-subtitle" id="modalSubtitle">Please login to access placement resources and study materials.</p>
+
+        <!-- Resource being accessed -->
+        <div class="modal-resource-tag" id="modalResourceTag">
+            <i class="fas fa-book-open"></i>
+            <span id="modalResourceName">Resource</span>
+        </div>
+
+        <!-- Error Message Area -->
+        <div class="modal-error" id="modalError" style="display:none;">
+            <i class="fas fa-exclamation-circle"></i>
+            <span id="modalErrorText"></span>
+        </div>
+
+        <!-- Login Form -->
+        <form id="modalLoginForm" onsubmit="handleModalLogin(event)">
+            <div class="modal-form-group">
+                <i class="fas fa-user"></i>
+                <input type="text" id="modalUsername" name="username" placeholder="Username" required
+                    autocomplete="username">
+            </div>
+            <div class="modal-form-group">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="modalPassword" name="password" placeholder="Password" required
+                    autocomplete="current-password">
+                <i class="fas fa-eye modal-toggle-pw" id="modalTogglePw" onclick="toggleModalPassword()"></i>
+            </div>
+
+            <button type="submit" class="modal-login-btn" id="modalLoginBtn">
+                <span id="modalBtnText">Sign In & Continue</span>
+                <i class="fas fa-spinner fa-spin" id="modalSpinner" style="display:none;"></i>
+            </button>
+        </form>
+
+        <!-- Sign Up Form (hidden by default) -->
+        <form id="modalSignupForm" style="display:none;" onsubmit="handleModalSignup(event)">
+            <div class="modal-form-group">
+                <i class="fas fa-envelope"></i>
+                <input type="email" id="signupEmail" name="email" placeholder="Email Address" required
+                    autocomplete="email">
+            </div>
+            <div class="modal-form-group">
+                <i class="fas fa-user"></i>
+                <input type="text" id="signupUsername" name="username" placeholder="Username" required
+                    autocomplete="username">
+            </div>
+            <div class="modal-form-group">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="signupPassword" name="password" placeholder="Password" required
+                    autocomplete="new-password">
+                <i class="fas fa-eye modal-toggle-pw" id="signupTogglePw" onclick="toggleSignupPassword()"></i>
+            </div>
+            <p class="modal-pw-hint"><i class="fas fa-info-circle"></i> Min 8 chars with uppercase, lowercase, number &
+                special character</p>
+
+            <button type="submit" class="modal-login-btn modal-signup-btn" id="modalSignupBtn">
+                <span id="signupBtnText">Create Account</span>
+                <i class="fas fa-spinner fa-spin" id="signupSpinner" style="display:none;"></i>
+            </button>
+        </form>
+
+        <!-- Divider -->
+        <div class="modal-divider"><span>OR</span></div>
+
+        <!-- Toggle between Login / Sign Up -->
+        <p class="modal-signup-text" id="modalToggleText">
+            New here? <a href="#" onclick="event.preventDefault(); toggleModalMode('signup');">Create an Account <i
+                    class="fas fa-arrow-right" style="font-size:10px;"></i></a>
+        </p>
+    </div>
+</div>
+{% endif %}
+
+<style>
+    .hero-gradient {
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    }
+
+    @keyframes scroll {
+        0% {
+            transform: translateX(0);
+        }
+
+        100% {
+            transform: translateX(-50%);
+        }
+    }
+
+    .animate-scroll {
+        animation: scroll 40s linear infinite;
+        display: flex;
+        width: max-content;
+    }
+
+    .animate-bounce-slow {
+        animation: bounce 3s infinite;
+    }
+
+    @keyframes bounce {
+
+        0%,
+        100% {
+            transform: translateY(0);
+        }
+
+        50% {
+            transform: translateY(-15px);
+        }
+    }
+
+    /* ===== LOGIN MODAL STYLES ===== */
+    .login-modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 99999;
+        background: rgba(15, 23, 42, 0.7);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .login-modal-overlay.active {
+        display: flex;
+        opacity: 1;
+    }
+
+    .login-modal-card {
+        background: #ffffff;
+        width: 100%;
+        max-width: 460px;
+        border-radius: 2rem;
+        padding: 50px 40px 40px;
+        position: relative;
+        overflow: hidden;
+        box-shadow:
+            0 25px 60px rgba(0, 0, 0, 0.3),
+            0 0 0 1px rgba(255, 255, 255, 0.1);
+    }
+
+    .modal-gradient-bar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: linear-gradient(90deg, #6366f1, #ec4899, #f59e0b);
+    }
+
+    .modal-close-btn {
+        position: absolute;
+        top: 18px;
+        right: 20px;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: none;
+        background: #f1f5f9;
+        color: #64748b;
+        font-size: 0.95rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s;
+        z-index: 10;
+    }
+
+    .modal-close-btn:hover {
+        background: #fee2e2;
+        color: #ef4444;
+        transform: rotate(90deg);
+    }
+
+    .modal-lock-badge {
+        width: 70px;
+        height: 70px;
+        background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 24px;
+        color: white;
+        font-size: 1.8rem;
+        box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+    }
+
+    .modal-title {
+        text-align: center;
+        font-family: 'Outfit', sans-serif;
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: #0f172a;
+        margin-bottom: 8px;
+    }
+
+    .modal-subtitle {
+        text-align: center;
+        color: #64748b;
+        font-size: 0.95rem;
+        margin-bottom: 24px;
+        line-height: 1.5;
+    }
+
+    .modal-resource-tag {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        background: #eff6ff;
+        border: 1px solid #dbeafe;
+        padding: 10px 20px;
+        border-radius: 12px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: #3b82f6;
+        margin-bottom: 28px;
+    }
+
+    .modal-error {
+        background: #fef2f2;
+        border: 1px solid #fee2e2;
+        color: #dc2626;
+        padding: 12px 16px;
+        border-radius: 12px;
+        font-size: 0.9rem;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 600;
+        animation: shake 0.4s ease;
+    }
+
+    @keyframes shake {
+
+        0%,
+        100% {
+            transform: translateX(0);
+        }
+
+        25% {
+            transform: translateX(-8px);
+        }
+
+        75% {
+            transform: translateX(8px);
+        }
+    }
+
+    .modal-form-group {
+        position: relative;
+        margin-bottom: 18px;
+    }
+
+    .modal-form-group>i:first-child {
+        position: absolute;
+        left: 18px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+        font-size: 1rem;
+        transition: 0.3s;
+        pointer-events: none;
+    }
+
+    .modal-form-group input {
+        width: 100%;
+        padding: 16px 50px 16px 50px;
+        background: #f8fafc;
+        border: 2px solid #e2e8f0;
+        border-radius: 14px;
+        font-size: 1rem;
+        color: #0f172a;
+        font-family: 'Outfit', sans-serif;
+        transition: all 0.3s ease;
+        outline: none;
+    }
+
+    .modal-form-group input:focus {
+        border-color: #6366f1;
+        background: #ffffff;
+        box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+    }
+
+    .modal-form-group input:focus+.modal-toggle-pw,
+    .modal-form-group input:focus~i:first-child {
+        color: #6366f1;
+    }
+
+    .modal-toggle-pw {
+        position: absolute;
+        right: 18px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: 0.3s;
+    }
+
+    .modal-toggle-pw:hover {
+        color: #6366f1;
+    }
+
+    .modal-login-btn {
+        width: 100%;
+        padding: 16px;
+        background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+        color: white;
+        border: none;
+        border-radius: 14px;
+        font-size: 1.1rem;
+        font-weight: 700;
+        font-family: 'Outfit', sans-serif;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 8px;
+    }
+
+    .modal-login-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 24px rgba(99, 102, 241, 0.4);
+    }
+
+    .modal-login-btn:active {
+        transform: translateY(0);
+    }
+
+    .modal-divider {
+        height: 1px;
+        background: #e2e8f0;
+        margin: 28px 0;
+        position: relative;
+    }
+
+    .modal-divider span {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        padding: 0 16px;
+        color: #94a3b8;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 2px;
+    }
+
+    .modal-signup-text {
+        text-align: center;
+        color: #64748b;
+        font-size: 0.95rem;
+    }
+
+    .modal-signup-text a {
+        color: #6366f1;
+        text-decoration: none;
+        font-weight: 700;
+        margin-left: 4px;
+        transition: 0.3s;
+    }
+
+    .modal-signup-text a:hover {
+        color: #4338ca;
+    }
+
+    /* Animations */
+    @keyframes modalSlideIn {
+        from {
+            opacity: 0;
+            transform: translateY(30px) scale(0.95);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    @keyframes modalSlideOut {
+        from {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        to {
+            opacity: 0;
+            transform: translateY(30px) scale(0.95);
+        }
+    }
+
+    .modal-animate-in {
+        animation: modalSlideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .modal-animate-out {
+        animation: modalSlideOut 0.3s ease forwards;
+    }
+
+    /* Prevent body scroll when modal is open */
+    body.modal-open {
+        overflow: hidden !important;
+    }
+
+    /* Success state */
+    .modal-success-state .modal-lock-badge {
+        background: linear-gradient(135deg, #10b981 0%, #34d399 100%) !important;
+        box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3) !important;
+    }
+
+    /* Sign Up button gradient variant */
+    .modal-signup-btn {
+        background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%) !important;
+    }
+
+    .modal-signup-btn:hover {
+        box-shadow: 0 12px 24px rgba(245, 158, 11, 0.4) !important;
+    }
+
+    /* Password hint text */
+    .modal-pw-hint {
+        font-size: 0.78rem;
+        color: #94a3b8;
+        margin: -8px 0 18px 4px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .modal-pw-hint i {
+        color: #6366f1;
+        font-size: 0.7rem;
+    }
+
+    /* Success message */
+    .modal-success-msg {
+        background: #ecfdf5;
+        border: 1px solid #d1fae5;
+        color: #059669;
+        padding: 12px 16px;
+        border-radius: 12px;
+        font-size: 0.9rem;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 600;
+    }
+
+    @media (max-width: 500px) {
+        .login-modal-card {
+            padding: 40px 24px 30px;
+            border-radius: 1.5rem;
+        }
+    }
+</style>
+
+<!-- ===== MODAL & RESOURCE CLICK LOGIC ===== -->
+<!-- Hidden data element to pass server-side URLs to JS without Django tags in script -->
+{% if not user.is_authenticated %}
+<div id="authConfig" data-ajax-login-url="{% url 'ajax_login' %}" data-register-url="{% url 'ajax_register' %}"
+    data-resources-url="{% url 'resources' %}" data-authenticated="false" style="display:none;"></div>
+{% else %}
+<div id="authConfig" data-resources-url="{% url 'resources' %}" data-authenticated="true" style="display:none;"></div>
+{% endif %}
+
+<script>
+        (function () {
+            // Read config from hidden data element (no Django tags in JS)
+            var configEl = document.getElementById('authConfig');
+            var isAuthenticated = configEl.getAttribute('data-authenticated') === 'true';
+            var resourcesUrl = configEl.getAttribute('data-resources-url');
+            var ajaxLoginUrl = configEl.getAttribute('data-ajax-login-url');
+            var registerUrl = configEl.getAttribute('data-register-url');
+            var pendingResourceUrl = resourcesUrl;
+            var currentMode = 'login'; // 'login' or 'signup'
+
+            /**
+             * Opens the login modal with smooth animation.
+             * @param {string} resourceName - Display name of the resource
+             * @param {string} targetUrl - URL to redirect to after login
+             */
+            window.openLoginModal = function (resourceName, targetUrl) {
+                if (isAuthenticated) {
+                    window.location.href = targetUrl || resourcesUrl;
+                    return;
+                }
+                pendingResourceUrl = targetUrl || resourcesUrl;
+                var overlay = document.getElementById('loginModal');
+                var card = document.getElementById('loginModalCard');
+                if (!overlay || !card) return;
+
+                // Reset to login mode
+                toggleModalMode('login');
+
+                // Reset state
+                document.getElementById('modalError').style.display = 'none';
+                document.getElementById('modalLoginForm').reset();
+                document.getElementById('modalResourceName').textContent = resourceName || 'Study Resources';
+
+                // Reset lock badge
+                document.getElementById('modalLockBadge').innerHTML = '<i class="fas fa-lock"></i>';
+                document.getElementById('modalLockBadge').style.background = '';
+                document.getElementById('modalLockBadge').style.boxShadow = '';
+
+                // Reset button
+                var btn = document.getElementById('modalLoginBtn');
+                btn.style.background = '';
+                btn.disabled = false;
+                btn.style.opacity = '1';
+                document.getElementById('modalBtnText').textContent = 'Sign In & Continue';
+                document.getElementById('modalSpinner').style.display = 'none';
+
+                overlay.classList.add('active');
+                card.classList.remove('modal-animate-out', 'modal-success-state');
+                card.classList.add('modal-animate-in');
+                document.body.classList.add('modal-open');
+
+                // Focus the username field
+                setTimeout(function () { document.getElementById('modalUsername').focus(); }, 400);
+            };
+
+            /**
+             * Toggle between login and signup modes inside the modal
+             */
+            window.toggleModalMode = function (mode) {
+                currentMode = mode;
+                var loginForm = document.getElementById('modalLoginForm');
+                var signupForm = document.getElementById('modalSignupForm');
+                var title = document.getElementById('modalTitle');
+                var subtitle = document.getElementById('modalSubtitle');
+                var toggleText = document.getElementById('modalToggleText');
+                var lockBadge = document.getElementById('modalLockBadge');
+                var errorDiv = document.getElementById('modalError');
+
+                errorDiv.style.display = 'none';
+
+                if (mode === 'signup') {
+                    loginForm.style.display = 'none';
+                    signupForm.style.display = 'block';
+                    signupForm.reset();
+                    title.textContent = 'Create Account';
+                    subtitle.textContent = 'Sign up to unlock all placement resources.';
+                    lockBadge.innerHTML = '<i class="fas fa-user-plus"></i>';
+                    lockBadge.style.background = 'linear-gradient(135deg, #f59e0b 0%, #f97316 100%)';
+                    lockBadge.style.boxShadow = '0 10px 20px rgba(245, 158, 11, 0.3)';
+                    toggleText.innerHTML = 'Already have an account? <a href="#" onclick="event.preventDefault(); toggleModalMode(\'login\');">Sign In <i class="fas fa-arrow-right" style="font-size:10px;"></i></a>';
+                } else {
+                    signupForm.style.display = 'none';
+                    loginForm.style.display = 'block';
+                    loginForm.reset();
+                    title.textContent = 'Access Restricted';
+                    subtitle.textContent = 'Please login to access placement resources and study materials.';
+                    lockBadge.innerHTML = '<i class="fas fa-lock"></i>';
+                    lockBadge.style.background = '';
+                    lockBadge.style.boxShadow = '';
+                    toggleText.innerHTML = 'New here? <a href="#" onclick="event.preventDefault(); toggleModalMode(\'signup\');">Create an Account <i class="fas fa-arrow-right" style="font-size:10px;"></i></a>';
+                }
+            };
+
+            /**
+             * Closes the modal with smooth animation
+             */
+            window.closeLoginModal = function () {
+                var overlay = document.getElementById('loginModal');
+                var card = document.getElementById('loginModalCard');
+                if (!overlay || !card) return;
+                card.classList.remove('modal-animate-in');
+                card.classList.add('modal-animate-out');
+                setTimeout(function () {
+                    overlay.classList.remove('active');
+                    document.body.classList.remove('modal-open');
+                    card.classList.remove('modal-animate-out', 'modal-success-state');
+                }, 300);
+            };
+
+            /**
+             * Close modal when clicking outside the card (on overlay)
+             */
+            window.handleOverlayClick = function (event) {
+                if (event.target === event.currentTarget) {
+                    window.closeLoginModal();
+                }
+            };
+
+            // Close modal on Escape key
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') {
+                    var overlay = document.getElementById('loginModal');
+                    if (overlay && overlay.classList.contains('active')) {
+                        window.closeLoginModal();
+                    }
+                }
+            });
+
+            /**
+             * Toggle password visibility (Login form)
+             */
+            window.toggleModalPassword = function () {
+                var input = document.getElementById('modalPassword');
+                var icon = document.getElementById('modalTogglePw');
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                } else {
+                    input.type = 'password';
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                }
+            };
+
+            /**
+             * Toggle password visibility (Signup form)
+             */
+            window.toggleSignupPassword = function () {
+                var input = document.getElementById('signupPassword');
+                var icon = document.getElementById('signupTogglePw');
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                } else {
+                    input.type = 'password';
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                }
+            };
+
+            /**
+             * Read CSRF cookie for AJAX requests
+             */
+            function getCookie(name) {
+                var cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    var cookies = document.cookie.split(';');
+                    for (var i = 0; i < cookies.length; i++) {
+                        var cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+
+            /**
+             * Handle AJAX login from the modal
+             */
+            window.handleModalLogin = function (event) {
+                event.preventDefault();
+
+                var username = document.getElementById('modalUsername').value.trim();
+                var password = document.getElementById('modalPassword').value;
+                var btn = document.getElementById('modalLoginBtn');
+                var btnText = document.getElementById('modalBtnText');
+                var spinner = document.getElementById('modalSpinner');
+                var errorDiv = document.getElementById('modalError');
+                var errorText = document.getElementById('modalErrorText');
+
+                // Loading state
+                btnText.textContent = 'Signing in...';
+                spinner.style.display = 'inline-block';
+                btn.disabled = true;
+                btn.style.opacity = '0.7';
+                errorDiv.style.display = 'none';
+
+                var csrftoken = getCookie('csrftoken');
+
+                fetch(ajaxLoginUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRFToken': csrftoken,
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: 'username=' + encodeURIComponent(username) + '&password=' + encodeURIComponent(password)
+                })
+                    .then(function (response) {
+                        return response.json().then(function (data) {
+                            return { status: response.status, body: data };
+                        });
+                    })
+                    .then(function (result) {
+                        if (result.body.success) {
+                            // Success — show green badge, then redirect
+                            var card = document.getElementById('loginModalCard');
+                            card.classList.add('modal-success-state');
+                            document.getElementById('modalLockBadge').innerHTML = '<i class="fas fa-check"></i>';
+                            document.getElementById('modalTitle').textContent = 'Welcome Back!';
+                            document.getElementById('modalSubtitle').textContent = 'Redirecting you to your dashboard...';
+                            btnText.textContent = 'Success!';
+                            btn.style.background = 'linear-gradient(135deg, #10b981 0%, #34d399 100%)';
+                            setTimeout(function () {
+                                // Prefer the backend redirect_url, fallback to pendingResourceUrl if it's a student accessing a specific page
+                                if (pendingResourceUrl && result.body.redirect_url === '/student/home/') {
+                                    window.location.href = pendingResourceUrl;
+                                } else {
+                                    window.location.href = result.body.redirect_url || '/student/home/';
+                                }
+                            }, 1000);
+                        } else {
+                            errorText.textContent = result.body.message || 'Invalid credentials. Please try again.';
+                            errorDiv.style.display = 'flex';
+                            btnText.textContent = 'Sign In & Continue';
+                            spinner.style.display = 'none';
+                            btn.disabled = false;
+                            btn.style.opacity = '1';
+                        }
+                    })
+                    .catch(function () {
+                        errorText.textContent = 'Network error. Please try again.';
+                        errorDiv.style.display = 'flex';
+                        btnText.textContent = 'Sign In & Continue';
+                        spinner.style.display = 'none';
+                        btn.disabled = false;
+                        btn.style.opacity = '1';
+                    });
+            };
+
+            /**
+             * Handle AJAX signup from the modal
+             */
+            window.handleModalSignup = function (event) {
+                event.preventDefault();
+
+                var email = document.getElementById('signupEmail').value.trim();
+                var username = document.getElementById('signupUsername').value.trim();
+                var password = document.getElementById('signupPassword').value;
+                var btn = document.getElementById('modalSignupBtn');
+                var btnText = document.getElementById('signupBtnText');
+                var spinner = document.getElementById('signupSpinner');
+                var errorDiv = document.getElementById('modalError');
+                var errorText = document.getElementById('modalErrorText');
+
+                // Validation
+                if (!/^[A-Za-z]+$/.test(username)) {
+                    errorText.textContent = 'Username should contain only letters.';
+                    errorDiv.style.display = 'flex';
+                    return;
+                }
+                var pwRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
+                if (!pwRegex.test(password)) {
+                    errorText.textContent = 'Password must have uppercase, lowercase, number, special char and min 8 characters.';
+                    errorDiv.style.display = 'flex';
+                    return;
+                }
+
+                // Loading state
+                btnText.textContent = 'Creating account...';
+                spinner.style.display = 'inline-block';
+                btn.disabled = true;
+                btn.style.opacity = '0.7';
+                errorDiv.style.display = 'none';
+
+                var csrftoken = getCookie('csrftoken');
+
+                fetch(registerUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRFToken': csrftoken,
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: 'email=' + encodeURIComponent(email) + '&username=' + encodeURIComponent(username) + '&password=' + encodeURIComponent(password)
+                })
+                    .then(function (response) {
+                        return response.json().then(function (data) {
+                            return { status: response.status, body: data };
+                        });
+                    })
+                    .then(function (result) {
+                        if (result.body.success) {
+                            // Switch to login mode with success message
+                            toggleModalMode('login');
+                            var successDiv = document.createElement('div');
+                            successDiv.className = 'modal-success-msg';
+                            successDiv.innerHTML = '<i class="fas fa-check-circle"></i><span>Account created! Please sign in.</span>';
+                            var form = document.getElementById('modalLoginForm');
+                            form.parentNode.insertBefore(successDiv, form);
+                            setTimeout(function () { if (successDiv.parentNode) successDiv.remove(); }, 5000);
+                        } else {
+                            errorText.textContent = result.body.message || 'Registration failed. Please try again.';
+                            errorDiv.style.display = 'flex';
+                        }
+                        btnText.textContent = 'Create Account';
+                        spinner.style.display = 'none';
+                        btn.disabled = false;
+                        btn.style.opacity = '1';
+                    })
+                    .catch(function () {
+                        errorText.textContent = 'Network error. Please try again.';
+                        errorDiv.style.display = 'flex';
+                        btnText.textContent = 'Create Account';
+                        spinner.style.display = 'none';
+                        btn.disabled = false;
+                        btn.style.opacity = '1';
+                    });
+            };
+        })();
+</script>
+{% endblock %}

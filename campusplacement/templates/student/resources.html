@@ -1,0 +1,1003 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Placement Study Hub | JSS Portal{% endblock %}
+
+{% block body_class %}page-content{% endblock %}
+
+{% block extra_css %}
+<style>
+    .page-content-wrapper {
+        background: var(--bg-body);
+        padding: 40px 5%;
+    }
+
+    .container-hub {
+        max-width: 1300px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 24px;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        min-height: 85vh;
+        overflow: hidden;
+    }
+
+    /* Top Header */
+    .header-hub {
+        padding: 40px 50px 30px;
+        border-bottom: 1px solid var(--glass-border);
+        text-align: center;
+    }
+
+    .header-hub h1 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: var(--primary-dark);
+        margin-bottom: 10px;
+        display: inline-flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    /* Layout Container */
+    .hub-layout {
+        display: flex;
+        flex-grow: 1;
+    }
+
+    /* Vertical Sidebar Tabs */
+    .sidebar-tabs {
+        width: 320px;
+        background: #f8fafc;
+        border-right: 1px solid var(--glass-border);
+        padding: 30px 20px;
+        overflow-y: auto;
+    }
+
+    .tab-btn {
+        width: 100%;
+        text-align: left;
+        padding: 18px 20px;
+        background: transparent;
+        border: none;
+        border-radius: 12px;
+        font-size: 1.05rem;
+        font-weight: 600;
+        color: var(--text-muted);
+        cursor: pointer;
+        transition: 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 10px;
+    }
+
+    .tab-btn i {
+        font-size: 1.3rem;
+        width: 25px;
+        text-align: center;
+    }
+
+    .tab-btn:hover {
+        background: #e2e8f0;
+        color: var(--primary);
+    }
+
+    .tab-btn.active {
+        background: var(--primary);
+        color: white;
+        box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3);
+    }
+
+    /* Main Content View */
+    .content-view {
+        flex-grow: 1;
+        padding: 40px 50px;
+        overflow-y: auto;
+        max-height: 70vh;
+        background: white;
+    }
+
+    .tab-content {
+        display: none;
+        animation: fadeIn 0.4s ease;
+    }
+
+    .tab-content.active {
+        display: block;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .section-title {
+        font-size: 2rem;
+        color: #0f172a;
+        margin-bottom: 30px;
+        padding-bottom: 15px;
+        border-bottom: 3px solid #e0e7ff;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .topic-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 25px;
+    }
+
+    .topic-card {
+        background: #f8fafc;
+        border: 1px solid var(--glass-border);
+        border-radius: 16px;
+        padding: 25px;
+    }
+
+    .formula-box {
+        background: #eff6ff;
+        border-left: 4px solid #3b82f6;
+        padding: 15px 20px;
+        border-radius: 0 8px 8px 0;
+        margin: 10px 0 20px;
+    }
+
+    .code-block {
+        background: #0f172a;
+        color: #f8fafc;
+        padding: 25px;
+        border-radius: 12px;
+        font-family: 'Courier New', monospace;
+        overflow-x: auto;
+        line-height: 1.6;
+        font-size: 0.95rem;
+        margin: 15px 0;
+    }
+
+    .qa-box {
+        background: white;
+        border: 1px solid var(--glass-border);
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+    }
+
+    .pdf-ribbon {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin-bottom: 40px;
+        border-bottom: 2px dashed #cbd5e1;
+        padding-bottom: 30px;
+    }
+
+    .pdf-card {
+        background: white;
+        border: 1px solid var(--glass-border);
+        border-radius: 16px;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        transition: 0.3s;
+    }
+
+    .pdf-download {
+        background: #ef4444;
+        color: white;
+        text-decoration: none;
+        padding: 8px 15px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header" style="padding: 140px 10% 40px;">
+    <h1>Study Resources</h1>
+    <p>Everything you need for placement preparation in one place.</p>
+</div>
+
+<div class="page-content-wrapper">
+    <div class="container-hub animate__animated animate__fadeInUp">
+        <div class="header-hub">
+            <h1><i class="fas fa-graduation-cap"></i> Complete Placement Guide 2026</h1>
+            <p>Your ultimate repository containing crucial formulas, code snippets, CS core theoretical concepts, and HR
+                interview answers.</p>
+        </div>
+
+        <div class="hub-layout">
+            <div class="sidebar-tabs">
+                <button class="tab-btn active" onclick="openTab('vault')"><i class="fas fa-folder-open"></i> PDF Vault (All Files)</button>
+                <button class="tab-btn" onclick="openTab('quant')"><i class="fas fa-calculator"></i> Quantitative Aptitude</button>
+                <button class="tab-btn" onclick="openTab('logic')"><i class="fas fa-puzzle-piece"></i> Logical Reasoning</button>
+                <button class="tab-btn" onclick="openTab('dsa')"><i class="fas fa-code"></i> Data Structures (DSA)</button>
+                <button class="tab-btn" onclick="openTab('cs_core')"><i class="fas fa-server"></i> CS Core (DBMS, OS, CN)</button>
+                <button class="tab-btn" onclick="openTab('php')"><i class="fab fa-php"></i> PHP Programming</button>
+                <button class="tab-btn" onclick="openTab('ai_ds')"><i class="fas fa-brain"></i> AI & Data Science</button>
+                <button class="tab-btn" onclick="openTab('digital_marketing')"><i class="fas fa-bullhorn"></i> Digital Marketing</button>
+                <button class="tab-btn" onclick="openTab('hr')"><i class="fas fa-user-tie"></i> HR Interview Preps</button>
+
+                <hr style="border: 0; border-top: 1px solid var(--glass-border); margin: 15px 0;">
+
+                <a href="{% url 'practice' %}" class="tab-btn"
+                    style="text-decoration: none; color: white; background: var(--primary); justify-content: center;">
+                    <i class="fas fa-laptop-code" style="color: white; margin-right: 5px;"></i> Practice Arena
+                </a>
+            </div>
+
+            <div class="content-view" id="main-content">
+
+                <!-- ========== PDF VAULT (All Files) ========== -->
+                <div id="vault" class="tab-content active">
+                    <h2 class="section-title"><i class="fas fa-folder-open"></i> PDF Vault — All Study Resources</h2>
+                    <p style="margin-bottom: 25px; color: var(--text-muted); font-size: 1.05rem;">Download any resource
+                        directly. All 5 curated PDFs for your placement preparation are listed below.</p>
+                    <div class="pdf-ribbon" style="border-bottom: none;">
+                        <div class="pdf-card">
+                            <i class="fas fa-file-pdf" style="font-size: 2rem; color: #ef4444;"></i>
+                            <div class="pdf-info" style="flex-grow: 1;">
+                                <h4 style="margin-bottom: 4px;">All Cheat Sheets Collection</h4>
+                                <p style="font-size: 0.85rem; color: var(--text-muted);">2.7 MB — Quick-reference
+                                    formulas & shortcuts</p>
+                            </div>
+                            <a href="{% static 'resources/All Cheat Sheets Collection.pdf' %}" target="_blank"
+                                class="pdf-download"><i class="fas fa-eye"></i> View</a>
+                            <a href="{% static 'resources/All Cheat Sheets Collection.pdf' %}" download
+                                class="pdf-download" style="background: #6366f1;"><i class="fas fa-download"></i>
+                                Download</a>
+                        </div>
+                        <div class="pdf-card">
+                            <i class="fas fa-file-pdf" style="font-size: 2rem; color: #ef4444;"></i>
+                            <div class="pdf-info" style="flex-grow: 1;">
+                                <h4 style="margin-bottom: 4px;">DSA Supreme Notes</h4>
+                                <p style="font-size: 0.85rem; color: var(--text-muted);">22.7 MB — Complete DSA guide
+                                    with solutions</p>
+                            </div>
+                            <a href="{% static 'resources/DSA Supreme Notes.pdf' %}" target="_blank"
+                                class="pdf-download"><i class="fas fa-eye"></i> View</a>
+                            <a href="{% static 'resources/DSA Supreme Notes.pdf' %}" download class="pdf-download"
+                                style="background: #6366f1;"><i class="fas fa-download"></i>
+                                Download</a>
+                        </div>
+                        <div class="pdf-card">
+                            <i class="fas fa-file-pdf" style="font-size: 2rem; color: #ef4444;"></i>
+                            <div class="pdf-info" style="flex-grow: 1;">
+                                <h4 style="margin-bottom: 4px;">Python Notes</h4>
+                                <p style="font-size: 0.85rem; color: var(--text-muted);">1.4 MB — Python fundamentals &
+                                    interview prep</p>
+                            </div>
+                            <a href="{% static 'resources/Python Notes.pdf' %}" target="_blank" class="pdf-download"><i
+                                    class="fas fa-eye"></i> View</a>
+                            <a href="{% static 'resources/Python Notes.pdf' %}" download class="pdf-download"
+                                style="background: #6366f1;"><i class="fas fa-download"></i> Download</a>
+                        </div>
+                        <div class="pdf-card">
+                            <i class="fas fa-file-pdf" style="font-size: 2rem; color: #ef4444;"></i>
+                            <div class="pdf-info" style="flex-grow: 1;">
+                                <h4 style="margin-bottom: 4px;">TCS-NQT Complete Aptitude</h4>
+                                <p style="font-size: 0.85rem; color: var(--text-muted);">1.9 MB — Full aptitude
+                                    preparation module</p>
+                            </div>
+                            <a href="{% static 'resources/TCS-NQT Complete Aptitude.pdf' %}" target="_blank"
+                                class="pdf-download"><i class="fas fa-eye"></i> View</a>
+                            <a href="{% static 'resources/TCS-NQT Complete Aptitude.pdf' %}" download
+                                class="pdf-download" style="background: #6366f1;"><i class="fas fa-download"></i>
+                                Download</a>
+                        </div>
+                        <div class="pdf-card">
+                            <i class="fas fa-file-pdf" style="font-size: 2rem; color: #ef4444;"></i>
+                            <div class="pdf-info" style="flex-grow: 1;">
+                                <h4 style="margin-bottom: 4px;">TCS NQT 2026 PYQ</h4>
+                                <p style="font-size: 0.85rem; color: var(--text-muted);">635 KB — Previous year
+                                    questions with answers</p>
+                            </div>
+                            <a href="{% static 'resources/Tcs Nqt 2026 PYQ.pdf' %}" target="_blank"
+                                class="pdf-download"><i class="fas fa-eye"></i> View</a>
+                            <a href="{% static 'resources/Tcs Nqt 2026 PYQ.pdf' %}" download class="pdf-download"
+                                style="background: #6366f1;"><i class="fas fa-download"></i> Download</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========== QUANTITATIVE APTITUDE ========== -->
+                <div id="quant" class="tab-content">
+                    <h2 class="section-title"><i class="fas fa-calculator"></i> Quantitative Aptitude MasterSheet</h2>
+                    <div class="pdf-ribbon">
+                        <div class="pdf-card">
+                            <i class="fas fa-file-pdf" style="font-size: 1.5rem; color: #ef4444;"></i>
+                            <div class="pdf-info" style="flex-grow: 1;">
+                                <h4>TCS-NQT Complete Aptitude</h4>
+                                <p style="font-size: 0.85rem; color: var(--text-muted);">Comprehensive Offline PDF
+                                    Module</p>
+                            </div>
+                            <a href="{% static 'resources/TCS-NQT Complete Aptitude.pdf' %}" target="_blank"
+                                class="pdf-download"><i class="fas fa-eye"></i> View</a>
+                            <a href="{% static 'resources/TCS-NQT Complete Aptitude.pdf' %}" download
+                                class="pdf-download" style="background: #6366f1;"><i class="fas fa-download"></i></a>
+                        </div>
+                        <div class="pdf-card">
+                            <i class="fas fa-file-pdf" style="font-size: 1.5rem; color: #ef4444;"></i>
+                            <div class="pdf-info" style="flex-grow: 1;">
+                                <h4>TCS NQT 2026 PYQ</h4>
+                                <p style="font-size: 0.85rem; color: var(--text-muted);">Previous Year Questions</p>
+                            </div>
+                            <a href="{% static 'resources/Tcs Nqt 2026 PYQ.pdf' %}" target="_blank"
+                                class="pdf-download"><i class="fas fa-eye"></i> View</a>
+                            <a href="{% static 'resources/Tcs Nqt 2026 PYQ.pdf' %}" download class="pdf-download"
+                                style="background: #6366f1;"><i class="fas fa-download"></i></a>
+                        </div>
+                        <div class="pdf-card">
+                            <i class="fas fa-file-pdf" style="font-size: 1.5rem; color: #ef4444;"></i>
+                            <div class="pdf-info" style="flex-grow: 1;">
+                                <h4>All Sheets Collection</h4>
+                                <p style="font-size: 0.85rem; color: var(--text-muted);">Quick Reference Formulas</p>
+                            </div>
+                            <a href="{% static 'resources/All Cheat Sheets Collection.pdf' %}" target="_blank"
+                                class="pdf-download"><i class="fas fa-eye"></i> View</a>
+                            <a href="{% static 'resources/All Cheat Sheets Collection.pdf' %}" download
+                                class="pdf-download" style="background: #6366f1;"><i class="fas fa-download"></i></a>
+                        </div>
+                    </div>
+                    <div class="topic-grid">
+                        <!-- 1. Numbers & LCM/HCF -->
+                        <div class="topic-card">
+                            <h3>1. Numbers & LCM/HCF</h3>
+                            <div class="formula-box">
+                                <strong>Key Formulas:</strong><br>
+                                • Product of two numbers = HCF × LCM<br>
+                                • LCM of fractions = LCM of numerators / HCF of denominators<br>
+                                • HCF of fractions = HCF of numerators / LCM of denominators<br>
+                                • If HCF(a, b) = 1, then a and b are co-prime
+                            </div>
+                            <div class="qa-box">
+                                <strong>Q1:</strong> Find the HCF and LCM of 12 and 18.<br>
+                                <strong>A:</strong> 12 = 2² × 3, 18 = 2 × 3². HCF = 2 × 3 = <strong>6</strong>. LCM = 2²
+                                × 3² = <strong>36</strong>. Verify: 12 × 18 = 216 = 6 × 36 ✓
+                            </div>
+                            <div class="qa-box">
+                                <strong>Q2:</strong> The HCF of two numbers is 12 and their LCM is 360. If one number is
+                                60, find the other.<br>
+                                <strong>A:</strong> Other number = (HCF × LCM) / Given number = (12 × 360) / 60 =
+                                <strong>72</strong>
+                            </div>
+                            <div class="qa-box">
+                                <strong>Q3:</strong> Find the largest number that divides 615 and 963 leaving remainder
+                                6 in each case.<br>
+                                <strong>A:</strong> Required number = HCF(615 − 6, 963 − 6) = HCF(609, 957) =
+                                <strong>87</strong>
+                            </div>
+                        </div>
+
+                        <!-- 2. Percentages -->
+                        <div class="topic-card">
+                            <h3>2. Percentages</h3>
+                            <div class="formula-box">
+                                <strong>Key Formulas:</strong><br>
+                                • Percentage = (Value / Total) × 100<br>
+                                • % increase = [(New − Old) / Old] × 100<br>
+                                • % decrease = [(Old − New) / Old] × 100<br>
+                                • If A is x% more than B, then B is [x / (100 + x)] × 100% less than A
+                            </div>
+                            <div class="qa-box">
+                                <strong>Q1:</strong> A number is increased by 20% and then decreased by 20%. Find the
+                                net change.<br>
+                                <strong>A:</strong> Net change = −(20²/100)% = <strong>−4%</strong> (decrease)
+                            </div>
+                            <div class="qa-box">
+                                <strong>Q2:</strong> If the price of sugar rises by 25%, by what percentage should
+                                consumption be reduced to keep expenditure the same?<br>
+                                <strong>A:</strong> Reduction = [25 / (100 + 25)] × 100 = <strong>20%</strong>
+                            </div>
+                            <div class="qa-box">
+                                <strong>Q3:</strong> In an exam, 35% of students failed in Math, 25% failed in English,
+                                and 10% failed in both. What % passed in both?<br>
+                                <strong>A:</strong> Failed in at least one = 35 + 25 − 10 = 50%. Passed in both =
+                                <strong>50%</strong>
+                            </div>
+                        </div>
+
+                        <!-- 3. Profit & Loss -->
+                        <div class="topic-card">
+                            <h3>3. Profit & Loss</h3>
+                            <div class="formula-box">
+                                <strong>Key Formulas:</strong><br>
+                                • Profit % = [(SP − CP) / CP] × 100<br>
+                                • Loss % = [(CP − SP) / CP] × 100<br>
+                                • SP = CP × (100 + Profit%) / 100<br>
+                                • If two items sold at same SP, one at x% profit and other at x% loss: Net loss = x²/100
+                                %
+                            </div>
+                            <div class="qa-box">
+                                <strong>Q1:</strong> A shopkeeper buys an article for ₹500 and sells at ₹600. Find
+                                profit %.<br>
+                                <strong>A:</strong> Profit % = [(600 − 500) / 500] × 100 = <strong>20%</strong>
+                            </div>
+                            <div class="qa-box">
+                                <strong>Q2:</strong> By selling 12 apples, a vendor gains the SP of 4 apples. Find his
+                                profit %.<br>
+                                <strong>A:</strong> Profit on 12 = SP of 4 → CP of 12 = SP of 8. Profit % = (4/8) × 100
+                                = <strong>50%</strong>
+                            </div>
+                        </div>
+
+                        <!-- 4. Simple & Compound Interest -->
+                        <div class="topic-card">
+                            <h3>4. Simple & Compound Interest</h3>
+                            <div class="formula-box">
+                                <strong>Key Formulas:</strong><br>
+                                • SI = P × R × T / 100<br>
+                                • CI = P(1 + R/100)ⁿ − P<br>
+                                • Difference between CI and SI for 2 years = P × (R/100)²<br>
+                                • Amount doubles in T = 72/R years (Rule of 72)
+                            </div>
+                            <div class="qa-box">
+                                <strong>Q1:</strong> Find SI on ₹5000 at 8% p.a. for 3 years.<br>
+                                <strong>A:</strong> SI = 5000 × 8 × 3 / 100 = <strong>₹1200</strong>
+                            </div>
+                            <div class="qa-box">
+                                <strong>Q2:</strong> The difference between CI and SI on a sum for 2 years at 10% is
+                                ₹50. Find the sum.<br>
+                                <strong>A:</strong> P × (10/100)² = 50 → P × 0.01 = 50 → P = <strong>₹5000</strong>
+                            </div>
+                        </div>
+
+                        <!-- 5. Time, Speed & Distance -->
+                        <div class="topic-card">
+                            <h3>5. Time, Speed & Distance</h3>
+                            <div class="formula-box">
+                                <strong>Key Formulas:</strong><br>
+                                • Speed = Distance / Time<br>
+                                • 1 km/hr = 5/18 m/s; 1 m/s = 18/5 km/hr<br>
+                                • Average speed (same distance) = 2ab / (a + b)<br>
+                                • Relative speed (opposite direction) = a + b; (same direction) = |a − b|
+                            </div>
+                            <div class="qa-box">
+                                <strong>Q1:</strong> A train 150m long passes a pole in 15 seconds. Find its speed in
+                                km/hr.<br>
+                                <strong>A:</strong> Speed = 150/15 = 10 m/s = 10 × 18/5 = <strong>36 km/hr</strong>
+                            </div>
+                            <div class="qa-box">
+                                <strong>Q2:</strong> A person covers half the distance at 40 km/hr and the other half at
+                                60 km/hr. Find average speed.<br>
+                                <strong>A:</strong> Avg speed = 2 × 40 × 60 / (40 + 60) = 4800/100 = <strong>48
+                                    km/hr</strong>
+                            </div>
+                        </div>
+
+                        <!-- 6. Time & Work -->
+                        <div class="topic-card">
+                            <h3>6. Time & Work</h3>
+                            <div class="formula-box">
+                                <strong>Key Formulas:</strong><br>
+                                • If A does work in 'a' days → A's 1 day work = 1/a<br>
+                                • A and B together: 1/a + 1/b = (a+b)/ab → Time = ab/(a+b)<br>
+                                • If A is twice as efficient as B, A takes half the time of B
+                            </div>
+                            <div class="qa-box">
+                                <strong>Q1:</strong> A can do a job in 10 days, B in 15 days. Together, how many
+                                days?<br>
+                                <strong>A:</strong> Together = (10 × 15) / (10 + 15) = 150/25 = <strong>6 days</strong>
+                            </div>
+                            <div class="qa-box">
+                                <strong>Q2:</strong> A can do a piece of work in 20 days. He works for 5 days and B
+                                finishes the remaining in 10 days. In how many days can B alone do the whole work?<br>
+                                <strong>A:</strong> A does 5/20 = 1/4 in 5 days. Remaining = 3/4. B does 3/4 in 10 days
+                                → Full work = 10 × 4/3 = <strong>13⅓ days</strong>
+                            </div>
+                        </div>
+
+                        <!-- 7. Ratio & Proportion -->
+                        <div class="topic-card">
+                            <h3>7. Ratio & Proportion</h3>
+                            <div class="formula-box">
+                                <strong>Key Formulas:</strong><br>
+                                • a : b = c : d → ad = bc (cross multiplication)<br>
+                                • Componendo: (a+b)/b = (c+d)/d<br>
+                                • Dividendo: (a−b)/b = (c−d)/d<br>
+                                • If A:B = 2:3 and B:C = 4:5, then A:B:C = 8:12:15
+                            </div>
+                            <div class="qa-box">
+                                <strong>Q1:</strong> Divide ₹1200 among A, B, C in ratio 2:3:5.<br>
+                                <strong>A:</strong> A = 1200 × 2/10 = ₹240, B = ₹360, C = <strong>₹600</strong>
+                            </div>
+                            <div class="qa-box">
+                                <strong>Q2:</strong> If 2A = 3B = 4C, find A:B:C.<br>
+                                <strong>A:</strong> Let 2A = 3B = 4C = k → A = k/2, B = k/3, C = k/4 → A:B:C =
+                                <strong>6:4:3</strong>
+                            </div>
+                        </div>
+
+                        <!-- 8. Averages -->
+                        <div class="topic-card">
+                            <h3>8. Averages</h3>
+                            <div class="formula-box">
+                                <strong>Key Formulas:</strong><br>
+                                • Average = Sum of observations / Number of observations<br>
+                                • If avg of n₁ items is a₁ and n₂ items is a₂: Combined avg = (n₁a₁ + n₂a₂) / (n₁ +
+                                n₂)<br>
+                                • Average of first n natural numbers = (n+1)/2
+                            </div>
+                            <div class="qa-box">
+                                <strong>Q1:</strong> The average of 5 numbers is 20. If one number is excluded, the
+                                average becomes 18. Find the excluded number.<br>
+                                <strong>A:</strong> Sum = 5 × 20 = 100. New sum = 4 × 18 = 72. Excluded = 100 − 72 =
+                                <strong>28</strong>
+                            </div>
+                            <div class="qa-box">
+                                <strong>Q2:</strong> The average age of 30 students is 15. When the teacher's age is
+                                included, the average increases by 1. Find the teacher's age.<br>
+                                <strong>A:</strong> New avg = 16, Total = 31 × 16 = 496. Students' sum = 30 × 15 = 450.
+                                Teacher's age = 496 − 450 = <strong>46</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========== LOGICAL REASONING ========== -->
+                <div id="logic" class="tab-content">
+                    <h2 class="section-title"><i class="fas fa-puzzle-piece"></i> Logical Reasoning</h2>
+                    <div class="pdf-ribbon">
+                        <div class="pdf-card">
+                            <i class="fas fa-file-pdf" style="font-size: 1.5rem; color: #ef4444;"></i>
+                            <div class="pdf-info" style="flex-grow: 1;">
+                                <h4>All  Collection</h4>
+                                <p style="font-size: 0.85rem; color: var(--text-muted);">Includes reasoning shortcuts
+                                </p>
+                            </div>
+                            <a href="{% static 'resources/All Cheat Sheets Collection.pdf' %}" target="_blank"
+                                class="pdf-download"><i class="fas fa-eye"></i> View</a>
+                            <a href="{% static 'resources/All Cheat Sheets Collection.pdf' %}" download
+                                class="pdf-download" style="background: #6366f1;"><i class="fas fa-download"></i></a>
+                        </div>
+                        <div class="pdf-card">
+                            <i class="fas fa-file-pdf" style="font-size: 1.5rem; color: #ef4444;"></i>
+                            <div class="pdf-info" style="flex-grow: 1;">
+                                <h4>TCS NQT 2026 PYQ</h4>
+                                <p style="font-size: 0.85rem; color: var(--text-muted);">Reasoning section included</p>
+                            </div>
+                            <a href="{% static 'resources/Tcs Nqt 2026 PYQ.pdf' %}" target="_blank"
+                                class="pdf-download"><i class="fas fa-eye"></i> View</a>
+                            <a href="{% static 'resources/Tcs Nqt 2026 PYQ.pdf' %}" download class="pdf-download"
+                                style="background: #6366f1;"><i class="fas fa-download"></i></a>
+                        </div>
+                    </div>
+                    <div class="topic-grid">
+                        <div class="topic-card">
+                            <h3>1. Blood Relations & Direction Sense</h3>
+                            <div class="formula-box">
+                                <strong>Major Concepts:</strong> Family tree construction, identifying relations based
+                                on a statement.<br>
+                                <strong>Minor Concepts:</strong> Directional tracking, Pythagorean theorem for shortest
+                                distance.
+                            </div>
+                            <div class="qa-box">
+                                <strong>Q1:</strong> Pointing to a photograph, a man said, "She is the only daughter of
+                                my wife's mother-in-law". How is the woman related to the man?<br>
+                                <strong>A:</strong> The man's wife's mother-in-law is the man's mother. The only
+                                daughter of his mother is his <strong>sister</strong>.
+                            </div>
+                            <div class="qa-box">
+                                <strong>Q2:</strong> A man walks 5km South, turns right and walks 3km. Then he turns
+                                left and walks 5km. In which direction is he from the starting point?<br>
+                                <strong>A:</strong> He went South, then West, then South again. So he is in the
+                                <strong>South-West</strong> direction.
+                            </div>
+                        </div>
+
+                        <div class="topic-card">
+                            <h3>2. Number Series & Coding-Decoding</h3>
+                            <div class="formula-box">
+                                <strong>Major Concepts:</strong> Arithmetic progressions, squares/cubes series,
+                                alphabetical shifting (Caesar cipher).<br>
+                                <strong>Minor Concepts:</strong> Alternate series, prime number sequences.
+                            </div>
+                            <div class="qa-box">
+                                <strong>Q1:</strong> Find the next number in the series: 2, 6, 12, 20, 30, ...<br>
+                                <strong>A:</strong> The differences are 4, 6, 8, 10. Next difference is 12, so 30 + 12 =
+                                <strong>42</strong>.
+                            </div>
+                            <div class="qa-box">
+                                <strong>Q2:</strong> If 'APPLE' is coded as 'EQQPI', how is 'MANGO' coded?<br>
+                                <strong>A:</strong> Each letter is shifted forward. A(+4)=E, P(+1)=Q, P(+1)=Q, L(+4)=P,
+                                E(+4)=I. For MANGO, the logic might simply be shifting vowels and consonants
+                                differently, but if we shift all by +4: M(+4)=Q, A(+4)=E, N(+4)=R, G(+4)=K, O(+4)=S.
+                                Correct code: <strong>QERKS</strong>.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========== DATA STRUCTURES & ALGORITHMS ========== -->
+                <div id="dsa" class="tab-content">
+                    <h2 class="section-title"><i class="fas fa-code"></i> Data Structures & Algorithms</h2>
+                    <div class="pdf-ribbon">
+                        <div class="pdf-card">
+                            <i class="fas fa-file-pdf" style="font-size: 1.5rem; color: #ef4444;"></i>
+                            <div class="pdf-info" style="flex-grow: 1;">
+                                <h4>Love Babbar DSA Supreme Notes</h4>
+                                <p style="font-size: 0.85rem; color: var(--text-muted);">22.7 MB — The ultimate DSA
+                                    bible</p>
+                            </div>
+                            <a href="{% static 'resources/Love Babbar DSA Supreme Notes.pdf' %}" target="_blank"
+                                class="pdf-download"><i class="fas fa-eye"></i> View</a>
+                            <a href="{% static 'resources/Love Babbar DSA Supreme Notes.pdf' %}" download
+                                class="pdf-download" style="background: #6366f1;"><i class="fas fa-download"></i></a>
+                        </div>
+                        <div class="pdf-card">
+                            <i class="fas fa-file-pdf" style="font-size: 1.5rem; color: #ef4444;"></i>
+                            <div class="pdf-info" style="flex-grow: 1;">
+                                <h4>Python Notes</h4>
+                                <p style="font-size: 0.85rem; color: var(--text-muted);">Python data structures & coding
+                                    patterns</p>
+                            </div>
+                            <a href="{% static 'resources/Python Notes.pdf' %}" target="_blank" class="pdf-download"><i
+                                    class="fas fa-eye"></i> View</a>
+                            <a href="{% static 'resources/Python Notes.pdf' %}" download class="pdf-download"
+                                style="background: #6366f1;"><i class="fas fa-download"></i></a>
+                        </div>
+                        <div class="pdf-card">
+                            <i class="fas fa-file-pdf" style="font-size: 1.5rem; color: #ef4444;"></i>
+                            <div class="pdf-info" style="flex-grow: 1;">
+                                <h4>All Collection</h4>
+                                <p style="font-size: 0.85rem; color: var(--text-muted);">DSA cheat sheets included</p>
+                            </div>
+                            <a href="{% static 'resources/All Collection.pdf' %}" target="_blank"
+                                class="pdf-download"><i class="fas fa-eye"></i> View</a>
+                            <a href="{% static 'resources/All Collection.pdf' %}" download
+                                class="pdf-download" style="background: #6366f1;"><i class="fas fa-download"></i></a>
+                        </div>
+                    </div>
+                    <div class="topic-grid">
+                        <div class="topic-card">
+                            <h3>1. Arrays & Strings</h3>
+                            <div class="formula-box">
+                                <strong>Major Concepts:</strong> Two Pointers, Sliding Window, Prefix Sum, Maximum
+                                Subarray (Kadane's Algorithm).<br>
+                                <strong>Minor Concepts:</strong> Hashing for frequency counting, slow and fast pointers.
+                            </div>
+                            <div class="qa-box">
+                                <strong>Q1:</strong> How do you find the missing number in an array of 1 to N?<br>
+                                <strong>A:</strong> Use the sum of first N natural numbers formula: `N * (N + 1) / 2`.
+                                Subtract calculating sum of array elements from this to get the missing number.
+                                Alternatively, use XOR logic.
+                            </div>
+                            <div class="qa-box">
+                                <strong>Q2:</strong> What is the time complexity of reversing an array in place?<br>
+                                <strong>A:</strong> <strong>O(N)</strong>, where we swap elements from both ends using
+                                two pointers moving towards the center. Space complexity is O(1).
+                            </div>
+                        </div>
+
+                        <div class="topic-card">
+                            <h3>2. Trees & Graphs</h3>
+                            <div class="formula-box">
+                                <strong>Major Concepts:</strong> Tree Traversals (Inorder, Preorder, Postorder), BFS and
+                                DFS in Graphs, Shortest Path (Dijkstra's).<br>
+                                <strong>Minor Concepts:</strong> Topological sorting, Minimum Spanning Tree
+                                (Kruskal/Prim), Cycle detection.
+                            </div>
+                            <div class="qa-box">
+                                <strong>Q1:</strong> What is the difference between a Binary Tree and a Binary Search
+                                Tree (BST)?<br>
+                                <strong>A:</strong> A Binary Tree can have its nodes arranged in any order. In a
+                                <strong>BST</strong>, the left child is always lesser than the parent, and the right
+                                child is always greater.
+                            </div>
+                            <div class="qa-box">
+                                <strong>Q2:</strong> Explain BFS vs DFS in terms of Data Structures used.<br>
+                                <strong>A:</strong> BFS uses a <strong>Queue</strong> (FIFO) to explore nodes level by
+                                level. DFS uses a <strong>Stack</strong> (LIFO) or recursion to explore as deep as
+                                possible before backtracking.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========== CS CORE ========== -->
+                <div id="cs_core" class="tab-content">
+                    <h2 class="section-title"><i class="fas fa-server"></i> CS Core (DBMS, OS, CN)</h2>
+                    <div class="pdf-ribbon">
+                        <div class="pdf-card">
+                            <i class="fas fa-file-pdf" style="font-size: 1.5rem; color: #ef4444;"></i>
+                            <div class="pdf-info" style="flex-grow: 1;">
+                                <h4>All Cheat Sheets Collection</h4>
+                                <p style="font-size: 0.85rem; color: var(--text-muted);">DBMS, OS, CN quick references
+                                </p>
+                            </div>
+                            <a href="{% static 'resources/All Sheets Collection.pdf' %}" target="_blank"
+                                class="pdf-download"><i class="fas fa-eye"></i> View</a>
+                            <a href="{% static 'resources/All  Sheets Collection.pdf' %}" download
+                                class="pdf-download" style="background: #6366f1;"><i class="fas fa-download"></i></a>
+                        </div>
+                        <div class="pdf-card">
+                            <i class="fas fa-file-pdf" style="font-size: 1.5rem; color: #ef4444;"></i>
+                            <div class="pdf-info" style="flex-grow: 1;">
+                                <h4>Python Notes</h4>
+                                <p style="font-size: 0.85rem; color: var(--text-muted);">Python for system programming
+                                </p>
+                            </div>
+                            <a href="{% static 'resources/Python Notes.pdf' %}" target="_blank" class="pdf-download"><i
+                                    class="fas fa-eye"></i> View</a>
+                            <a href="{% static 'resources/Python Notes.pdf' %}" download class="pdf-download"
+                                style="background: #6366f1;"><i class="fas fa-download"></i></a>
+                        </div>
+                    </div>
+                    <div class="topic-grid">
+                        <div class="topic-card">
+                            <h3>1. Database Management Systems (DBMS)</h3>
+                            <div class="formula-box">
+                                <strong>Major Concepts:</strong> ACID Properties, Normalization (1NF, 2NF, 3NF, BCNF),
+                                SQL Joins, Indexing.<br>
+                                <strong>Minor Concepts:</strong> Transactions, views, triggers, NoSQL vs SQL.
+                            </div>
+                            <div class="qa-box">
+                                <strong>Q1:</strong> What are the ACID properties?<br>
+                                <strong>A:</strong> <strong>Atomicity</strong> (all or nothing),
+                                <strong>Consistency</strong> (valid state before and after), <strong>Isolation</strong>
+                                (concurrent execution equals serial execution), <strong>Durability</strong> (committed
+                                changes survive failures).
+                            </div>
+                            <div class="qa-box">
+                                <strong>Q2:</strong> Differentiate between Primary Key and Unique Key.<br>
+                                <strong>A:</strong> Both enforce uniqueness. A <strong>Primary Key</strong> cannot have
+                                NULL values, and only one primary key exists per table. A <strong>Unique Key</strong>
+                                can accept one NULL value, and a table can have multiple unique keys.
+                            </div>
+                        </div>
+
+                        <div class="topic-card">
+                            <h3>2. Operating Systems (OS) & Networks</h3>
+                            <div class="formula-box">
+                                <strong>Major Concepts:</strong> Process & Thread, Deadlocks, Virtual Memory, OSI Model,
+                                TCP vs UDP.<br>
+                                <strong>Minor Concepts:</strong> Paging, Mutex vs Semaphore, IP Addressing, HTTP vs
+                                HTTPS.
+                            </div>
+                            <div class="qa-box">
+                                <strong>Q1:</strong> What is a deadlock and what are its necessary conditions?<br>
+                                <strong>A:</strong> Deadlock is a situation where a set of processes are blocked because
+                                each process is holding a resource and waiting for another resource acquired by some
+                                other process. Conditions: Mutual Exclusion, Hold and Wait, No Preemption, Circular
+                                Wait.
+                            </div>
+                            <div class="qa-box">
+                                <strong>Q2:</strong> TCP vs UDP?<br>
+                                <strong>A:</strong> <strong>TCP</strong> is connection-oriented, reliable, and ensures
+                                data ordering (e.g., web browsing). <strong>UDP</strong> is connectionless, faster, but
+                                less reliable with no guarantee of delivery (e.g., live video streaming).
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========== PHP PROGRAMMING ========== -->
+                <div id="php" class="tab-content">
+                    <h2 class="section-title"><i class="fab fa-php"></i> PHP Programming</h2>
+                    <div class="pdf-ribbon">
+                        <div class="pdf-card">
+                            <i class="fas fa-file-pdf" style="font-size: 1.5rem; color: #ef4444;"></i>
+                            <div class="pdf-info" style="flex-grow: 1;">
+                                <h4>All Cheat Sheets Collection</h4>
+                                <p style="font-size: 0.85rem; color: var(--text-muted);">Includes PHP quick reference</p>
+                            </div>
+                            <a href="{% static 'resources/All Cheat Sheets Collection.pdf' %}" target="_blank"
+                                class="pdf-download"><i class="fas fa-eye"></i> View</a>
+                            <a href="{% static 'resources/All Cheat Sheets Collection.pdf' %}" download
+                                class="pdf-download" style="background: #6366f1;"><i class="fas fa-download"></i></a>
+                        </div>
+                    </div>
+                    <div class="topic-grid">
+                        <div class="topic-card">
+                            <h3>1. PHP Fundamentals</h3>
+                            <div class="formula-box">
+                                <strong>Major Concepts:</strong> Variables, Loops, Arrays, Superglobals.<br>
+                                <strong>Minor Concepts:</strong> Sessions, Cookies, File Handling.
+                            </div>
+                            <div class="qa-box">
+                                <strong>Q1:</strong> What is a Superglobal in PHP?<br>
+                                <strong>A:</strong> Built-in variables that are always available in all scopes. Examples: <code>$_GET</code>, <code>$_POST</code>, <code>$_SERVER</code>, <code>$_SESSION</code>.
+                            </div>
+                            <div class="qa-box">
+                                <strong>Q2:</strong> Difference between <code>require()</code> and <code>include()</code>?<br>
+                                <strong>A:</strong> Both include a file, but <code>require()</code> produces a FATAL ERROR and stops the script if the file is not found, whereas <code>include()</code> only produces a WARNING and the script continues.
+                            </div>
+                        </div>
+                        <div class="topic-card">
+                            <h3>2. PHP with Databases (MySQL)</h3>
+                            <div class="formula-box">
+                                <strong>Major Concepts:</strong> PDO vs MySQLi, Prepared Statements, CRUD operations.<br>
+                                <strong>Minor Concepts:</strong> SQL Injection prevention.
+                            </div>
+                            <div class="qa-box">
+                                <strong>Q1:</strong> How do you prevent SQL Injection in PHP?<br>
+                                <strong>A:</strong> Use <strong>Prepared Statements</strong> with PDO or MySQLi. This ensures that parameters are not executed as SQL commands.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========== AI & DATA SCIENCE ========== -->
+                <div id="ai_ds" class="tab-content">
+                    <h2 class="section-title"><i class="fas fa-brain"></i> AI & Data Science</h2>
+                    <div class="pdf-ribbon">
+                        <div class="pdf-card">
+                            <i class="fas fa-file-pdf" style="font-size: 1.5rem; color: #ef4444;"></i>
+                            <div class="pdf-info" style="flex-grow: 1;">
+                                <h4>Python Notes</h4>
+                                <p style="font-size: 0.85rem; color: var(--text-muted);">Python is the core of AI/ML</p>
+                            </div>
+                            <a href="{% static 'resources/Python Notes.pdf' %}" target="_blank"
+                                class="pdf-download"><i class="fas fa-eye"></i> View</a>
+                            <a href="{% static 'resources/Python Notes.pdf' %}" download
+                                class="pdf-download" style="background: #6366f1;"><i class="fas fa-download"></i></a>
+                        </div>
+                    </div>
+                    <div class="topic-grid">
+                        <div class="topic-card">
+                            <h3>1. Machine Learning Basics</h3>
+                            <div class="formula-box">
+                                <strong>Major Concepts:</strong> Supervised vs Unsupervised Learning, Regression vs Classification.<br>
+                                <strong>Minor Concepts:</strong> Overfitting, Underfitting, Bias-Variance Tradeoff.
+                            </div>
+                            <div class="qa-box">
+                                <strong>Q1:</strong> What is Supervised Learning?<br>
+                                <strong>A:</strong> Training a model using labeled data where the input and the correct output are provided. Example: Predicting house prices based on features.
+                            </div>
+                            <div class="qa-box">
+                                <strong>Q2:</strong> How do you handle Overfitting?<br>
+                                <strong>A:</strong> Use techniques like Cross-Validation, Regularization (L1/L2), Pruning (in Trees), or simply getting more training data.
+                            </div>
+                        </div>
+                        <div class="topic-card">
+                            <h3>2. Data Science Libraries (Python)</h3>
+                            <div class="formula-box">
+                                <strong>Major Concepts:</strong> Pandas, NumPy, Scikit-Learn.<br>
+                                <strong>Minor Concepts:</strong> Matplotlib, Seaborn.
+                            </div>
+                            <div class="qa-box">
+                                <strong>Q1:</strong> What is a Pandas DataFrame?<br>
+                                <strong>A:</strong> A two-dimensional, size-mutable, potentially heterogeneous tabular data structure with labeled axes (rows and columns).
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========== DIGITAL MARKETING ========== -->
+                <div id="digital_marketing" class="tab-content">
+                    <h2 class="section-title"><i class="fas fa-bullhorn"></i> Digital Marketing</h2>
+                    <div class="pdf-ribbon">
+                        <div class="pdf-card">
+                            <i class="fas fa-file-pdf" style="font-size: 1.5rem; color: #ef4444;"></i>
+                            <div class="pdf-info" style="flex-grow: 1;">
+                                <h4>All Cheat Sheets Collection</h4>
+                                <p style="font-size: 0.85rem; color: var(--text-muted);">Marketing fundamentals</p>
+                            </div>
+                            <a href="{% static 'resources/All Cheat Sheets Collection.pdf' %}" target="_blank"
+                                class="pdf-download"><i class="fas fa-eye"></i> View</a>
+                            <a href="{% static 'resources/All Cheat Sheets Collection.pdf' %}" download
+                                class="pdf-download" style="background: #6366f1;"><i class="fas fa-download"></i></a>
+                        </div>
+                    </div>
+                    <div class="topic-grid">
+                        <div class="topic-card">
+                            <h3>1. Search Engine Optimization (SEO)</h3>
+                            <div class="formula-box">
+                                <strong>Major Concepts:</strong> On-Page SEO, Off-Page SEO, Keyword Research.<br>
+                                <strong>Minor Concepts:</strong> Backlinks, Meta Tags, Page Load Speed.
+                            </div>
+                            <div class="qa-box">
+                                <strong>Q1:</strong> What is the difference between On-Page and Off-Page SEO?<br>
+                                <strong>A:</strong> <strong>On-Page</strong> refers to optimizations on your own website (content, keywords, tags). <strong>Off-Page</strong> refers to actions outside your site impacting your rankings (backlinks, social signals).
+                            </div>
+                            <div class="qa-box">
+                                <strong>Q2:</strong> What are Long-Tail Keywords?<br>
+                                <strong>A:</strong> Highly specific search phrases that usually have lower search volume but much higher conversion rates because they target specific intents.
+                            </div>
+                        </div>
+                        <div class="topic-card">
+                            <h3>2. PPC & Analytics</h3>
+                            <div class="formula-box">
+                                <strong>Major Concepts:</strong> Pay-Per-Click Ads, Conversion Rate, CTR, Bounce Rate.<br>
+                                <strong>Minor Concepts:</strong> ROI, A/B Testing.
+                            </div>
+                            <div class="qa-box">
+                                <strong>Q1:</strong> What is CTR and how is it calculated?<br>
+                                <strong>A:</strong> Click-Through Rate. It is calculated as <code>(Total Clicks / Total Impressions) * 100</code>.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========== HR INTERVIEW ========== -->
+                <div id="hr" class="tab-content">
+                    <h2 class="section-title"><i class="fas fa-user-tie"></i> HR Interview Preparation</h2>
+                    <div class="pdf-ribbon">
+                        <div class="pdf-card">
+                            <i class="fas fa-file-pdf" style="font-size: 1.5rem; color: #ef4444;"></i>
+                            <div class="pdf-info" style="flex-grow: 1;">
+                                <h4>All Cheat Sheets Collection</h4>
+                                <p style="font-size: 0.85rem; color: var(--text-muted);">HR tips & soft skills guide</p>
+                            </div>
+                            <a href="{% static 'resources/All Cheat Sheets Collection.pdf' %}" target="_blank"
+                                class="pdf-download"><i class="fas fa-eye"></i> View</a>
+                            <a href="{% static 'resources/All Cheat Sheets Collection.pdf' %}" download
+                                class="pdf-download" style="background: #6366f1;"><i class="fas fa-download"></i></a>
+                        </div>
+                    </div>
+                    <div class="topic-grid">
+                        <div class="topic-card">
+                            <h3>1. Personal/Behavioral Questions</h3>
+                            <div class="formula-box">
+                                <strong>Major Concepts:</strong> Introduction structure, STAR method (Situation, Task,
+                                Action, Result) for behavioral questions.<br>
+                                <strong>Minor Concepts:</strong> Body language cues, tone of voice, handling
+                                tricky/stress tests.
+                            </div>
+                            <div class="qa-box">
+                                <strong>Q1:</strong> Tell me about yourself.<br>
+                                <strong>A:</strong> Break it down into Present, Past, and Future. Talk about your
+                                current role/degree, highlight 1-2 major achievements or skills, and explain why you're
+                                a great fit for the role you're interviewing for. Keep it concise.
+                            </div>
+                            <div class="qa-box">
+                                <strong>Q2:</strong> Describe a time you failed and how you handled it.<br>
+                                <strong>A:</strong> Be honest but strategic. Use the <strong>STAR method</strong>.
+                                Emphasize what you <em>learned</em> from the failure and the steps you took to make sure
+                                it didn't happen again. Avoid citing critical flaws.
+                            </div>
+                        </div>
+
+                        <div class="topic-card">
+                            <h3>2. Career & Company Fit</h3>
+                            <div class="formula-box">
+                                <strong>Major Concepts:</strong> Aligning company values with personal goals, explaining
+                                career shifts, discussing salary expectations.<br>
+                                <strong>Minor Concepts:</strong> Asking insightful questions at the end of the
+                                interview.
+                            </div>
+                            <div class="qa-box">
+                                <strong>Q1:</strong> Where do you see yourself in 5 years?<br>
+                                <strong>A:</strong> Focus on professional growth. Mention you want to master your
+                                current role, take on leadership or mentorship responsibilities eventually, and
+                                contribute significantly to the company's long-term goals.
+                            </div>
+                            <div class="qa-box">
+                                <strong>Q2:</strong> Why do you want to work for our company?<br>
+                                <strong>A:</strong> Show that you've done your research. Mention specific products,
+                                recent news, or workplace culture elements that appeal to you. Tie those back to your
+                                own skills and what you can uniquely contribute.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function openTab(tabId) {
+        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        event.currentTarget.classList.add('active');
+    }
+</script>
+{% endblock %}

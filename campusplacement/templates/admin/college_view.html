@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>College List</title>
+</head>
+<body>
+
+<h2>College Details</h2>
+
+<table border="1" cellpadding="10" cellspacing="0">
+    
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Code</th>
+            <th>Address</th>
+            <th>Email</th>
+            <th>Created At</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for collegeinfo in college %}
+        <tr>
+            <td>{{ collegeinfo.id }}</td>
+            <td>{{ collegeinfo.name }}</td>
+            <td>{{ collegeinfo.code }}</td>
+            <td>{{ collegeinfo.address }}</td>
+            <td>{{ collegeinfo.email }}</td>
+            <td>{{ collegeinfo.created_at }}</td>
+            <td>
+                <a href="{% url 'edit_college' collegeinfo.id %}">Edit</a> |
+                <a href="{% url 'delete_college' collegeinfo.id %}">Delete</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="7">No colleges available</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+
+</table>
+
+</body>
+</html>
+

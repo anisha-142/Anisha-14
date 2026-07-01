@@ -1,0 +1,301 @@
+{% extends 'admin/base.html' %}
+{% load static %}
+
+{% block title %}Placement Officer Dashboard | Campus Placement Portal{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* HERO */
+    .hero-3d{position:relative;border-radius:20px;padding:36px 40px;margin-bottom:32px;overflow:hidden;
+        background:linear-gradient(135deg,rgba(108,99,255,.18) 0%,rgba(0,212,255,.10) 50%,rgba(167,139,250,.12) 100%);
+        border:1px solid rgba(108,99,255,.25);
+        box-shadow:0 20px 60px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.08),0 0 80px rgba(108,99,255,.08);}
+    .hero-3d::before{content:'';position:absolute;top:-80px;right:-80px;width:320px;height:320px;
+        background:radial-gradient(circle,rgba(108,99,255,.2) 0%,transparent 70%);pointer-events:none;}
+    .hero-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(108,99,255,.2);
+        border:1px solid rgba(108,99,255,.35);color:#a78bfa;font-size:11px;font-weight:700;
+        padding:5px 14px;border-radius:50px;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px;position:relative;z-index:1;}
+    .hero-title{font-size:32px;font-weight:800;line-height:1.2;margin-bottom:10px;
+        background:linear-gradient(135deg,#fff 30%,#a78bfa 80%,#67e8f9);
+        -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+        position:relative;z-index:1;filter:drop-shadow(0 0 30px rgba(108,99,255,.4));}
+    .hero-sub{font-size:14px;color:rgba(148,163,184,.9);max-width:500px;line-height:1.6;position:relative;z-index:1;}
+    .hero-chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px;position:relative;z-index:1;}
+    .hero-chip{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.05);
+        border:1px solid rgba(255,255,255,.1);border-radius:50px;padding:6px 16px;font-size:12px;font-weight:600;color:#e2e8f0;}
+    .hero-chip i{color:#a78bfa;}
+
+    /* STATS */
+    .section-label{font-size:13px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1.5px;
+        margin-bottom:18px;display:flex;align-items:center;gap:10px;}
+    .section-label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(108,99,255,.3),transparent);}
+    .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px;margin-bottom:32px;}
+    .stat-card-3d{border-radius:18px;padding:24px 22px;position:relative;overflow:hidden;cursor:pointer;
+        transition:all .3s cubic-bezier(.4,0,.2,1);transform-style:preserve-3d;
+        border:1px solid transparent;text-decoration:none;display:block;}
+    .stat-card-3d::before{content:'';position:absolute;top:-50%;right:-50%;width:200%;height:200%;
+        background:radial-gradient(circle at 70% 20%,rgba(255,255,255,.12) 0%,transparent 55%);pointer-events:none;}
+    .stat-card-3d:hover{transform:perspective(600px) rotateX(-4deg) rotateY(2deg) translateZ(14px) scale(1.03);}
+    .sc-purple{background:linear-gradient(135deg,#6c63ff 0%,#4f46e5 100%);box-shadow:0 8px 32px rgba(108,99,255,.45),0 2px 8px rgba(0,0,0,.3);}
+    .sc-cyan  {background:linear-gradient(135deg,#06b6d4 0%,#0891b2 100%);box-shadow:0 8px 32px rgba(6,182,212,.4),0 2px 8px rgba(0,0,0,.3);}
+    .sc-green {background:linear-gradient(135deg,#10b981 0%,#059669 100%);box-shadow:0 8px 32px rgba(16,185,129,.4),0 2px 8px rgba(0,0,0,.3);}
+    .sc-amber {background:linear-gradient(135deg,#f59e0b 0%,#d97706 100%);box-shadow:0 8px 32px rgba(245,158,11,.4),0 2px 8px rgba(0,0,0,.3);}
+    .sc-indigo{background:linear-gradient(135deg,#818cf8 0%,#6366f1 100%);box-shadow:0 8px 32px rgba(129,140,248,.4),0 2px 8px rgba(0,0,0,.3);}
+    .sc-pink  {background:linear-gradient(135deg,#ec4899 0%,#db2777 100%);box-shadow:0 8px 32px rgba(236,72,153,.4),0 2px 8px rgba(0,0,0,.3);}
+    .sc-teal  {background:linear-gradient(135deg,#14b8a6 0%,#0d9488 100%);box-shadow:0 8px 32px rgba(20,184,166,.4),0 2px 8px rgba(0,0,0,.3);}
+    .sc-rose  {background:linear-gradient(135deg,#f43f5e 0%,#e11d48 100%);box-shadow:0 8px 32px rgba(244,63,94,.4),0 2px 8px rgba(0,0,0,.3);}
+    .sc-orange{background:linear-gradient(135deg,#f97316 0%,#ea580c 100%);box-shadow:0 8px 32px rgba(249,115,22,.4),0 2px 8px rgba(0,0,0,.3);}
+    .stat-card-3d .sc-icon{font-size:28px;margin-bottom:14px;display:block;filter:drop-shadow(0 2px 8px rgba(0,0,0,.3));}
+    .stat-card-3d .sc-num{font-size:38px;font-weight:900;color:white;line-height:1;margin-bottom:6px;}
+    .stat-card-3d .sc-label{font-size:12px;font-weight:600;color:rgba(255,255,255,.8);text-transform:uppercase;letter-spacing:.5px;}
+    .stat-card-3d .sc-link{font-size:11px;color:rgba(255,255,255,.7);margin-top:12px;display:flex;align-items:center;gap:4px;}
+
+    /* ACTIONS */
+    .actions-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;margin-bottom:32px;}
+    .action-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:16px;
+        padding:22px;cursor:pointer;transition:all .28s cubic-bezier(.4,0,.2,1);transform-style:preserve-3d;
+        display:flex;flex-direction:column;gap:12px;text-decoration:none;position:relative;overflow:hidden;}
+    .action-card::before{content:'';position:absolute;inset:0;border-radius:16px;
+        background:linear-gradient(135deg,rgba(108,99,255,.08),rgba(0,212,255,.04));opacity:0;transition:opacity .28s;}
+    .action-card:hover{border-color:rgba(108,99,255,.3);transform:perspective(600px) rotateX(-2deg) translateZ(8px);
+        box-shadow:0 12px 40px rgba(0,0,0,.35),0 4px 16px rgba(108,99,255,.15);}
+    .action-card:hover::before{opacity:1;}
+    .action-icon-wrap{width:48px;height:48px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:20px;position:relative;z-index:1;}
+    .action-card h4{font-size:14px;font-weight:700;color:#e2e8f0;margin:0;position:relative;z-index:1;}
+    .action-card p{font-size:12px;color:#64748b;margin:0;line-height:1.5;position:relative;z-index:1;}
+    .arrow-badge{align-self:flex-start;background:rgba(108,99,255,.15);border:1px solid rgba(108,99,255,.25);
+        color:#a78bfa;padding:3px 10px;border-radius:50px;font-size:10px;font-weight:700;
+        display:flex;align-items:center;gap:4px;position:relative;z-index:1;transition:all .2s;}
+    .action-card:hover .arrow-badge{background:rgba(108,99,255,.3);transform:translateX(4px);}
+
+    /* NOTIF */
+    .notif-panel{background:rgba(255,255,255,.03);border:1px solid rgba(245,158,11,.25);border-radius:16px;
+        padding:22px;margin-bottom:32px;box-shadow:0 8px 32px rgba(0,0,0,.2);position:relative;overflow:hidden;}
+    .notif-panel::before{content:'';position:absolute;left:0;top:15%;bottom:15%;width:3px;
+        background:linear-gradient(180deg,#f59e0b,#d97706);border-radius:0 2px 2px 0;}
+    .notif-title{font-size:15px;font-weight:700;color:#fbbf24;margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+    .notif-item{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.04);
+        font-size:13px;color:#94a3b8;transition:color .2s;}
+    .notif-item:last-child{border-bottom:none;}
+    .notif-item:hover{color:#e2e8f0;}
+    .notif-item i{color:#f59e0b;font-size:12px;margin-top:2px;flex-shrink:0;}
+</style>
+{% endblock %}
+
+{% block content %}
+
+        <!-- HERO -->
+        <div class="hero-3d">
+            <div class="hero-badge"><i class="fas fa-circle" style="font-size:6px;color:#22c55e;"></i> Live System</div>
+            <div class="hero-title">Welcome to Placement Officer Dashboard 🎓</div>
+            <div class="hero-sub">Manage colleges, students, companies, interviews, and the complete placement pipeline from one powerful command center.</div>
+            <div class="hero-chips">
+                <div class="hero-chip"><i class="fas fa-calendar-alt"></i> Placement Drive 2026</div>
+                <div class="hero-chip"><i class="fas fa-bolt"></i> Real-time Updates</div>
+                <div class="hero-chip"><i class="fas fa-shield-check"></i> Secure Portal</div>
+            </div>
+        </div>
+
+        <!-- STATS -->
+        <div class="section-label"><i class="fas fa-chart-bar"></i> System Overview</div>
+        <div class="stats-grid">
+            <a href="{% url 'college_view' %}" class="stat-card-3d sc-purple">
+                <i class="fas fa-university sc-icon"></i>
+                <div class="sc-num">{{ total_colleges }}</div><div class="sc-label">Colleges</div>
+                <div class="sc-link"><i class="fas fa-arrow-right"></i> View all</div>
+            </a>
+            <a href="{% url 'placementofficer_view' %}" class="stat-card-3d sc-cyan">
+                <i class="fas fa-user-tie sc-icon"></i>
+                <div class="sc-num">{{ total_officers }}</div><div class="sc-label">Officers</div>
+                <div class="sc-link"><i class="fas fa-arrow-right"></i> View all</div>
+            </a>
+            <a href="{% url 'student_view' %}" class="stat-card-3d sc-green">
+                <i class="fas fa-user-graduate sc-icon"></i>
+                <div class="sc-num">{{ total_students }}</div><div class="sc-label">Students</div>
+                <div class="sc-link"><i class="fas fa-arrow-right"></i> View all</div>
+            </a>
+            <a href="{% url 'company_view' %}" class="stat-card-3d sc-amber">
+                <i class="fas fa-building sc-icon"></i>
+                <div class="sc-num">{{ total_companies }}</div><div class="sc-label">Companies</div>
+                <div class="sc-link"><i class="fas fa-arrow-right"></i> View all</div>
+            </a>
+            <a href="{% url 'jobrequirement_view' %}" class="stat-card-3d sc-indigo">
+                <i class="fas fa-briefcase sc-icon"></i>
+                <div class="sc-num">{{ total_jobs }}</div><div class="sc-label">Job Postings</div>
+                <div class="sc-link"><i class="fas fa-arrow-right"></i> View all</div>
+            </a>
+            <a href="{% url 'jobapplication_view' %}" class="stat-card-3d sc-pink">
+                <i class="fas fa-file-alt sc-icon"></i>
+                <div class="sc-num">{{ total_applications }}</div><div class="sc-label">Applications</div>
+                <div class="sc-link"><i class="fas fa-arrow-right"></i> View all</div>
+            </a>
+            <a href="{% url 'interviewround_view' %}" class="stat-card-3d sc-teal">
+                <i class="fas fa-calendar-check sc-icon"></i>
+                <div class="sc-num">{{ total_rounds }}</div><div class="sc-label">Interview Rounds</div>
+                <div class="sc-link"><i class="fas fa-arrow-right"></i> View all</div>
+            </a>
+            <a href="{% url 'interviewresult_view' %}" class="stat-card-3d sc-rose">
+                <i class="fas fa-trophy sc-icon"></i>
+                <div class="sc-num">{{ total_results }}</div><div class="sc-label">Results</div>
+                <div class="sc-link"><i class="fas fa-arrow-right"></i> View all</div>
+            </a>
+            <a href="{% url 'notification_view' %}" class="stat-card-3d sc-orange">
+                <i class="fas fa-bell sc-icon"></i>
+                <div class="sc-num">{{ total_notifications }}</div><div class="sc-label">Notifications</div>
+                <div class="sc-link"><i class="fas fa-arrow-right"></i> View all</div>
+            </a>
+        </div>
+
+        <!-- CHARTS SECTION -->
+        <div class="section-label"><i class="fas fa-chart-pie"></i> Placement Analytics</div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-bottom: 32px;">
+            <div class="panel">
+                <div class="panel-hd" style="margin-bottom: 16px;">
+                    <div class="panel-title" style="font-size: 14px; font-weight: 700; color: #fff;"><i class="pt-icon fas fa-chart-pie" style="color: #60a5fa; background: rgba(59,130,246,.15);"></i> Application Pipeline</div>
+                </div>
+                <div style="position: relative; height: 260px; display: flex; justify-content: center; align-items: center; width: 100%;">
+                    <canvas id="pipelineChart"></canvas>
+                </div>
+            </div>
+            <div class="panel">
+                <div class="panel-hd" style="margin-bottom: 16px;">
+                    <div class="panel-title" style="font-size: 14px; font-weight: 700; color: #fff;"><i class="pt-icon fas fa-briefcase" style="color: #34d399; background: rgba(16,185,129,.15);"></i> Job Openings by Type</div>
+                </div>
+                <div style="position: relative; height: 260px; display: flex; justify-content: center; align-items: center; width: 100%;">
+                    <canvas id="jobTypeChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- NOTIFICATIONS -->
+        <div class="notif-panel">
+            <div class="notif-title"><i class="fas fa-bell"></i> Latest Notifications</div>
+            <div class="notif-item"><i class="fas fa-clock"></i> TCS registration closes soon — apply before deadline.</div>
+            <div class="notif-item"><i class="fas fa-chalkboard-user"></i> Infosys Aptitude Test scheduled — hall tickets available.</div>
+            <div class="notif-item"><i class="fas fa-file-pdf"></i> Resume submission deadline has been extended.</div>
+            <div class="notif-item"><i class="fas fa-video"></i> Mock interview session this Friday (10 AM, online mode).</div>
+        </div>
+
+        <!-- QUICK ACTIONS -->
+        <div class="section-label"><i class="fas fa-bolt"></i> Quick Actions</div>
+        <div class="actions-grid">
+            <a href="{% url 'college' %}" class="action-card">
+                <div class="action-icon-wrap" style="background:linear-gradient(135deg,rgba(108,99,255,.25),rgba(108,99,255,.1));"><i class="fas fa-university" style="color:#a78bfa;"></i></div>
+                <h4>Add College</h4><p>Register a new institution to the placement network.</p>
+                <div class="arrow-badge"><i class="fas fa-plus"></i> Add Now</div>
+            </a>
+            <a href="{% url 'student' %}" class="action-card">
+                <div class="action-icon-wrap" style="background:linear-gradient(135deg,rgba(16,185,129,.25),rgba(16,185,129,.1));"><i class="fas fa-user-plus" style="color:#34d399;"></i></div>
+                <h4>Add Student</h4><p>Enroll a student with their academic profile and resume.</p>
+                <div class="arrow-badge" style="background:rgba(16,185,129,.15);border-color:rgba(16,185,129,.25);color:#34d399;"><i class="fas fa-plus"></i> Add Now</div>
+            </a>
+            <a href="{% url 'company' %}" class="action-card">
+                <div class="action-icon-wrap" style="background:linear-gradient(135deg,rgba(245,158,11,.25),rgba(245,158,11,.1));"><i class="fas fa-building" style="color:#fbbf24;"></i></div>
+                <h4>Add Company</h4><p>Onboard a new recruiter or company to the portal.</p>
+                <div class="arrow-badge" style="background:rgba(245,158,11,.15);border-color:rgba(245,158,11,.25);color:#fbbf24;"><i class="fas fa-plus"></i> Add Now</div>
+            </a>
+            <a href="{% url 'jobrequirement' %}" class="action-card">
+                <div class="action-icon-wrap" style="background:linear-gradient(135deg,rgba(6,182,212,.25),rgba(6,182,212,.1));"><i class="fas fa-briefcase" style="color:#67e8f9;"></i></div>
+                <h4>Post a Job</h4><p>Create a job requirement with eligibility criteria.</p>
+                <div class="arrow-badge" style="background:rgba(6,182,212,.15);border-color:rgba(6,182,212,.25);color:#67e8f9;"><i class="fas fa-plus"></i> Post Now</div>
+            </a>
+            <a href="{% url 'interviewround' %}" class="action-card">
+                <div class="action-icon-wrap" style="background:linear-gradient(135deg,rgba(20,184,166,.25),rgba(20,184,166,.1));"><i class="fas fa-calendar-plus" style="color:#2dd4bf;"></i></div>
+                <h4>Schedule Interview</h4><p>Set up an interview round with date and type.</p>
+                <div class="arrow-badge" style="background:rgba(20,184,166,.15);border-color:rgba(20,184,166,.25);color:#2dd4bf;"><i class="fas fa-plus"></i> Schedule</div>
+            </a>
+            <a href="{% url 'notification' %}" class="action-card">
+                <div class="action-icon-wrap" style="background:linear-gradient(135deg,rgba(249,115,22,.25),rgba(249,115,22,.1));"><i class="fas fa-bell" style="color:#fb923c;"></i></div>
+                <h4>Send Notification</h4><p>Push an important alert directly to a student.</p>
+                <div class="arrow-badge" style="background:rgba(249,115,22,.15);border-color:rgba(249,115,22,.25);color:#fb923c;"><i class="fas fa-paper-plane"></i> Send</div>
+            </a>
+        </div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Perspective card hover micro-animations
+document.querySelectorAll('.stat-card-3d,.action-card').forEach(card=>{
+    card.addEventListener('mousemove',e=>{
+        const r=card.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;
+        card.style.transform=`perspective(500px) rotateY(${x*12}deg) rotateX(${-y*8}deg) translateZ(14px)`;
+    });
+    card.addEventListener('mouseleave',()=>{card.style.transition='transform .5s cubic-bezier(.4,0,.2,1)';card.style.transform='';setTimeout(()=>card.style.transition='',500);});
+    card.addEventListener('mouseenter',()=>{card.style.transition='transform .1s';});
+});
+
+// Render charts only if Chart.js is loaded
+document.addEventListener("DOMContentLoaded", function() {
+    // 1. Pipeline Chart
+    var statusData = JSON.parse('{{ status_json|safe }}');
+    var pipelineCtx = document.getElementById('pipelineChart').getContext('2d');
+    new Chart(pipelineCtx, {
+        type: 'doughnut',
+        data: {
+            labels: Object.keys(statusData),
+            datasets: [{
+                data: Object.values(statusData),
+                backgroundColor: [
+                    'rgba(99, 102, 241, 0.75)',  // Applied - Indigo
+                    'rgba(245, 158, 11, 0.75)',  // Shortlisted - Amber
+                    'rgba(16, 185, 129, 0.75)',  // Selected - Emerald
+                    'rgba(244, 63, 94, 0.75)'    // Rejected - Rose
+                ],
+                borderColor: [
+                    '#6366f1', '#f59e0b', '#10b981', '#f43f5e'
+                ],
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: { color: '#94a3b8', font: { family: 'Outfit', size: 12 } }
+                }
+            },
+            cutout: '65%'
+        }
+    });
+
+    // 2. Job Type Chart
+    var typeData = JSON.parse('{{ type_json|safe }}');
+    var jobTypeCtx = document.getElementById('jobTypeChart').getContext('2d');
+    new Chart(jobTypeCtx, {
+        type: 'bar',
+        data: {
+            labels: Object.keys(typeData),
+            datasets: [{
+                label: 'Job Openings',
+                data: Object.values(typeData),
+                backgroundColor: 'rgba(6, 182, 212, 0.6)', // Cyan
+                borderColor: '#06b6d4',
+                borderWidth: 2,
+                borderRadius: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                x: {
+                    grid: { display: false },
+                    ticks: { color: '#94a3b8', font: { family: 'Outfit', size: 12 } }
+                },
+                y: {
+                    grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                    ticks: { color: '#94a3b8', stepSize: 1, font: { family: 'Outfit', size: 12 } }
+                }
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django
+db.sqlite3
+db.sqlite3-journal
+media/
+local_settings.py
+.env
+.env.local
+.env.*
+!.env.example
+
+# Resumes / Uploads
+resumes/
+
+# Virtual environments
+env/
+venv/
+ENV/
+bin/
+lib/
+include/
+
+# Large documents, textbooks, and notes
+*.pdf
+*.pptx
+*.docx
+*.doc
+*.ppt
+*.zip
+*.rar
+*.7z
+*.tar.gz
+
+# IDEs
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

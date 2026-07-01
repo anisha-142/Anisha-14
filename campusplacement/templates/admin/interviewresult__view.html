@@ -1,0 +1,92 @@
+{% extends 'admin/base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h2 class="mb-1 fw-bold" style="color: #667eea;">
+                                <i class="fas fa-poll-h me-2"></i>Interview Results
+                            </h2>
+                            <p class="text-muted mb-0">Manage interview clearance status</p>
+                        </div>
+                        <div>
+                            <a href="/placement_app/interviewresult/" class="btn btn-primary">
+                                <i class="fas fa-plus me-2"></i>Record Result
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white py-3 border-0">
+                    <h5 class="mb-0 fw-bold">Results Registry</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead style="background-color: #667eea; color: white;">
+                                <tr>
+                                    <th class="px-4 py-3">ID</th>
+                                    <th class="px-4 py-3">Student</th>
+                                    <th class="px-4 py-3">Job & Round</th>
+                                    <th class="px-4 py-3">Result</th>
+                                    <th class="px-4 py-3">Remarks</th>
+                                    <th class="px-4 py-3 text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for resultinfo in interviewresultd %}
+                                <tr class="result-row">
+                                    <td class="px-4 py-3 fw-bold">{{ resultinfo.id }}</td>
+                                    <td class="px-4 py-3"><strong>{{ resultinfo.application.student.user.username }}</strong></td>
+                                    <td class="px-4 py-3">
+                                        {{ resultinfo.application.job.title }}
+                                        <br>
+                                        <small class="text-muted">{{ resultinfo.round.name }}</small>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <span class="badge {% if resultinfo.result == 'Cleared' %}bg-success{% else %}bg-danger{% endif %}">
+                                            {{ resultinfo.result }}
+                                        </span>
+                                    </td>
+                                    <td class="px-4 py-3"><small>{{ resultinfo.remarks|truncatechars:50 }}</small></td>
+                                    <td class="px-4 py-3 text-center">
+                                        <div class="btn-group">
+                                            <a href="/placement_app/interviewresult/edit/{{ resultinfo.id }}/" class="btn btn-sm btn-outline-primary me-2"><i class="fas fa-edit"></i></a>
+                                            <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ resultinfo.id }}"><i class="fas fa-trash-alt"></i></button>
+                                        </div>
+                                        <div class="modal fade" id="deleteModal{{ resultinfo.id }}" tabindex="-1">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header bg-danger text-white"><h5>Delete Result</h5></div>
+                                                    <div class="modal-body"><p>Delete result for <strong>{{ resultinfo.application.student.user.username }}</strong>?</p></div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                        <a href="/placement_app/interviewresult/delete/{{ resultinfo.id }}/" class="btn btn-danger">Delete</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr><td colspan="6" class="text-center py-5">No results recorded.</td></tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

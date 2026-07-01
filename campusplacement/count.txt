@@ -1,0 +1,10 @@
+#shell script to count number of lines in a file
+clear
+echo enter the filename
+read file
+w=`cat $file | wc -w`
+l=`cat $file | wc -l`
+c=`cat $file | wc -c`
+echo number of lines in a file $file = $l
+echo number of words in a file $file = $w
+echo number of characters in a file $file = $c

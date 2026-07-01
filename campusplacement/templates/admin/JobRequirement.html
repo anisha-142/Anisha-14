@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post Job Requirement</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --bg: #f8fafc;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .form-card {
+            background: white;
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 650px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #1e1b4b;
+            margin-bottom: 30px;
+            font-size: 1.8rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .full-width {
+            grid-column: span 2;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #4b5563;
+            font-size: 0.9rem;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            box-sizing: border-box;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+        }
+
+        textarea {
+            height: 100px;
+            resize: none;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 20px;
+            font-size: 1.1rem;
+        }
+
+        .btn:hover {
+            background: #4338ca;
+            transform: translateY(-2px);
+        }
+
+        .messages {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .success {
+            color: #10b981;
+        }
+
+        .error {
+            color: #ef4444;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="form-card">
+        <h1><i class="fas fa-briefcase"></i> Post Job Opening</h1>
+
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <p class="{{ message.tags }}">{{ message }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-grid">
+                <div class="form-group full-width">
+                    <label>Select Hiring Company</label>
+                    <select name="company" required>
+                        <option value="">Choose a company...</option>
+                        {% for company in companies %}
+                        <option value="{{ company.id }}">{{ company.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Job Title</label>
+                    <input type="text" name="title" placeholder="e.g. Full Stack Developer" required>
+                </div>
+                <div class="form-group">
+                    <label>Job Type</label>
+                    <select name="job_type" required>
+                        <option value="">Choose type...</option>
+                        <option value="Full Time">Full Time</option>
+                        <option value="Internship">Internship</option>
+                        <option value="Contract">Contract</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Package / Salary</label>
+                    <input type="text" name="package" placeholder="e.g. 10 LPA" required>
+                </div>
+                <div class="form-group">
+                    <label>Location</label>
+                    <input type="text" name="location" placeholder="e.g. Remote / Bangalore" required>
+                </div>
+                <div class="form-group">
+                    <label>Minimum CGPA</label>
+                    <input type="number" step="0.01" name="min_cgpa" value="0.00" required>
+                </div>
+                <div class="form-group">
+                    <label>Max Backlogs Allowed</label>
+                    <input type="number" name="max_backlogs" value="0" required>
+                </div>
+                <div class="form-group">
+                    <label>Eligible Departments</label>
+                    <input type="text" name="eligible_departments" placeholder="e.g. CSE, ISE, ECE" required>
+                </div>
+                <div class="form-group">
+                    <label>Application Deadline</label>
+                    <input type="date" name="deadline" required>
+                </div>
+                <div class="form-group full-width">
+                    <label>Job Description</label>
+                    <textarea name="description" placeholder="Roles, responsibilities and requirements..."
+                        required></textarea>
+                </div>
+            </div>
+            <button type="submit" class="btn">Post Job Opportunity</button>
+        </form>
+        <a href="{% url 'placementhome' %}" class="back-link">← Back to Dashboard</a>
+    </div>
+</body>
+
+</html>

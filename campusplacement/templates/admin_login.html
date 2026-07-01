@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Admin Login | JSS Placement Portal{% endblock %}
+
+{% block body_class %}form-page-body{% endblock %}
+
+{% block navbar %}{% endblock %}
+{% block footer %}{% endblock %}
+
+{% block form_page_extra_css %}
+/* Admin accent override */
+.admin-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #6366f1, #7c3aed);
+  color: white;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 4px 14px;
+  border-radius: 50px;
+  margin: 0 auto 18px;
+  display: flex;
+  justify-content: center;
+  width: fit-content;
+}
+{% endblock %}
+
+{% block content %}
+
+  <a href="{% url 'index' %}" class="back-to-site">
+    <i class="fas fa-arrow-left"></i> Back to Website
+  </a>
+
+  <div class="auth-card">
+
+    <div class="auth-icon-box" style="background: linear-gradient(135deg,#1e1b4b,#3730a3); color: #a5b4fc;">
+      <i class="fas fa-shield-alt"></i>
+    </div>
+
+    <div class="admin-badge">
+      <i class="fas fa-lock"></i> Admin Access
+    </div>
+
+    <h2 class="auth-title">Placement Officer</h2>
+    <p class="auth-subtitle">Secure portal — authorised personnel only</p>
+
+    <!-- Django Messages via SweetAlert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    {# Pass Django messages to JS via a data attribute to avoid linter false-positives #}
+    <div id="django-messages" style="display:none;"
+         data-messages="{% for message in messages %}{{ message }}|{% endfor %}"></div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        var raw = document.getElementById('django-messages').dataset.messages || '';
+        var msgs = raw.split('|').map(function(m){ return m.trim(); }).filter(Boolean);
+        if (msgs.length) {
+          Swal.fire({
+            title: 'Access Restricted',
+            text: msgs.join(' '),
+            icon: 'warning',
+            confirmButtonColor: '#6366f1',
+            confirmButtonText: 'Understood',
+            showClass: { popup: 'animate__animated animate__fadeInDown' },
+            hideClass:  { popup: 'animate__animated animate__fadeOutUp'  }
+          });
+        }
+      });
+    </script>
+
+    <form method="POST" id="adminForm">
+      {% csrf_token %}
+
+      <div class="auth-form-group">
+        <i class="fas fa-user-shield field-icon"></i>
+        <input type="text" name="username" id="admin-user"
+               placeholder="Admin Username" required autocomplete="username">
+      </div>
+
+      <div class="auth-form-group">
+        <i class="fas fa-lock field-icon"></i>
+        <input type="password" name="password" id="admin-pwd"
+               placeholder="Password" required autocomplete="current-password">
+        <i class="fas fa-eye field-icon toggle-pwd" id="toggleAdminPwd" title="Show / Hide"></i>
+      </div>
+
+      <div class="auth-extras">
+        <label class="auth-checkbox">
+          <input type="checkbox"> Remember me
+        </label>
+        <a href="{% url 'forgot_password' %}" class="auth-link">Forgot password?</a>
+      </div>
+
+      <button type="submit" class="auth-btn" id="adminBtn"
+              style="background: linear-gradient(135deg,#4338ca,#6366f1);">
+        Sign In &nbsp;<i class="fas fa-sign-in-alt"></i>
+      </button>
+    </form>
+
+    <div class="auth-divider"></div>
+
+    <p class="auth-footer-text">
+      Student portal?&nbsp;
+      <a href="{% url 'login' %}" class="auth-link">
+        <i class="fas fa-arrow-right"></i> Login here
+      </a>
+    </p>
+
+  </div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.getElementById('toggleAdminPwd').addEventListener('click', function () {
+    const pwd = document.getElementById('admin-pwd');
+    pwd.type = pwd.type === 'password' ? 'text' : 'password';
+    this.classList.toggle('fa-eye');
+    this.classList.toggle('fa-eye-slash');
+  });
+
+  document.getElementById('adminForm').addEventListener('submit', function () {
+    const btn = document.getElementById('adminBtn');
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying…';
+    btn.disabled = true;
+  });
+</script>
+{% endblock %}

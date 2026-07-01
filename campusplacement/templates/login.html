@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Portal Login | JSS SMI UG & PG Studies{% endblock %}
+
+{% block body_class %}form-page-body{% endblock %}
+
+{% block navbar %}{% endblock %}
+{% block footer %}{% endblock %}
+
+{% block content %}
+
+  <!-- Back to site pill -->
+  <a href="{% url 'index' %}" class="back-to-site">
+    <i class="fas fa-arrow-left"></i> Back to Website
+  </a>
+
+  <div class="auth-card">
+
+    <div class="auth-icon-box">
+      <i class="fas fa-graduation-cap"></i>
+    </div>
+
+    <h2 class="auth-title">Welcome Back</h2>
+    <p class="auth-subtitle">Enter your credentials to access the portal</p>
+
+    <!-- Django Messages via SweetAlert -->
+    {% if messages %}
+      <script type="application/json" id="django-messages">
+        [
+          {% for message in messages %}
+            "{{ message|escapejs }}"{% if not forloop.last %},{% endif %}
+          {% endfor %}
+        ]
+      </script>
+    {% endif %}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const msgData = document.getElementById('django-messages');
+        if (msgData) {
+          const messages = JSON.parse(msgData.textContent);
+          messages.forEach(function(msg) {
+            Swal.fire({
+              title: 'Access Restricted',
+              text: msg,
+              icon: 'info',
+              confirmButtonColor: '#6366f1',
+              confirmButtonText: 'Got it!',
+              showClass: { popup: 'animate__animated animate__fadeInDown' },
+              hideClass:  { popup: 'animate__animated animate__fadeOutUp'  }
+            });
+          });
+        }
+      });
+    </script>
+
+    <form method="POST" id="loginForm">
+      {% csrf_token %}
+
+      <div class="auth-form-group">
+        <i class="fas fa-user field-icon"></i>
+        <input type="text" name="username" id="username" placeholder="Username" required autocomplete="username">
+      </div>
+
+      <div class="auth-form-group">
+        <i class="fas fa-lock field-icon"></i>
+        <input type="password" name="password" id="password" placeholder="Password" required autocomplete="current-password">
+        <i class="fas fa-eye field-icon toggle-pwd" id="togglePassword" title="Show / Hide"></i>
+      </div>
+
+      <div class="auth-form-group">
+        <div class="captcha-container" style="display: flex; align-items: center; justify-content: space-between; background: rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 10px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.2);">
+          <div id="captchaBox" style="font-size: 24px; font-weight: bold; letter-spacing: 5px; font-family: monospace; user-select: none; color: #fff; background: rgba(0,0,0,0.3); padding: 5px 15px; border-radius: 5px; flex-grow: 1; text-align: center; text-transform: uppercase; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">{{ captcha }}</div>
+          <button type="button" id="refreshCaptchaBtn" style="background: none; border: none; color: #6366f1; font-size: 20px; cursor: pointer; padding: 0 10px; transition: transform 0.3s;" title="Refresh Captcha" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+            <i class="fas fa-sync-alt"></i>
+          </button>
+        </div>
+        <div style="position: relative;">
+          <i class="fas fa-shield-alt field-icon"></i>
+          <input type="text" name="captcha" id="captcha" placeholder="Enter CAPTCHA" required autocomplete="off" style="text-transform: uppercase;">
+        </div>
+      </div>
+
+      <div class="auth-extras">
+        <label class="auth-checkbox">
+          <input type="checkbox" id="rememberMe"> Remember me
+        </label>
+        <a href="{% url 'forgot_password' %}" class="auth-link">Forgot password?</a>
+      </div>
+
+      <button type="submit" class="auth-btn" id="submitBtn">
+        Sign In <i class="fas fa-sign-in-alt"></i>
+      </button>
+    </form>
+
+    <div class="auth-divider"></div>
+
+    <p class="auth-footer-text">
+      New to the portal?&nbsp;
+      <a href="{% url 'register' %}" class="auth-link">
+        <i class="fas fa-plus-circle"></i> Create Account
+      </a>
+    </p>
+
+  </div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // Password toggle
+  document.getElementById('togglePassword').addEventListener('click', function () {
+    const pwd = document.getElementById('password');
+    const isText = pwd.type === 'text';
+    pwd.type = isText ? 'password' : 'text';
+    this.classList.toggle('fa-eye');
+    this.classList.toggle('fa-eye-slash');
+  });
+
+  // Loading state on submit
+  document.getElementById('loginForm').addEventListener('submit', function () {
+    const btn = document.getElementById('submitBtn');
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing in…';
+    // Don't disable the button immediately to allow form submission to proceed
+    setTimeout(() => { btn.disabled = true; }, 50);
+  });
+
+  // Captcha Refresh
+  document.getElementById('refreshCaptchaBtn').addEventListener('click', function() {
+    const icon = this.querySelector('i');
+    icon.classList.add('fa-spin');
+    
+    fetch('{% url "refresh_captcha" %}')
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById('captchaBox').innerText = data.captcha;
+        document.getElementById('captcha').value = '';
+      })
+      .catch(error => console.error('Error refreshing captcha:', error))
+      .finally(() => {
+        setTimeout(() => icon.classList.remove('fa-spin'), 500);
+      });
+  });
+</script>
+{% endblock %}
