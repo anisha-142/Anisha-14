@@ -1,0 +1,31 @@
+databases:
+  - name: campusplacement-db
+    plan: free
+    databaseName: campusplacement
+    user: campusplacement
+
+services:
+  - type: web
+    name: campusplacement
+    runtime: python
+    plan: free
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn campusplacement.wsgi:application"
+    autoDeployTrigger: commit
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: campusplacement-db
+          property: connectionString
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DJANGO_DEBUG
+        value: "False"
+      - key: DJANGO_SECURE_SSL_REDIRECT
+        value: "False"
+      - key: WEB_CONCURRENCY
+        value: "4"
+      - key: EMAIL_HOST_USER
+        sync: false
+      - key: EMAIL_HOST_PASSWORD
+        sync: false
